@@ -1,0 +1,11 @@
+{
+  "name": "cc-viz",
+  "description": "One-shot HTML visualization for Claude Code. Turn architecture, diffs, plans, and data into styled pages you actually want to read.",
+  "version": "1.0.0",
+  "author": {
+    "name": "zm2231"
+  },
+  "homepage": "https://github.com/zm2231/cc-viz",
+  "repository": "https://github.com/zm2231/cc-viz",
+"keywords": ["visualization", "diagrams", "html", "diff-review", "slide-deck", "mermaid", "architecture"]
+}

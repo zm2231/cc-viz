@@ -1,0 +1,5 @@
+{
+  "name": "cc-viz",
+  "version": "1.0.0",
+  "description": "Claude Code skill that generates beautiful HTML pages for diagrams, diff reviews, plan reviews, and data tables"
+}
