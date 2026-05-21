@@ -1,17 +1,30 @@
 ---
 name: cc-viz
-description: Generate beautiful, self-contained HTML pages that visually explain systems, code changes, plans, and data. Use when the user asks for a diagram, architecture overview, diff review, plan review, project recap, comparison table, or any visual explanation of technical concepts. Also use proactively when you are about to render a complex ASCII table (4+ rows or 3+ columns) — present it as a styled HTML page instead.
+description: Generate beautiful, self-contained HTML pages that visually explain systems, code changes, plans, and data. Produces documents, briefs, memos, diagrams, audits, project recaps, comparison tables, slide decks, and small multi-doc sites. Trigger words: "diagram", "visualize", "render as a page", "build a brief", "memo for the team", "deck about", "comparison of", "audit", "recap", "fact-check this", "plan review", "diff review", "small site I'll edit". Also fire proactively when about to render a complex ASCII table (4+ rows or 3+ columns) in the terminal: generate it as a styled HTML page instead. NOT for building applications, interactive UIs, marketing landing pages, brand sites, dashboards-as-products, or component libraries (use a frontend-focused skill for those). NOT for one-line answers, small markdown tables (≤3 rows or ≤2 columns), code-as-artifact responses, or discussion-not-document conversations.
 license: MIT
 compatibility: Requires a browser to view generated HTML files.
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # cc-viz
 
 Generate self-contained HTML files for technical diagrams, visualizations, and data tables. Always open the result in the browser. Never fall back to ASCII art when this skill is loaded.
 
-**Proactive table rendering.** When you're about to present tabular data as an ASCII box-drawing table in the terminal (comparisons, audits, feature matrices, status reports, any structured rows/columns), generate an HTML page instead. The threshold: if the table has 4+ rows or 3+ columns, it belongs in the browser. Don't wait for the user to ask — render it as HTML automatically and tell them the file path. Brief text summary in the chat is fine; the table itself is the HTML page.
+**Proactive table rendering.** When you're about to present tabular data as an ASCII box-drawing table in the terminal (comparisons, audits, feature matrices, status reports, any structured rows/columns), generate an HTML page instead. The threshold: if the table has 4+ rows or 3+ columns, it belongs in the browser. Don't wait for the user to ask. Render it as HTML automatically and tell them the file path. Brief text summary in the chat is fine; the table itself is the HTML page. Proactive tables are implicitly **Quick share mode** — skip routing and framing, just ship the table.
+
+## When NOT to use cc-viz
+
+Skill mis-fires are nearly as bad as not firing at all. Don't generate an HTML page when:
+
+- **Small tables** — ≤3 rows or ≤2 columns. A markdown table in chat is the right answer.
+- **One-line or short-paragraph answers** — if the response fits in 3 chat lines, ship it as chat. Don't paginate prose into HTML.
+- **Code is the artifact** — when the user asks for a function, a config, a script, the code goes in chat or a file, not wrapped in an HTML page.
+- **Discussion, not document** — when the user is thinking through a problem with you, finish the discussion before generating anything. Mid-conversation HTML pages interrupt the reasoning.
+- **Marketing / UI / brand sites** — landing pages, app shells, dashboards-as-products, component libraries are out of scope. Different skill, different output shape.
+- **Trivial confirmations** — "yes that works", "looks good", "shipped" don't need a styled page.
+
+If unsure, ask one short question before generating, or default to chat. A page that should have been chat is a worse failure than chat that should have been a page.
 
 ## Workflow
 
@@ -47,32 +60,38 @@ If two or more modes plausibly apply and the conversation context doesn't disamb
 
 Ask at most two. Ask only what conversation context doesn't already answer. Don't ask "what's this about" when invoked in a project where the answer is obvious from prior turns.
 
-If intent is clear from context, do not ask. The cost of the wrong question is the same as the cost of the wrong answer — it makes the skill feel like a wizard.
+**Skip 0.5 entirely when invoked mid-session with rich context from prior turns.** If you've been working with the user for an hour on a subject and they ask for a page about it, the audience and form are already known. Asking degrades trust. The cost of the wrong question is the same as the cost of the wrong answer — it makes the skill feel like a wizard.
 
-### 0.7. Load accumulated judgment
+### 0.7. Load accumulated judgment (if present)
 
-Skills compound only if they remember. Before drafting, check for project-specific context:
+Before drafting, check for `.cc-viz/context.md` in the project root. **Most invocations won't have one** — don't expect it. When it exists, it was created intentionally by the user after a few iterations on this project, and it captures: typical audience, register preferences, anti-pattern history, prior decisions about form, accumulated diction notes, things to never repeat.
 
-- A `.cc-viz/context.md` in the project root, or
-- A `~/.cc-viz/projects/<project-name>.md` per-project memory file
+If present, read it and apply. If absent, proceed normally.
 
-These files capture: typical audience for this project, register preferences, anti-pattern history, prior decisions about form, accumulated diction notes, things to never repeat. If one exists, read it and apply.
-
-If something non-obvious gets established during this session (audience preference, register choice, an aesthetic that landed, a phrase or font that didn't), write it back at the end. The next invocation should not require re-explaining what was learned.
+**Writing back.** At the end of a session, if something non-obvious got established (an aesthetic that landed, a phrase that didn't, an audience preference, a font that worked) — and the user gives a signal the work will continue (multiple iterations, "next time", "for future runs") — offer to create or update `.cc-viz/context.md` with one or two lines capturing the lesson. Don't write back unprompted on a one-off run; the file should accumulate slowly, not bloat.
 
 ### 1. Frame the story (before anything visual)
 
-A visualization is an argument made in a particular voice for a particular reader. Skip this and the result is "list of facts in nice boxes" — voice-flat, forgettable.
+Four checkpoints. **All four are gates** — don't proceed to Step 2 with any of them unfilled. Skipping these is the single most common cc-viz failure mode (the agent jumps from source material to HTML, the page becomes "list of facts in nice boxes" — voice-flat, forgettable).
 
-**Ground claims before drafting.** Speculation reads identical to truth on the page; only the reader who knows the territory can tell the difference. Any visualization making claims about a real system must be grounded in evidence first. README plus a docs glance is not enough — it misses what's actually moving. Adjust depth to the routed mode (Quick share = lean on what's loaded; Internal brief = thorough; External deliverable = exhaustive), but never skip entirely.
+**Gate 1 — Spine sentence (REQUIRED, fill the blank before continuing):**
 
-**Story arc.** State in one sentence what the reader walks away knowing. If you can't write that sentence, the diagram has no spine.
+> *"[Subject] [does / is / argues] [X]. [Why-it-matters clause]."*
 
-**Report vs argument.** Most analytical / mapping / comparison / decision-memo work is argument-led — the artifacts (files, columns, schema references, framework citations) are *evidence FOR a claim*, not the claim itself. A page listing "these files exist, these columns exist, this maps to that" has shown evidence but not told a story. If the page's spine is a matrix, ask whether it should actually be a report (catalog intent) or an argument (claim about what the catalog means). For argument intent, lead with the claim, support each section with the evidence that defends it, close with the implication.
+Examples:
+- *"context-layer was built to extract a four-dimension framework but quietly invented two things the framework hasn't named yet: system metacognition and source-level epistemics. The interesting question is whether they generalize."*
+- *"Dennis is gone and the SOW is an orphan, but the systems intelligence is real. Here's what we actually need to know to proposal this correctly."*
+- *"The migration cuts query p99 latency by 40% but introduces a backfill window we have to plan for."*
 
-**Audience, register, info-detail, baseline.** Name the audience concretely (not "technical reader" but "senior backend engineer who knows our stack but hasn't seen this subsystem"). Pick one register and hold it (editorial-narrative, technical-precise, engineering-confessional, executive-impact). Each section answers a question the reader has at that point — and only that. Separate what they already know from what they need to learn; the page closes that gap and nothing else.
+If you can't write the spine sentence in 10 seconds, stop. Re-read the source. Don't proceed until the sentence is on the page (literally, in your draft notes, before you write any HTML).
 
-For the full grounding-pass methodology, the report-vs-argument distinction at depth, audience/register depth, and reader-baseline discipline: `references/story-framing.md`.
+**Gate 2 — Ground claims.** Speculation reads identical to truth on the page; only the reader who knows the territory can tell the difference. Any page making claims about a real system, project, or decision must be grounded in evidence first. Adjust depth to the routed mode (Quick share = lean on what's loaded; Internal brief = thorough; External deliverable = exhaustive). Never skip entirely. Methodology: `references/story-framing.md`.
+
+**Gate 3 — Report vs argument.** Most analytical work is argument-led: artifacts (files, columns, schema, citations) are *evidence FOR a claim*, not the claim itself. A page listing "these files exist, these columns exist, this maps to that" has shown evidence but not told a story. If the page's spine is a matrix, decide: catalog intent (report) or claim about the catalog (argument)? Argument-led pages lead with the claim, support each section with the evidence that defends it, close with the implication.
+
+**Gate 4 — Re-teaching audit.** List in your head (or notes) what the reader *already knows* from the conversation, the project, or their role. Any section that re-teaches that list is decoration. Cut it. A page mapping context-layer to a framework should NOT re-introduce what context-layer is to someone who built it; it should foreground the *mapping*, which is the new thing. Re-teaching is the most common failure for pages that look thorough but feel flat.
+
+**Audience, register, baseline** — name the audience concretely (not "technical reader" but "senior backend engineer who knows our stack but hasn't seen this subsystem"), pick one register and hold it. Full taxonomy and baseline discipline in `references/story-framing.md`.
 
 **Voice & diction rules** — non-negotiable, even in Quick share mode. Full set in `references/voice-and-diction.md`:
 
@@ -101,6 +120,10 @@ Form precedes aesthetic. Pick one form's structural vocabulary and commit. Frank
 Pick based on routed intent (Step 0) and framed audience/register (Step 1). If two forms could plausibly fit, pick the one that does the audience's reading work for them — the form that lets them read in three minutes what would take ten in another form.
 
 **Anti-Frankenstein rule.** Once the form is chosen, every element on the page serves that form. The form's structural vocabulary is the only structural vocabulary you use.
+
+**Tabs vs scrolling.** Tabs are right when the content has 3+ distinct lenses on the same subject (who / what / how / when, or technical / business / risk / next-steps). 4–5 tabs is the sweet spot; ≥6 means the lenses aren't actually distinct, fold some together. Tabs are wrong when content flows linearly (intro → context → analysis → recommendation): use a single scrolling page so the reader can scan and back-reference. If the reader needs to compare sections side-by-side, neither tabs nor scroll works — use a two-column layout.
+
+**Serif body vs sans body.** Reading-serif body (Source Serif 4, Lora, Newsreader) is the strongest "document" signal — use when body is paragraphs of prose (memos, briefs, analyses, project recaps). Sans body (IBM Plex Sans, DM Sans) is right when body is dense cards, short labels, tables, or status indicators where a serif at 13–14px feels slow. Don't force a serif body on a card-heavy page; the form decides.
 
 ### 3. Aesthetic (5 seconds, not 5 minutes)
 
@@ -243,7 +266,18 @@ Multi-doc mode: a folder with `index.md`, `*.md`, `render.py`, `styles.css`, and
 
 ## Quality Checks
 
-Grade against `references/quality-rubric.md` before delivering. Six weighted dimensions (Form-Audience Match, Story Discipline, Voice & Diction, Grounding, Visual Quality, Anti-Pattern Free). Passing score ≥ 75/100 with no FAIL on `script` or `hybrid`.
+Grade against the rubric inline before delivering. Six weighted dimensions, 100 points total. Passing score **≥ 75/100** with no FAIL on `script` or `hybrid` dimensions. Full criteria in `references/quality-rubric.md`.
+
+| # | Dimension | Pts | What it checks |
+|---|---|---|---|
+| 1 | **Form-Audience Match** | 25 | Right form for the routed intent + framed audience? Re-teaching audit passed? Tabs vs scroll vs side-by-side chosen correctly? |
+| 2 | **Story Discipline** | 20 | Spine sentence written? Argument vs report decided? Each section advances or supports the spine? No decoration sections? |
+| 3 | **Voice & Diction** | 15 | Zero em-dashes in body prose. Sentences ≤22 words. No yap. One italic per heading max. Direct address only when reader is an actor. |
+| 4 | **Grounding** | 15 | Claims sourced. Names, dates, paths, numbers verifiable. `scripts/strip-html.py` + grep against source confirms (for system-claim pages). |
+| 5 | **Visual Quality** | 15 | Typography distinctive. Atmosphere present (void test). Both themes intentional. No anti-patterns from `references/anti-patterns.md`. |
+| 6 | **Anti-Pattern Free** | 10 | No Frankenstein form mixing. No forbidden fonts/colors/animations. No glow/pulse. No gradient text. No three-dot code chrome. |
+
+If you score yourself below 75, **don't ship — fix the lowest dimension first**. Inflated self-grading is also a failure mode: if you're scoring 78 with re-teaching present or no spine statement, you're grading lenient. The dimensions that matter most for argument-led pages are #1 and #2; the page can have beautiful typography (#5) and still fail if the spine is missing.
 
 Fast-pass tests:
 - **Squint:** hierarchy still readable when blurred? Sections distinct?
