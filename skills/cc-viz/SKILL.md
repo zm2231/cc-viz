@@ -106,6 +106,8 @@ Pick based on routed intent (Step 0) and framed audience/register (Step 1). If t
 
 Commit to a visual direction. Don't default to "dark theme with blue accents" every time. Vary from recent generations.
 
+**Aesthetic serves the form's reading task; memorability is a side effect, not the goal.** A cc-viz page exists to be read, scanned, and acted on. If you find yourself reaching for spectacle (dramatic shadows, gradient meshes, noise grain, oversized hero typography for the sake of impact), you're designing a brand site, not a document. Pull back. Form-fit produces memorability on its own when the fit is high.
+
 **Constrained aesthetics (prefer these — they have specific requirements that prevent generic output):**
 - Blueprint — technical drawing feel, subtle grid background, deep slate/blue, monospace labels, precise borders
 - Editorial — serif headlines (Instrument Serif / Crimson Pro), generous whitespace, muted earth tones or deep navy + gold
@@ -154,13 +156,26 @@ CSS/layout patterns + SVG connectors: `./references/css-patterns.md`. Pages with
 
 Apply these inline rules; reach for the references for detail.
 
-**Typography.** Pick a font pairing from `./references/libraries.md`. Vary from recent generations.
-- **Forbidden as `--font-body`:** Inter and any Inter variant (Inter Tight / Display / etc.), Roboto, Arial, Helvetica, system-ui alone, italic-by-design display serifs (Instrument Serif, Playfair Italic). Display serifs go in `--font-display`, never `--font-body`.
+**Typography.** Pick a font pairing from `./references/libraries.md`. Vary from recent generations. cc-viz outputs should read as **documents**, not **brand sites or landing pages** — the font list and bans reflect that.
+- **Forbidden as `--font-body`:** Inter (and any Inter variant: Tight / Display / etc.), Roboto, Arial, Helvetica, system-ui alone, **Space Grotesk, Manrope, General Sans, Cabinet Grotesk** (current-decade AI-startup landing-page tells), italic-by-design display serifs (Instrument Serif, Playfair Italic, Fraunces Italic). Display serifs go in `--font-display`, never `--font-body`.
+- **Strongest cc-viz signal:** reading-serif body pairings (Source Serif 4, Lora, Newsreader — pairings 14/15/16 in libraries.md). Long-form body serifs almost never appear on landing pages; they read as "report" immediately.
 
 **Color.** CSS custom properties for the full palette. Define at minimum `--bg`, `--surface`, `--border`, `--text`, `--text-dim`, 3-5 semantic accents. Both themes (light + dark) intentional.
 - **Forbidden accents:** `#8b5cf6` `#7c3aed` `#a78bfa` `#d946ef`, the cyan-magenta-pink combination. Tailwind defaults signaling zero design intent.
 
-**Atmosphere is mandatory in dark mode.** Flat dark backgrounds produce a void with text floating on it — the worst output cc-viz can emit. Dark backgrounds must have one of: subtle two-stop gradient, faint dot/hairline grid at 1–3% opacity, vignette, or focal radial glow behind the hero. The void test: corner vs. center distinguishable? If not, fix it.
+**Atmosphere is mandatory in dark mode** (also recommended in light). Flat backgrounds produce a void with text floating on it — the worst output cc-viz can emit. The void test: corner vs. center distinguishable? If not, fix it.
+
+**Prefer reading-friendly atmospheres** — they support the document register:
+- Faint dot or hairline grid (1–3% opacity)
+- Fine paper texture (subtle warm tint variation)
+- Subtle vignette darkening at corners
+- Two-stop gradient with very low contrast (≤4% lightness shift)
+
+**Skip spectacle atmospheres** — they pull the page toward "brand site" feel:
+- Gradient meshes (multiple overlapping radial color blobs)
+- Large radial glows behind the hero (more than 25% of the viewport)
+- Noise / film grain overlays
+- Dramatic depth via layered drop shadows on the page background
 
 **Visual weight + surface depth.** Hero sections elevated (accent-tinted, larger type). Body content flat. Code/secondary recessed. `<details>/<summary>` for useful-but-not-primary content. Detail in `references/css-patterns.md`.
 

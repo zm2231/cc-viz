@@ -446,10 +446,16 @@ When using anime.js, set initial opacity to 0 in CSS so elements don't flash bef
 Always load with `display=swap` for fast rendering. Pick a distinctive pairing — body + mono at minimum, optionally a display font for the title.
 
 **FORBIDDEN as `--font-body` (AI slop signals):**
-- Inter — the single most overused AI default font
+- Inter (and any Inter variant: Inter Tight, Inter Display, etc.) — the single most overused AI default font
 - Roboto — generic Android/Google default
 - Arial, Helvetica — system defaults with no character
 - system-ui alone without a named font — signals zero design intent
+- **Space Grotesk** — current-decade AI-startup landing-page tell
+- **Manrope** — same niche, even more overused on marketing pages
+- **General Sans, Cabinet Grotesk** — Fontshare landing-page defaults; instantly read as "AI brand site"
+- **Italic-by-design display serifs** (Instrument Serif, Playfair Italic, Fraunces Italic) — these go in `--font-display`, never `--font-body`
+
+These bans aren't because the fonts are bad — they're because they're the *current decade's defaults* for AI-generated marketing pages. cc-viz outputs should read as **documents** (reports, memos, technical writing), not as **brand sites** or **landing pages**.
 
 **Ready-to-paste `<link>` blocks for all 13 pairings live in `templates/font-loaders.html`.** Pick a pairing from the table below, then copy the matching block from that file into your `<head>` — saves URL-construction time and weight-spec typos. Satoshi (Fontshare) and the preconnect block are also there.
 
@@ -486,5 +492,10 @@ Then define CSS variables:
 | Red Hat Display | Red Hat Mono | Cohesive family | System overviews |
 | Libre Franklin | Inconsolata | Classic, reliable | Data-dense tables |
 | Playfair Display | Roboto Mono | Elegant contrast | Executive summaries |
+| **Source Serif 4** | JetBrains Mono | True reading serif, document-grade | Long-form specs, RFCs, internal reports |
+| **Lora** | IBM Plex Mono | Editorial body serif, calm | Decision memos, narrative briefs |
+| **Newsreader** | Fira Code | News-optimized serif, on-screen reading | Project recaps, multi-page analysis |
 
 The first 5 pairings are recommended for most use cases. Vary across consecutive diagrams.
+
+**Reading-serif pairings (14, 15, 16) are the most differentiating choice cc-viz can make.** Long-form body serifs almost never appear on landing pages or AI brand sites — they read as "this is a document meant to be read at length." Use a clean sans (DM Sans, IBM Plex Sans) for headers and labels, then the serif for body paragraphs. Strongest signal that cc-viz output is a report, not a marketing page.
