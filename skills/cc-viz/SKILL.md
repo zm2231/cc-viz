@@ -1,6 +1,6 @@
 ---
 name: cc-viz
-description: Generate beautiful, self-contained HTML pages that visually explain systems, code changes, plans, and data. Produces documents, briefs, memos, diagrams, audits, project recaps, comparison tables, slide decks, and small multi-doc sites. Trigger words: "diagram", "visualize", "render as a page", "build a brief", "memo for the team", "deck about", "comparison of", "audit", "recap", "fact-check this", "plan review", "diff review", "small site I'll edit". Also fire proactively when about to render a complex ASCII table (4+ rows or 3+ columns) in the terminal: generate it as a styled HTML page instead. NOT for building applications, interactive UIs, marketing landing pages, brand sites, dashboards-as-products, or component libraries (use a frontend-focused skill for those). NOT for one-line answers, small markdown tables (≤3 rows or ≤2 columns), code-as-artifact responses, or discussion-not-document conversations.
+description: Generate self-contained HTML pages that visually explain systems, code, plans, and data. Produces documents, briefs, memos, diagrams, audits, recaps, comparison tables, slide decks, multi-doc sites. Triggers: "diagram", "visualize", "render as a page", "build a brief", "memo for the team", "deck about", "audit", "recap", "fact-check", "plan review", "diff review", "small site I'll edit". Also fires proactively when about to render an ASCII table with 4+ rows or 3+ columns (generate HTML instead). NOT for applications, interactive UIs, landing pages, brand sites, dashboards-as-products, or component libraries. NOT for one-line answers, tiny markdown tables, code-as-artifact responses, or discussion-not-document conversations.
 license: MIT
 compatibility: Requires a browser to view generated HTML files.
 metadata:
@@ -87,6 +87,8 @@ If you can't write the spine sentence in 10 seconds, stop. Re-read the source. D
 
 **Gate 2 — Ground claims.** Speculation reads identical to truth on the page; only the reader who knows the territory can tell the difference. Any page making claims about a real system, project, or decision must be grounded in evidence first. Adjust depth to the routed mode (Quick share = lean on what's loaded; Internal brief = thorough; External deliverable = exhaustive). Never skip entirely. Methodology: `references/story-framing.md`.
 
+> **Context-rich escape.** If the session has already loaded the source material (you've been reading transcripts, files, docs for this subject for the last 30+ minutes), Gate 2 is satisfied. Don't re-fetch what's already in context. Re-verify only specific claims that feel uncertain or that came from memory rather than the loaded context.
+
 **Gate 3 — Report vs argument.** Most analytical work is argument-led: artifacts (files, columns, schema, citations) are *evidence FOR a claim*, not the claim itself. A page listing "these files exist, these columns exist, this maps to that" has shown evidence but not told a story. If the page's spine is a matrix, decide: catalog intent (report) or claim about the catalog (argument)? Argument-led pages lead with the claim, support each section with the evidence that defends it, close with the implication.
 
 **Gate 4 — Re-teaching audit.** List in your head (or notes) what the reader *already knows* from the conversation, the project, or their role. Any section that re-teaches that list is decoration. Cut it. A page mapping context-layer to a framework should NOT re-introduce what context-layer is to someone who built it; it should foreground the *mapping*, which is the new thing. Re-teaching is the most common failure for pages that look thorough but feel flat.
@@ -120,6 +122,8 @@ Form precedes aesthetic. Pick one form's structural vocabulary and commit. Frank
 Pick based on routed intent (Step 0) and framed audience/register (Step 1). If two forms could plausibly fit, pick the one that does the audience's reading work for them — the form that lets them read in three minutes what would take ten in another form.
 
 **Anti-Frankenstein rule.** Once the form is chosen, every element on the page serves that form. The form's structural vocabulary is the only structural vocabulary you use.
+
+**Patterns that have landed.** Before inventing new composition, check `references/patterns.md` — a catalog of specific cc-viz forms that worked in real runs (status strip + recommendation card, three-column kicker masthead, etc.) with markup examples. A pattern that's worked before is more likely to work again than a freshly invented one.
 
 **Tabs vs scrolling.** Tabs are right when the content has 3+ distinct lenses on the same subject (who / what / how / when, or technical / business / risk / next-steps). 4–5 tabs is the sweet spot; ≥6 means the lenses aren't actually distinct, fold some together. Tabs are wrong when content flows linearly (intro → context → analysis → recommendation): use a single scrolling page so the reader can scan and back-reference. If the reader needs to compare sections side-by-side, neither tabs nor scroll works — use a two-column layout.
 
@@ -207,15 +211,22 @@ Apply these inline rules; reach for the references for detail.
 
 ### 6. Deliver
 
-**Output location:** `~/.agent/diagrams/`. Descriptive filename: `modem-architecture.html`, `pipeline-flow.html`, `schema-overview.html`. Directory persists across sessions.
+**Output location:** `~/.agent/diagrams/`. Descriptive filename: `modem-architecture.html`, `pipeline-flow.html`, `schema-overview.html`. Directory persists across sessions. For multi-doc sites: a folder, `~/.agent/diagrams/<site-name>/`.
 
-**For multi-doc sites:** output is a folder, `~/.agent/diagrams/<site-name>/`. Open `index.html`.
-
-**Open in browser:**
+**Always open in the browser after writing.** This is not optional — a cc-viz output that isn't opened is half-delivered. The user shouldn't have to click a path to see what you made.
 - macOS: `open ~/.agent/diagrams/filename.html`
 - Linux: `xdg-open ~/.agent/diagrams/filename.html`
+- Multi-doc: open `index.html` from the folder.
 
-**Tell the user** the file path so they can re-open or share.
+After opening, **tell the user** the absolute file path so they can re-open, attach, or share.
+
+**Share / handoff (mode-conditional):**
+
+- **Quick share / internal brief / memo:** state the path. The user opens or attaches as they need.
+- **External / client deliverable:** ask whether the user wants it published before handing off. If yes and the surface has shell access, offer the wrangler/vercel options from `references/multi-doc-site.md`. If no, just hand off the path.
+- **Multi-doc site:** open `index.html`; publish options in `references/multi-doc-site.md`.
+
+Don't auto-publish. Generation and distribution are different concerns; the user decides where the artifact goes.
 
 ## Diagram-specific notes
 
