@@ -451,13 +451,17 @@ Always load with `display=swap` for fast rendering. Pick a distinctive pairing �
 - Arial, Helvetica — system defaults with no character
 - system-ui alone without a named font — signals zero design intent
 
+**Ready-to-paste `<link>` blocks for all 13 pairings live in `templates/font-loaders.html`.** Pick a pairing from the table below, then copy the matching block from that file into your `<head>` — saves URL-construction time and weight-spec typos. Satoshi (Fontshare) and the preconnect block are also there.
+
+Single-pairing example (Outfit + Space Mono, pairing 6):
+
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 ```
 
-Define as CSS variables for easy reference:
+Then define CSS variables:
 ```css
 :root {
   --font-body: 'Outfit', system-ui, sans-serif;

@@ -49,7 +49,7 @@ Copy the template folder, rename it, edit the markdown sources, run `python3 ren
 Eight transforms turn N markdown files into a coherent site. Each one is in the scaffolded `render.py`; you adjust the inputs, not the machinery.
 
 1. **PAGES tuple** — single source of truth driving the render loop *and* the top-nav rendering. Add a page, register once.
-2. **Status-code badges.** Inline `` `STATUS` `` codes in markdown become styled `<span class="status …">` badges. Customize the `STATUS_TOKENS` whitelist and `cls_map` for your domain. The cf-architecture-2 example uses 12 tokens (`LOCKED`, `EVIDENCE`, `ALIGNMENT`, `OPEN`, `DEFINED`, `PARTIAL`, `AMBIGUOUS`, `DEPENDENT`, `FAIL`, `RISK`, `PASS-CONDITIONAL`, `PASS`) collapsed onto 5 visual classes. The default scaffold ships 4 (`PASS`, `FAIL`, `WARN`, `OPEN`).
+2. **Status-code badges.** Inline `` `STATUS` `` codes in markdown become styled `<span class="status …">` badges. Customize the `STATUS_TOKENS` whitelist and `cls_map` for your domain. A real-world example carried 12 tokens (`LOCKED`, `EVIDENCE`, `ALIGNMENT`, `OPEN`, `DEFINED`, `PARTIAL`, `AMBIGUOUS`, `DEPENDENT`, `FAIL`, `RISK`, `PASS-CONDITIONAL`, `PASS`) collapsed onto 5 visual classes — domain-specific. The default scaffold ships 5 (`PASS`, `FAIL`, `WARN`, `OPEN`, `LOCKED`); add or collapse as your domain needs.
 3. **TLDR block.** A paragraph beginning `<strong>TL;DR.</strong>` in the rendered HTML becomes a styled `.tldr` block — a label + body grid. Place it in the markdown wherever the TL;DR belongs (usually right after the lede).
 4. **Lede paragraph.** The first blockquote after the h1 promotes to a `.lede` element (serif, larger, max-width-constrained). Use markdown blockquote `>` syntax in the source.
 5. **h2 numbering + anchor ids + sidebar TOC.** `add_section_numbers_and_ids` increments a counter, slugifies the h2 text, sets `id` and `data-num` on each h2, and emits a `[(num, slug, text)]` list. `render_toc` turns that into a sticky on-this-page sidebar. The layout switches between `layout` (with sidebar) and `layout-no-sidebar` (index page only).
@@ -69,7 +69,7 @@ These are baked into the scaffolded `styles.css`. Edit the palette tokens; leave
 - **Sidebar TOC** — sticky, `top: 24px`, `max-height: calc(100dvh - 48px)`, scrolls independently. Hides under 960px viewport.
 - **Atmospheric background** — radial gradient overlay + repeating-line texture at 2-3% opacity. Same rule cc-viz enforces for single-file diagrams: no flat void.
 - **Light + dark token redefinition** — full palette swap in `@media (prefers-color-scheme: dark)`. Both modes look intentional.
-- **Multi-font load** — Fontshare (Satoshi) for body + Google Fonts (Instrument Serif, JetBrains Mono) for display + mono. Three fonts, distinct roles.
+- **Multi-font load** — three fonts, three distinct roles (body / display-serif / mono). The scaffold ships Satoshi + Instrument Serif + JetBrains Mono as one paper/ink-friendly pairing; substitute any pairing from `references/libraries.md`. Body font typically loads from Google Fonts; the scaffold's Satoshi is from Fontshare and requires its own `<link>` if you keep it.
 
 ## Title convention
 
@@ -87,7 +87,9 @@ The scaffold's `_example-page.md` shows the shape. Key elements:
 
 ## Optional: publish
 
-Multi-doc output is a static folder. Two one-line publish options:
+> **Surface caveat.** Publishing and local preview require shell access + network — Claude Code (CLI / IDE) or another agent surface with local bash. On Claude.ai web or desktop, skip this section: generate the folder, hand off to the user, let them publish locally.
+
+Multi-doc output is a static folder. Two one-line publish options when shell is available:
 
 **Cloudflare Pages (Wrangler):**
 ```bash
@@ -101,7 +103,9 @@ cd ~/.agent/diagrams/<site-name>
 vercel --prod
 ```
 
-Both require their respective CLI installed and authenticated. For local preview without publishing:
+Both require their respective CLI installed and authenticated.
+
+**Local preview** (also shell-only):
 
 ```bash
 cd ~/.agent/diagrams/<site-name>
@@ -153,4 +157,4 @@ If one page needs a unique visual treatment (a ladder diagram, a flow diagram, a
 
 ## Origin
 
-`/Volumes/4/GitHub/shared-docs/internal/cf-architecture-2/` (May 2026). Three-layer architecture spec: brand, sales, architecture, plus engagement-paths, products, next-steps. Replaced a single 1978-line working doc with seven shorter, structurally-distinct documents under one stylesheet.
+Pattern extracted from a real internal site (`cf-architecture-2`, May 2026) — a three-layer architecture spec covering brand, sales, technical architecture, plus engagement-paths, products, and next-steps. Replaced a single ~2000-line working doc with seven shorter, structurally-distinct documents under one stylesheet. The split was the win: each page got its own register and visual treatment while staying coherent through shared CSS.

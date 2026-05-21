@@ -4,6 +4,8 @@ Elaboration of SKILL.md Step 1. The inline rules (frame story before drafting, g
 
 Load this when the routed mode is Internal brief, External deliverable, Strategic / decision memo, or anytime the page is making claims about a real system, project, person, market, or decision and the stakes warrant grounding past README-depth.
 
+> **Examples below reference `context-layer`, a real internal system, illustratively. Substitute your own subject when applying the methodology — the shape of the framing matters, not the names.**
+
 ## The grounding pass
 
 Speculation reads identical to truth on the page; only the reader who knows the territory can tell the difference. Adjust depth to the routed mode (Quick share = lean on what's loaded; Internal brief = thorough; External deliverable = exhaustive). Never skip it entirely.
@@ -19,7 +21,7 @@ The methodology is generic; the tooling is whatever this user/project has wired 
 
 **Read the corner files.** `CLAUDE.md`, `AGENTS.md`, `DEVELOPMENT.md`, design docs in subdirectories — these often hold the real invariants and gotchas the top-level README skips.
 
-**Use whatever evidence corpora are available.** Web search, semantic search over a research index, vector indexes, knowledge-management systems, MCP-exposed services, the project's own search/grep tools, transcripts, prior session notes.
+**Use whatever evidence corpora the surface exposes.** On Claude.ai web/desktop: web search and uploaded files. In Claude Code (CLI / IDE) or another shell-enabled surface: also the project's grep/search tools, semantic indexes, MCP-exposed services, vector indexes over your own corpus, transcripts, prior session notes. The methodology is identical; the available tools differ.
 
 If a brief was prepared upstream by a research agent or by the user, use it. If not, do the work yourself before drafting. Either way, the story is built from the actual state of the thing being visualized, not from the marketing version of it.
 
@@ -29,7 +31,7 @@ These are not the same kind of page and they need different structures.
 
 A **report** presents facts. *"Here are the eight source connectors. Here are the four layers. Here are the columns and thresholds."* The reader walks away knowing what exists. Spine is the inventory; structure is the matrix or the schema.
 
-An **argument** makes a claim. *"context-layer was built to extract a four-dimension framework but quietly invented two things the framework hasn't named yet — system metacognition and source-level epistemics. The interesting question is whether they generalize."* The reader walks away with a position they can agree with, push back on, or build on. Spine is the claim; structure is claim → evidence → implication.
+An **argument** makes a claim. *"context-layer was built to extract a four-dimension framework but quietly invented two things the framework hasn't named yet: system metacognition and source-level epistemics. The interesting question is whether they generalize."* The reader walks away with a position they can agree with, push back on, or build on. Spine is the claim; structure is claim → evidence → implication.
 
 Most analytical, mapping, comparison, synthesis, decision-memo, or strategic work is argument-led. The artifacts (files, columns, thresholds, schema references, commit hashes, framework citations) are *evidence FOR the argument*, not the argument itself. A page that lists "these files exist, these columns exist, this maps to that" has shown evidence; it has not told a story. The page must be summarizable in one sentence as: *"X is the case, and here's why it matters."*
 
@@ -37,7 +39,7 @@ If you find yourself building a feature inventory or a matrix as the page's spin
 
 ## Story arc
 
-From start to end, what does the reader walk away knowing? State it in one sentence. *"context-layer ingests ten source types, classifies every observation against the existing entity graph, and lets confirmed patterns surface as Logseq pages — backed by one Postgres and one inference gateway."* If you can't write that sentence, the diagram has no spine.
+From start to end, what does the reader walk away knowing? State it in one sentence. *"context-layer ingests ten source types, classifies every observation against the existing entity graph, and lets confirmed patterns surface as Logseq pages. Backed by one Postgres and one inference gateway."* If you can't write that sentence, the diagram has no spine.
 
 The arc is the page's compression. Each section either advances the arc or supports it with evidence. Sections that do neither are decoration and should be cut.
 

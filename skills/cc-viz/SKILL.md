@@ -128,6 +128,7 @@ Palette and font detail in `references/libraries.md`. Surface and atmosphere det
 - Data tables, comparisons, audits, feature matrices: `./templates/data-table.html`
 - Slide decks (when `--slides` or `/generate-slides`): `./templates/slide-deck.html` + `./references/slide-patterns.md`
 - Multi-doc sites: `./templates/multi-doc-site/` (render.py + styles.css + markdown scaffolds)
+- Ready-to-paste font `<link>` blocks for all 13 pairings: `./templates/font-loaders.html`
 
 CSS/layout patterns + SVG connectors: `./references/css-patterns.md`. Pages with 4+ sections: `./references/responsive-nav.md` for sticky sidebar TOC + mobile horizontal scroll.
 

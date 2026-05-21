@@ -3,11 +3,15 @@
    Light-first with dark mode swap below. */
 
 :root {
-  --font-body: 'Satoshi', 'Inter Tight', system-ui, sans-serif;
+  /* TODO: pick a font pairing — see references/libraries.md for the catalog.
+     Three distinct fonts, distinct roles: body / display-serif / mono.
+     Default below is one starting point; swap in your chosen pairing. */
+  --font-body: 'Satoshi', system-ui, sans-serif;
   --font-serif: 'Instrument Serif', 'Cormorant Garamond', Georgia, serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 
-  /* TODO: palette — adjust for your project. */
+  /* TODO: palette — defaults are paper/ink (warm cream + amber).
+     Other directions in references/libraries.md; swap the tokens below. */
   --bg: #f6f3ed;
   --bg-warm: #efeae0;
   --surface: #fbfaf6;
