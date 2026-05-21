@@ -1,3 +1,13 @@
+<!--
+  cc-viz reference template: mermaid-flowchart
+  Form: architecture / topology (Mermaid-led)
+  Aesthetic: Blueprint (deep slate + gold accent + IBM Plex)
+  Patterns used: #9 Mermaid zoom controls (style.zoom + flex wrap + min-height)
+  Use when: the diagram IS the document — flow, sequence, ER, state machine, mind map
+  Deliberately different from: data-table.html (matrix-shaped tabular content)
+  and architecture.html (text-heavy CSS-grid card layouts).
+  See: references/css-patterns.md, references/libraries.md, references/patterns.md §9
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,21 +151,26 @@
   }
 
   /* ============ MERMAID CONTAINER ============ */
+  /* The wrap uses flex+overflow:hidden+min-height so that zoom on .mermaid causes
+     the wrap to grow vertically with the diagram — frame stays in proportion to
+     content rather than producing scrollbars and clipping. Pattern proven in
+     production (e3-share). DO NOT change to overflow:auto — that produces the
+     "diagram bigger than frame, content cut off" behavior. */
   .mermaid-wrap {
     position: relative;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 32px 24px;
-    overflow: auto;
-    margin-bottom: 24px;
-  }
-
-  .mermaid-wrap .mermaid {
+    padding: 24px;
+    overflow: hidden;
     display: flex;
     justify-content: center;
-    transition: transform 0.2s ease;
-    transform-origin: top center;
+    align-items: center;
+    min-height: 340px;
+    margin-bottom: 24px;
+  }
+  .mermaid-wrap .mermaid {
+    transition: zoom 0.15s ease;
   }
 
   .zoom-controls {
@@ -216,6 +231,19 @@
   .mermaid .edgeLabel {
     font-family: var(--font-mono) !important;
     font-size: 13px !important;
+  }
+
+  /* ER diagram: relationship labels (cardinality, "registers", "lifts to" etc.)
+     overlap the connector circles by default. Give them a solid background +
+     padding so they sit cleanly over the line. */
+  .mermaid .relationshipLabelBox {
+    fill: var(--surface) !important;
+    rx: 4px;
+  }
+  .mermaid .relationshipLabel {
+    font-family: var(--font-mono) !important;
+    font-size: 11px !important;
+    fill: var(--text-dim) !important;
   }
 
   .mermaid .node rect,
@@ -300,6 +328,7 @@
       <button onclick="zoomDiagram(this, 1.2)" title="Zoom in">+</button>
       <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">&minus;</button>
       <button onclick="resetZoom(this)" title="Reset zoom">&#8634;</button>
+      <button onclick="openMermaidInNewTab(this.closest('.mermaid-wrap'))" title="Expand">&#x26F6;</button>
     </div>
     <pre class="mermaid">
       graph TD
@@ -368,67 +397,47 @@
       noteBorderColor: isDark ? '#fbbf24' : '#d97706',
     }
   });
+  mermaid.run().then(function() {
+    document.querySelectorAll('.mermaid svg').forEach(function(svg) {
+      svg.removeAttribute('height');
+      svg.style.width = '100%';
+      svg.style.maxWidth = '100%';
+      svg.style.height = 'auto';
+    });
+  });
 </script>
 <script>
-  function updateZoomState(wrap) {
-    var target = wrap.querySelector('.mermaid');
-    var zoom = parseFloat(target.dataset.zoom || '1');
-    wrap.classList.toggle('is-zoomed', zoom > 1);
-  }
-
+  // Zoom approach: set `style.zoom` on .mermaid. CSS zoom causes layout reflow in
+  // real Chrome/Safari, so the parent .mermaid-wrap grows with the diagram —
+  // frame stays in proportion to content. This is the proven pattern from
+  // e3-share. Note: `style.zoom` does not visually scale in WKWebView/cmux, but
+  // produced HTML is intended for real-browser viewing. Do not switch to
+  // svg.style.width — that scales the SVG inside a fixed-size wrap and content
+  // gets cut off horizontally.
+  var INITIAL_ZOOM = 1;
   function zoomDiagram(btn, factor) {
     var wrap = btn.closest('.mermaid-wrap');
     var target = wrap.querySelector('.mermaid');
-    var current = parseFloat(target.dataset.zoom || '1');
-    var next = Math.min(Math.max(current * factor, 0.3), 5);
+    var current = parseFloat(target.dataset.zoom || INITIAL_ZOOM);
+    var next = Math.min(Math.max(current * factor, 0.5), 5);
     target.dataset.zoom = next;
-    target.style.transform = 'scale(' + next + ')';
-    updateZoomState(wrap);
+    target.style.zoom = next;
   }
-
   function resetZoom(btn) {
     var wrap = btn.closest('.mermaid-wrap');
     var target = wrap.querySelector('.mermaid');
-    target.dataset.zoom = '1';
-    target.style.transform = 'scale(1)';
-    updateZoomState(wrap);
+    target.dataset.zoom = INITIAL_ZOOM;
+    target.style.zoom = INITIAL_ZOOM;
   }
-
-  document.querySelectorAll('.mermaid-wrap').forEach(function(wrap) {
-    // Scroll-to-zoom (Ctrl/Cmd + wheel)
-    wrap.addEventListener('wheel', function(e) {
-      if (!e.ctrlKey && !e.metaKey) return;
-      e.preventDefault();
-      var target = wrap.querySelector('.mermaid');
-      var current = parseFloat(target.dataset.zoom || '1');
-      var factor = e.deltaY < 0 ? 1.1 : 0.9;
-      var next = Math.min(Math.max(current * factor, 0.3), 5);
-      target.dataset.zoom = next;
-      target.style.transform = 'scale(' + next + ')';
-      updateZoomState(wrap);
-    }, { passive: false });
-
-    // Drag-to-pan
-    var startX, startY, scrollL, scrollT;
-    wrap.addEventListener('mousedown', function(e) {
-      if (e.target.closest('.zoom-controls')) return;
-      var target = wrap.querySelector('.mermaid');
-      if (parseFloat(target.dataset.zoom || '1') <= 1) return;
-      wrap.classList.add('is-panning');
-      startX = e.clientX;
-      startY = e.clientY;
-      scrollL = wrap.scrollLeft;
-      scrollT = wrap.scrollTop;
-    });
-    window.addEventListener('mousemove', function(e) {
-      if (!wrap.classList.contains('is-panning')) return;
-      wrap.scrollLeft = scrollL - (e.clientX - startX);
-      wrap.scrollTop = scrollT - (e.clientY - startY);
-    });
-    window.addEventListener('mouseup', function() {
-      wrap.classList.remove('is-panning');
-    });
-  });
+  function openMermaidInNewTab(wrap) {
+    var svg = wrap.querySelector('.mermaid svg');
+    if (!svg) return;
+    var clone = svg.cloneNode(true);
+    clone.style.zoom = '';
+    var bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#fff';
+    var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:' + bg + ';padding:40px}svg{max-width:100%;max-height:90vh;height:auto}</style></head><body>' + clone.outerHTML + '</body></html>';
+    window.open(URL.createObjectURL(new Blob([html], { type: 'text/html' })), '_blank');
+  }
 </script>
 
 </body>

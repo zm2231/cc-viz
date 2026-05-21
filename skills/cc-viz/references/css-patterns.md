@@ -2,14 +2,116 @@
 
 Reusable patterns for layout, connectors, theming, and visual effects in self-contained HTML diagrams.
 
+## Typography & Rhythm
+
+These rules fix the most common cc-viz readability defects: dense unbroken paragraphs, line lengths that stretch to viewport width, dark-mode text that reads flat, and muddy hierarchy from too-similar font sizes.
+
+### Body measure: 65–75ch
+
+Every prose container — `<p>`, `.section-intro`, card body — must cap at `max-width: 68ch` (or 65–75ch). Above 75ch the eye loses its place tracking line wraps; below 45ch reading rhythm fragments. This is the single highest-impact fix for "isn't very clean to read."
+
+```css
+p, .section-intro, .ve-card p, .pull p {
+  max-width: 68ch;
+  line-height: 1.6;
+}
+```
+
+When a section has both prose and a wide diagram, the prose constrains to 68ch even if the diagram fills 1100px. Prose centers in the column or aligns with the section's left rule.
+
+### Dark-mode text compensation triad
+
+Light text on a dark background looks lighter than dark text on light at the same numeric weight — perceived weight drops on three axes simultaneously, so all three need to be compensated:
+
+```css
+@media (prefers-color-scheme: dark) {
+  body {
+    line-height: 1.65;          /* +0.05 over light mode's 1.6 */
+    letter-spacing: 0.01em;     /* hairline tracking */
+    font-weight: 450;            /* one notch heavier than 400 */
+  }
+}
+```
+
+If the body font doesn't have a 450 weight (most don't), use 500 and step display weights down by one to keep the scale ratio. Without this triad, dark-mode prose reads heavy-flat — visually thick but optically dim. The fix is invisible if you do all three; halfway fixes look broken.
+
+### Vertical rhythm: line-height as the spacing unit
+
+Pick body line-height (e.g. 24px on 16px base = 1.5). Every vertical spacing value in the page is a multiple of that 24px: `padding-bottom: 24px`, `margin-top: 48px`, gap between sections `72px`. Card padding is `24px` or `48px`, never `28px` or `32px`. Subconscious harmony comes from the math, not from "feels about right."
+
+This applies to grid gaps too: `gap: 24px`, not `gap: 16px` next to elements with 24px line-height.
+
+### Paragraph rhythm: space OR indent, never both
+
+Pick one:
+- **Space-between** (digital default): `p + p { margin-top: 1em; }`, no first-line indent.
+- **Indent-only** (long-form editorial): `p + p { text-indent: 1.5em; margin-top: 0; }`, no inter-paragraph space.
+
+Doing both — what most AI-generated layouts do by reflex — produces visual noise. The reader sees both an indent and a gap and the rhythm collapses.
+
+### Modular scale: ≥1.25 ratio between steps
+
+Flat scales (14, 15, 16, 18, 20px) read as muddy hierarchy. Use one of these named ratios and commit:
+
+| Name | Ratio | 5-step scale from 16px |
+|---|---|---|
+| Major third | 1.25 | 10 / 13 / 16 / 20 / 25 |
+| Perfect fourth | 1.333 | 9 / 12 / 16 / 21 / 28 |
+| Perfect fifth | 1.5 | 7 / 11 / 16 / 24 / 36 |
+
+Headings step *up* the scale; small/caption text steps *down*. A page should never have more than 5 sizes total — fewer sizes with more contrast beats more sizes with less.
+
+### Light text on color: gray is dead
+
+Never put gray text on a colored background — gray reads washed out and lifeless on color. Use a darker shade of the background color, or a low-opacity black/white. `color: rgba(0,0,0,0.7)` on a colored card reads infinitely better than `color: #6b7280`.
+
+### Pull quotes — no `<pre>`
+
+Use `<blockquote>` with a `<cite>`. Never `<pre>` (it preserves whitespace and forces monospace by default; the trailing newline pushes the left-rule bar past the text):
+
+```html
+<blockquote class="pull">
+  <p>Session is the minimum CF unit. A single commit at 11:47pm is not the unit — the six-hour session is.</p>
+  <cite>— Invariant #4, ARCHITECTURE.md</cite>
+</blockquote>
+```
+
+```css
+.pull {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.5rem;       /* not 32px+ — that overheaters the visual weight */
+  line-height: 1.35;
+  color: var(--text);
+  border-left: 2px solid var(--accent);
+  padding: 0.25em 0 0.25em 1.25em;  /* tight to text — bar matches text height */
+  max-width: 60ch;
+  margin: 3rem 0;
+}
+.pull p { margin: 0; }
+.pull cite {
+  display: block;
+  margin-top: 0.75em;
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+```
+
+The padding is `0.25em` top and bottom — the bar height tracks the text height naturally. With `<pre>`, the trailing newline adds blank space below the cite which inflates the bar.
+
 ## Theme Setup
 
 Always define both light and dark palettes via custom properties. Start with whichever fits the chosen aesthetic, ensure both work.
 
 ```css
 :root {
-  --font-body: 'Outfit', system-ui, sans-serif;
-  --font-mono: 'Space Mono', 'SF Mono', Consolas, monospace;
+  /* Pick a pairing from references/libraries.md — never default to Inter, Roboto, or system fonts. */
+  --font-body: /* approved sans (e.g. DM Sans, IBM Plex Sans) */, system-ui, sans-serif;
+  --font-mono: /* approved mono (e.g. JetBrains Mono, IBM Plex Mono) */, 'SF Mono', Consolas, monospace;
 
   --bg: #f8f9fa;
   --surface: #ffffff;
@@ -233,7 +335,15 @@ li::before {
 
 Mermaid diagrams are often too small to read comfortably, especially complex flowcharts and sequence diagrams. Add zoom controls to every `.mermaid-wrap` container.
 
-**Centering fix.** Mermaid SVGs render at a fixed size and default to the top-left of their container, leaving dead space in larger containers. Always add `display: flex; align-items: center; justify-content: center;` to `.mermaid-wrap` so the SVG centers regardless of container size. Use `transform-origin: center center` so zoom radiates from the middle.
+**SVG sizing fix (critical).** Mermaid bakes a hardcoded `height` attribute into every SVG it renders. Without removing it, the SVG keeps its fixed pixel height regardless of container size and zoom. After `mermaid.initialize()`, call `mermaid.run().then(...)` to strip the height attribute and set `width: 100%; height: auto` on every `.mermaid svg`. This is what makes diagrams fit their container and scale correctly.
+
+**Use `style.zoom` on `.mermaid`, with a flex+overflow:hidden wrap.** Set `target.style.zoom = next` on the `.mermaid` div. The `.mermaid-wrap` MUST be `display: flex; justify-content: center; align-items: center; overflow: hidden; min-height: 340px`. CSS `zoom` causes layout reflow in real Chrome/Safari, so the wrap grows with the diagram — the frame stays in proportion to content.
+
+Do NOT switch to `svg.style.width` percentage scaling. That approach scales the SVG inside a fixed-width wrap with `overflow: auto` — which produces scrollbars and visually cuts off the diagram horizontally. Tested and rejected in favor of the e3-share pattern.
+
+Do NOT use `transform: scale`. It scales visually but doesn't reflow at all, so the wrap stays at min-height even when the diagram needs more room.
+
+WKWebView caveat: `style.zoom` doesn't visually apply in WKWebView (cmux). Generated HTML is intended for real-browser viewing. If you need to validate in cmux, you won't see zoom changes — open the file in Chrome/Safari directly.
 
 **Small diagrams in slides.** If a diagram has fewer than ~7 nodes with no branching, it will render tiny in a full-viewport slide container. For simple linear flows (A → B → C → D), use CSS pipeline cards instead of Mermaid — see `slide-patterns.md` "CSS Pipeline Slide." Reserve Mermaid for complex graphs where automatic edge routing is actually needed.
 
@@ -245,22 +355,16 @@ Mermaid diagrams are often too small to read comfortably, especially complex flo
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 32px 24px;
-  overflow: auto;
+  padding: 24px;
+  overflow: hidden;
   display: flex;
-  align-items: center;
   justify-content: center;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
+  align-items: center;
+  min-height: 340px;
 }
-.mermaid-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
-.mermaid-wrap::-webkit-scrollbar-track { background: transparent; }
-.mermaid-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-.mermaid-wrap::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
 .mermaid-wrap .mermaid {
-  transition: transform 0.2s ease;
-  transform-origin: center center;
+  transition: zoom 0.15s ease;
 }
 
 .zoom-controls {
@@ -303,6 +407,18 @@ Mermaid diagrams are often too small to read comfortably, especially complex flo
 @media (prefers-reduced-motion: reduce) {
   .mermaid-wrap .mermaid { transition: none; }
 }
+
+/* ER diagram: relationship labels overlap connector circles by default.
+   Solid bg + padding so labels sit cleanly over the line. */
+.mermaid .relationshipLabelBox {
+  fill: var(--surface) !important;
+  rx: 4px;
+}
+.mermaid .relationshipLabel {
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  fill: var(--text-dim) !important;
+}
 ```
 
 ### HTML
@@ -313,6 +429,7 @@ Mermaid diagrams are often too small to read comfortably, especially complex flo
     <button onclick="zoomDiagram(this, 1.2)" title="Zoom in">+</button>
     <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">&minus;</button>
     <button onclick="resetZoom(this)" title="Reset zoom">&#8634;</button>
+    <button onclick="openMermaidInNewTab(this.closest('.mermaid-wrap'))" title="Expand">&#x26F6;</button>
   </div>
   <pre class="mermaid">
     graph TD
@@ -323,71 +440,55 @@ Mermaid diagrams are often too small to read comfortably, especially complex flo
 
 ### JavaScript
 
-Add once at the end of the page. Handles button clicks and scroll-to-zoom on all `.mermaid-wrap` containers:
+Two scripts required. First, the ESM Mermaid init block — add the `.then()` post-processor to fix SVG sizing:
 
 ```javascript
-function updateZoomState(wrap) {
-  var target = wrap.querySelector('.mermaid');
-  var zoom = parseFloat(target.dataset.zoom || '1');
-  wrap.classList.toggle('is-zoomed', zoom > 1);
-}
+// In your <script type="module"> alongside mermaid.initialize(...)
+mermaid.run().then(function() {
+  document.querySelectorAll('.mermaid svg').forEach(function(svg) {
+    svg.removeAttribute('height');
+    svg.style.width = '100%';
+    svg.style.maxWidth = '100%';
+    svg.style.height = 'auto';
+  });
+});
+```
+
+Second, the zoom/pan controls — add once at the end of the page:
+
+```javascript
+// Set style.zoom on .mermaid. CSS zoom causes layout reflow in real Chrome/Safari,
+// so the parent .mermaid-wrap grows with the diagram. Pattern proven in production.
+var INITIAL_ZOOM = 1;
 
 function zoomDiagram(btn, factor) {
   var wrap = btn.closest('.mermaid-wrap');
   var target = wrap.querySelector('.mermaid');
-  var current = parseFloat(target.dataset.zoom || '1');
-  var next = Math.min(Math.max(current * factor, 0.3), 5);
+  var current = parseFloat(target.dataset.zoom || INITIAL_ZOOM);
+  var next = Math.min(Math.max(current * factor, 0.5), 5);
   target.dataset.zoom = next;
-  target.style.transform = 'scale(' + next + ')';
-  updateZoomState(wrap);
+  target.style.zoom = next;
 }
 
 function resetZoom(btn) {
   var wrap = btn.closest('.mermaid-wrap');
   var target = wrap.querySelector('.mermaid');
-  target.dataset.zoom = '1';
-  target.style.transform = 'scale(1)';
-  updateZoomState(wrap);
+  target.dataset.zoom = INITIAL_ZOOM;
+  target.style.zoom = INITIAL_ZOOM;
 }
 
-document.querySelectorAll('.mermaid-wrap').forEach(function(wrap) {
-  // Ctrl/Cmd + scroll to zoom
-  wrap.addEventListener('wheel', function(e) {
-    if (!e.ctrlKey && !e.metaKey) return;
-    e.preventDefault();
-    var target = wrap.querySelector('.mermaid');
-    var current = parseFloat(target.dataset.zoom || '1');
-    var factor = e.deltaY < 0 ? 1.1 : 0.9;
-    var next = Math.min(Math.max(current * factor, 0.3), 5);
-    target.dataset.zoom = next;
-    target.style.transform = 'scale(' + next + ')';
-    updateZoomState(wrap);
-  }, { passive: false });
-
-  // Click-and-drag to pan when zoomed
-  var startX, startY, scrollL, scrollT;
-  wrap.addEventListener('mousedown', function(e) {
-    if (e.target.closest('.zoom-controls')) return;
-    var target = wrap.querySelector('.mermaid');
-    if (parseFloat(target.dataset.zoom || '1') <= 1) return;
-    wrap.classList.add('is-panning');
-    startX = e.clientX;
-    startY = e.clientY;
-    scrollL = wrap.scrollLeft;
-    scrollT = wrap.scrollTop;
-  });
-  window.addEventListener('mousemove', function(e) {
-    if (!wrap.classList.contains('is-panning')) return;
-    wrap.scrollLeft = scrollL - (e.clientX - startX);
-    wrap.scrollTop = scrollT - (e.clientY - startY);
-  });
-  window.addEventListener('mouseup', function() {
-    wrap.classList.remove('is-panning');
-  });
-});
+function openMermaidInNewTab(wrap) {
+  var svg = wrap.querySelector('.mermaid svg');
+  if (!svg) return;
+  var clone = svg.cloneNode(true);
+  clone.style.zoom = '';
+  var bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#fff';
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:' + bg + ';padding:40px}svg{max-width:100%;max-height:90vh;height:auto}</style></head><body>' + clone.outerHTML + '</body></html>';
+  window.open(URL.createObjectURL(new Blob([html], { type: 'text/html' })), '_blank');
+}
 ```
 
-Scroll-to-zoom requires Ctrl/Cmd+scroll to avoid hijacking normal page scroll. Click-and-drag panning activates only when zoomed in (zoom > 1). Cursor changes to `grab`/`grabbing` to signal the behavior. The zoom range is capped at 0.3x–5x.
+Zoom range 0.5x–5x. The wrap's `min-height: 340px` keeps it stable when the diagram is small; the absence of a fixed max-height lets it grow when zoomed. The expand button opens the raw SVG in a new tab for printing or full-screen inspection.
 
 ## Grid Layouts
 

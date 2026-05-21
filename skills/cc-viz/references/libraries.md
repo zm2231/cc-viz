@@ -205,6 +205,22 @@ Auth --> API
 
 **Escape pipes in labels.** If a label contains a literal `|`, use `#124;` (HTML entity) or rephrase to avoid it — pipes delimit edge labels in flowcharts.
 
+**Dotted edge labels with `-. text .->` cannot contain periods.** The dots delimit the label, so `A -.below 0.60.-> B` parses as `-.below 0.` (label = "below 0") and then garbage. Quote the label whenever it contains a period, decimal, ellipsis, or any `.`:
+
+```
+%% WRONG — parser splits on the inner period
+A -.below 0.60.-> B
+A -.alpha=0.3.-> B
+A -.v1.2 fallback.-> B
+
+%% RIGHT — quoted label tolerates periods
+A -. "below 0.60" .-> B
+A -. "alpha=0.3" .-> B
+A -. "v1.2 fallback" .-> B
+```
+
+Same rule applies to thick labeled edges (`==text==>`) — quote any label containing `=`, `.`, or special characters: `A == "step.5" ==> B`.
+
 **Sequence diagram messages must be plain text.** Unlike flowchart labels, sequence diagram messages (the text after `:`) cannot be quoted or escaped. Curly braces `{}`, square brackets `[]`, angle brackets `<>`, and `&` will silently break the parser and the entire diagram renders as raw text. Write human-readable descriptions, not code:
 
 ```
