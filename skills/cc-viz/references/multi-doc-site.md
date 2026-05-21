@@ -1,22 +1,22 @@
-# Multi-doc site pattern: markdown source + render script + shared CSS
+# Multi-doc site
 
-Use when generating a small site (2–6 pages) that needs visual coherence, post-generation editability, and easy local rendering. Examples: a 3-layer architecture spec (brand · sales · technical), a multi-section internal memo, a versioned product overview.
+Reference for the **Multi-doc / iterated** route. Use when generating a small site (2–6 pages) that needs visual coherence, post-generation editability, and easy local rendering. Examples: a 3-layer architecture spec (brand · sales · technical), a multi-section internal memo, a versioned product overview.
 
-## When this beats hand-crafted HTML
+The output is a folder, not a single HTML file. The user edits the markdown, re-runs `render.py`, the HTML rebuilds.
 
-| Situation | Hand-crafted HTML | This pattern |
+## When this beats single-HTML
+
+The breakpoint is roughly **3 pages × non-trivial editability**. Below that, write HTML directly (Instant / Framed). Above that, the script pays off because every prose edit is a markdown change, not a hunt through `<p>` tags.
+
+| Situation | Single HTML | Multi-doc |
 |---|---|---|
-| Single visualization, fixed content | ✓ winner | overkill |
-| 1 doc, content unlikely to change | ✓ winner | unnecessary |
+| 1 doc, fixed content | ✓ winner | overkill |
 | 3+ docs, user will iterate post-gen | tedious | ✓ winner |
-| Visual coherence across pages required | risk of drift | shared CSS enforces |
+| Visual coherence across pages required | manual discipline | shared CSS enforces |
 | User wants markdown to edit in-place | fights HTML | ✓ winner |
-| Status tags / badges across pages | repetitive markup | render once in script |
 | User wants to add a new doc later | manual stylesheet copy | drop a `.md`, run script |
 
-The breakpoint is roughly **3 pages × non-trivial editability**. Below that, write HTML directly. Above that, the script pays off because every prose edit is a markdown change, not a hunt through `<p>` tags.
-
-## Structure
+## File layout
 
 ```
 project-folder/
@@ -24,145 +24,133 @@ project-folder/
   page-a.md             # source-of-truth section
   page-b.md
   page-c.md
-  index.html            # generated, do not edit
-  page-a.html           # generated
+  index.html            # generated — do not edit
+  page-a.html
   page-b.html
   page-c.html
-  styles.css            # shared, hand-tuned
-  _render.py            # one-shot render script (or symlink)
+  styles.css            # shared stylesheet
+  render.py             # one-shot render script
 ```
 
-User edits `*.md` and re-runs the script. HTML is build artifact, not source.
+Output location: `~/.agent/diagrams/<site-name>/`. Open `index.html` in the browser.
 
-## Core script shape
+## Scaffold
 
-```python
-from markdown_it import MarkdownIt
-from pathlib import Path
-import re
+The skill ships a complete starter at `templates/multi-doc-site/`:
 
-ROOT = Path("...")
-PAGES = [
-    ("index", "Title · Section Label", "Overview"),
-    ("page-a", "Title · Page A Label", "Page A"),
-    # ...
-]
+- `render.py` — parameterized via a `PAGES` tuple and a small set of `# TODO:` markers. Copy and customize per project.
+- `styles.css` — generic shared stylesheet with sidebar TOC, status badges, TLDR block, lede paragraph, atmospheric background, light + dark mode.
+- `_example-index.md` and `_example-page.md` — markdown scaffolds showing where TL;DR, status codes, lede paragraph, and the index table go.
 
-md = (
-    MarkdownIt("commonmark", {"html": False, "linkify": True})
-    .enable("table")
-    .enable("strikethrough")
-)
+Copy the template folder, rename it, edit the markdown sources, run `python3 render.py`.
 
-def render_status_codes(html: str) -> str:
-    """Inline `STATUS` codes → styled badges. Whitelist your tokens."""
-    tokens = ["LOCKED", "EVIDENCE", "OPEN", "ALIGNMENT", "FAIL", "PASS"]
-    cls_map = {"LOCKED": "locked", "EVIDENCE": "evidence", ...}
-    pattern = r'<code>(' + '|'.join(tokens) + r')([^<]*?)</code>'
-    return re.sub(
-        pattern,
-        lambda m: f'<span class="status {cls_map[m.group(1)]}">{(m.group(1)+m.group(2)).strip()}</span>',
-        html,
-    )
+## What the render script does
 
-def add_section_numbers(html: str) -> str:
-    """h2 → numbered with data-num attribute. CSS handles display."""
-    counter = [0]
-    def repl(m):
-        counter[0] += 1
-        return f'<h2 data-num="{counter[0]:02d}">{m.group(1)}</h2>'
-    return re.sub(r'<h2>(.*?)</h2>', repl, html)
+Eight transforms turn N markdown files into a coherent site. Each one is in the scaffolded `render.py`; you adjust the inputs, not the machinery.
 
-def enhance_lede(html: str) -> str:
-    """First blockquote after h1 becomes .lede paragraph."""
-    return re.sub(
-        r'(<h1[^>]*>.*?</h1>\s*)<blockquote>\s*<p>(.*?)</p>\s*</blockquote>',
-        r'\1<p class="lede">\2</p>',
-        html, count=1, flags=re.DOTALL,
-    )
+1. **PAGES tuple** — single source of truth driving the render loop *and* the top-nav rendering. Add a page, register once.
+2. **Status-code badges.** Inline `` `STATUS` `` codes in markdown become styled `<span class="status …">` badges. Customize the `STATUS_TOKENS` whitelist and `cls_map` for your domain. The cf-architecture-2 example uses 12 tokens (`LOCKED`, `EVIDENCE`, `ALIGNMENT`, `OPEN`, `DEFINED`, `PARTIAL`, `AMBIGUOUS`, `DEPENDENT`, `FAIL`, `RISK`, `PASS-CONDITIONAL`, `PASS`) collapsed onto 5 visual classes. The default scaffold ships 4 (`PASS`, `FAIL`, `WARN`, `OPEN`).
+3. **TLDR block.** A paragraph beginning `<strong>TL;DR.</strong>` in the rendered HTML becomes a styled `.tldr` block — a label + body grid. Place it in the markdown wherever the TL;DR belongs (usually right after the lede).
+4. **Lede paragraph.** The first blockquote after the h1 promotes to a `.lede` element (serif, larger, max-width-constrained). Use markdown blockquote `>` syntax in the source.
+5. **h2 numbering + anchor ids + sidebar TOC.** `add_section_numbers_and_ids` increments a counter, slugifies the h2 text, sets `id` and `data-num` on each h2, and emits a `[(num, slug, text)]` list. `render_toc` turns that into a sticky on-this-page sidebar. The layout switches between `layout` (with sidebar) and `layout-no-sidebar` (index page only).
+6. **Card-grid index restructure.** A markdown table on the index page gets replaced with a card-grid HTML block. The table stays as the source-of-truth in markdown (scannable, editable); the grid is the visual rendering. Edit the cards-html in `render.py` to match your page set.
+7. **Download .md button.** Both an inline footer link and a sticky bottom-right floater. Lets readers grab the raw markdown source. The "markdown is source of truth" claim is only honest if the markdown is reachable.
+8. **Meta strip + footer.** Top meta strip with brand dot, page label, inline top nav. Footer with date, brand name, breadcrumb path, and the download button. Provides cross-page consistency.
 
-# top nav with current-page highlighting
-def shell(title, body, current, label):
-    nav = ' · '.join(
-        f'<a href="{href}" class="{"current" if slug==current else ""}">{lbl}</a>'
-        for slug, href, lbl in PAGES
-    )
-    return f"""<!DOCTYPE html>...<link rel="stylesheet" href="styles.css">
-    <body><div class="meta">{nav}</div><article>{body}</article></body>"""
+## CSS conventions
 
-for slug, title, label in PAGES:
-    src = ROOT / f"{slug}.md"
-    html = md.render(src.read_text())
-    html = render_status_codes(html)
-    html = enhance_lede(html)
-    if slug != "index":
-        html = add_section_numbers(html)
-    (ROOT / f"{slug}.html").write_text(shell(title, html, slug, label))
+These are baked into the scaffolded `styles.css`. Edit the palette tokens; leave the structural patterns.
+
+- **Numbered section markers** via CSS `::before` reading `data-num` — mono font, letter-spaced, accent-colored, with a divider rule.
+- **Status badge classes** — one per visual class (evidence/alignment/open/locked/fail). Use sparingly as scan markers.
+- **TLDR block** — two-column grid (label + body) collapsing to single-column on mobile.
+- **Lede paragraph** — serif, ~22px, max-width 720px. The doc's pull quote.
+- **Card grid for index** — 1fr column with a 130px num column inside each card. Hover lifts the card and shifts the right-arrow.
+- **Sidebar TOC** — sticky, `top: 24px`, `max-height: calc(100dvh - 48px)`, scrolls independently. Hides under 960px viewport.
+- **Atmospheric background** — radial gradient overlay + repeating-line texture at 2-3% opacity. Same rule cc-viz enforces for single-file diagrams: no flat void.
+- **Light + dark token redefinition** — full palette swap in `@media (prefers-color-scheme: dark)`. Both modes look intentional.
+- **Multi-font load** — Fontshare (Satoshi) for body + Google Fonts (Instrument Serif, JetBrains Mono) for display + mono. Three fonts, distinct roles.
+
+## Title convention
+
+`Page Name · Brand Name` (middle-dot separator). Consistent across all pages. The brand name goes in the meta strip and footer too.
+
+## Markdown source conventions
+
+The scaffold's `_example-page.md` shows the shape. Key elements:
+
+- **h1** = page title. One per page.
+- **Lede blockquote** immediately after the h1: `> One-sentence orientation.`
+- **TL;DR paragraph** after the lede: `**TL;DR.** One-paragraph executive summary.`
+- **h2** = section. Numbered automatically. Use plain text — slugified to anchor id.
+- **Status codes** inline: `` `EVIDENCE` `` or `` `EVIDENCE 2026-05-01` ``. Inline-code only; don't wrap in HTML.
+
+## Optional: publish
+
+Multi-doc output is a static folder. Two one-line publish options:
+
+**Cloudflare Pages (Wrangler):**
+```bash
+cd ~/.agent/diagrams/<site-name>
+npx wrangler pages deploy . --project-name=<site-name>
 ```
 
-## CSS conventions that pay off
-
-**Status badge classes** — one for each status type, color-coded. Use sparingly so the eye uses them as scan markers.
-
-**Numbered section markers** via CSS `::before` reading `data-num` attribute, so the script just sets the data attribute and CSS handles all the visual treatment:
-
-```css
-h2[data-num]::before {
-  content: attr(data-num);
-  font-family: monospace;
-  letter-spacing: 2.4px;
-  color: var(--accent);
-  display: block;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 8px;
-  margin-bottom: 10px;
-}
+**Vercel:**
+```bash
+cd ~/.agent/diagrams/<site-name>
+vercel --prod
 ```
 
-**Card grid for index pages** — replace a markdown table on the index page with a card-grid block via regex substitution. The table stays as the source-of-truth in markdown (editable, scannable); the grid is the visual rendering.
+Both require their respective CLI installed and authenticated. For local preview without publishing:
 
-**Lede paragraph** — the first blockquote after the h1 typically reads as the doc's pull quote / orientation. Promote it visually to a `.lede` element with serif type, larger size, max-width constraint.
+```bash
+cd ~/.agent/diagrams/<site-name>
+python3 -m http.server 8000
+# open http://localhost:8000
+```
 
-**Shared stylesheet** — one `styles.css` linked from every HTML. Means a global tweak (palette, spacing) updates the whole site. The user can also drop a new page without touching CSS.
+Publishing is not part of the skill's contract. Generate the folder; the user decides whether to ship it.
 
 ## Anti-patterns
 
 - **Don't put status badges in markdown as HTML spans.** Keep markdown clean (`` `STATUS` ``). The script transforms.
 - **Don't generate inline styles per page.** Shared CSS is the whole point.
-- **Don't use markdown for diagram-heavy content.** If a page is mostly diagram, write HTML or use a Mermaid block.
+- **Don't use markdown for diagram-heavy content.** If a page is mostly a diagram, write HTML directly or embed a Mermaid block via a regex hook in render.py.
 - **Don't fight the markdown grammar.** If you need a card grid, add a regex transform; don't try to encode it in markdown syntax.
-- **Don't auto-number every h2 across the site.** Reset per page. Otherwise cross-page reading gets weird (page B starts at 11 because page A had 10 sections).
+- **Don't auto-number h2s across the whole site.** Reset per page in `add_section_numbers_and_ids` (already does). Otherwise page B starts at 11 because page A had 10 sections.
+- **Don't skip the atmosphere rule for the shared stylesheet.** The same void test applies — dark backgrounds need gradient, texture, or vignette.
+- **Don't ship without the .md download button.** If you claim markdown is the source of truth, make the markdown reachable.
 
-## Tradeoffs vs. hand-crafted HTML
+## When to drop this pattern
 
-| | Hand-crafted | Script + markdown |
-|---|---|---|
-| Visual ceiling | Higher (every pixel intentional) | Lower (constrained by CSS templates) |
-| Editability | Find the `<p>` and rewrite | Edit markdown, re-run |
-| Cross-page coherence | Manual discipline | Stylesheet enforces |
-| Adding a new page | Copy + adapt full HTML | Add `.md`, register in `PAGES`, re-run |
-| User who'll never touch the file | Hand-crafted is fine | Overkill |
-| User who'll iterate over weeks | Hand-crafted decays | Script keeps source clean |
+If the user starts asking for substantial layout-per-page (different grid systems, custom hero sections, magazine-style spreads), the markdown abstraction is fighting you. Either:
+
+1. Move that one page to hand-crafted HTML (keep the rest scripted), or
+2. Move the whole site to a static-site generator (Astro, Eleventy) where templates are first-class.
+
+The script pattern lives between "throw HTML in a folder" and "set up a static site generator." Narrow but real sweet spot.
 
 ## Variant: per-page CSS hooks
 
-If one page needs a unique visual treatment (e.g. a ladder diagram on a sales page, a flow diagram on an architecture page), let the markdown source include semantic markers:
+If one page needs a unique visual treatment (a ladder diagram, a flow diagram, a custom hero), let the markdown include a semantic marker comment:
 
 ```markdown
 <!-- diagram: four-stage-flow -->
 ```
 
-The render script recognizes the marker and injects a hand-crafted HTML snippet at that point. The marker stays in the markdown (so the source of truth is intact); the visual lives in the script's snippet library.
+`render.py` recognizes the marker and injects a hand-crafted HTML snippet at that point. The marker stays in the markdown (source intact); the visual lives in the script's snippet library. The scaffold leaves this as a comment placeholder — add hooks as needed.
 
-## When to drop this pattern
+## Tradeoffs
 
-If the user starts asking for substantial layout-per-page (different grid systems, custom hero sections, magazine-style spreads), the markdown abstraction is fighting you. At that point either:
+| | Single HTML | Multi-doc script |
+|---|---|---|
+| Visual ceiling | Higher (every pixel intentional) | Lower (constrained by CSS templates) |
+| Editability | Find the `<p>` and rewrite | Edit markdown, re-run |
+| Cross-page coherence | Manual discipline | Stylesheet enforces |
+| Adding a new page | Copy + adapt full HTML | Add `.md`, register in `PAGES`, re-run |
+| User who'll never touch the file | Single HTML is fine | Overkill |
+| User who'll iterate over weeks | Single HTML decays | Script keeps source clean |
 
-1. Move that one page to hand-crafted HTML (keep the rest scripted), or
-2. Move the whole site to a real static-site generator (Astro, Eleventy) where templates are first-class.
+## Origin
 
-The script pattern lives between "throw HTML in a folder" and "set up a static site generator." It's a narrow but real sweet spot.
-
-## Originated
-
-`shared-docs/internal/cf-architecture-2/` (May 2026). Three-layer architecture spec: brand, sales, technical. Replaced a single 1978-line working doc with four shorter, structurally-distinct documents under one stylesheet.
+`/Volumes/4/GitHub/shared-docs/internal/cf-architecture-2/` (May 2026). Three-layer architecture spec: brand, sales, architecture, plus engagement-paths, products, next-steps. Replaced a single 1978-line working doc with seven shorter, structurally-distinct documents under one stylesheet.
