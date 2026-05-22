@@ -72,7 +72,7 @@ If present, read it and apply. If absent, proceed normally.
 
 ### 1. Frame the story (before anything visual)
 
-Four gates. All four must be filled before Step 2. Skipping them is the most common cc-viz failure: agent jumps from source to HTML, page becomes a list of facts in boxes.
+Five gates. All five must be filled before Step 2. Skipping them is the most common cc-viz failure: agent jumps from source to HTML, page becomes a list of facts in boxes. Gate 5 only applies when the audience is non-expert in the subject; skip it for peer-audience pages.
 
 **Gate 1 — Spine sentence (REQUIRED, fill the blank before continuing):**
 
@@ -92,6 +92,14 @@ If you can't write the spine sentence in 10 seconds, stop. Re-read the source. D
 **Gate 3 — Report vs argument.** Most analytical work is argument-led: artifacts (files, columns, schema, citations) are *evidence FOR a claim*, not the claim itself. A page listing "these files exist, these columns exist, this maps to that" has shown evidence but not told a story. If the page's spine is a matrix, decide: catalog intent (report) or claim about the catalog (argument)? Argument-led pages lead with the claim, support each section with the evidence that defends it, close with the implication.
 
 **Gate 4 — Re-teaching audit.** List in your head (or notes) what the reader *already knows* from the conversation, the project, or their role. Any section that re-teaches that list is decoration. Cut it. A page mapping context-layer to a framework should NOT re-introduce what context-layer is to someone who built it; it should foreground the *mapping*, which is the new thing. Re-teaching is the most common failure for pages that look thorough but feel flat.
+
+**Gate 5 — Translation audit.** When the audience is non-expert in the subject (non-coders reading about a dev tool, executives reading about a system, customers reading about engineering work), translate at three levels, not one:
+
+1. **Vocabulary:** swap technical terms for plain analogues (worktree → sealed room, YAML → recipe, orchestrator → kitchen line).
+2. **Framing:** the *category* of thing you're describing must come from their world, not yours. *"Running a small operation through ChatGPT"* assumes business-operator framing; *"software teams"* assumes professional context. Both fail for a general community audience. Pick framings the reader already lives inside.
+3. **Examples and aspirations:** every example, every "if you've been feeling…" hook, every comparison must point at a situation the reader has actually been in. If the example needs translation, the example is wrong — pick a different one.
+
+The most common Gate-5 failure is translating vocabulary while leaving framing and examples in the original audience's world. The page reads like a tech doc with the words swapped, not a piece written for the reader from scratch.
 
 **Audience, register, baseline** — name the audience concretely (not "technical reader" but "senior backend engineer who knows our stack but hasn't seen this subsystem"), pick one register and hold it. Full taxonomy and baseline discipline in `references/story-framing.md`.
 
@@ -244,7 +252,9 @@ Most diagram types are routed through Mermaid (see Step 4 table). Notes that don
 
 ## Slide Deck Mode
 
-Opt-in only. Invoke via `/generate-slides`, the `--slides` flag, or an explicit "slide deck" request. Never auto-select.
+**When to choose slides.** Slides are right when the artifact will be shown live (presentation, walkthrough, talk, demo, community session) or when the user explicitly asks for a deck. Trigger words that justify auto-selecting slides: *"deck about"*, *"presenting"*, *"showing tomorrow"*, *"walk them through"*, *"talk on"*, *"slides for"*, or the `--slides` / `/generate-slides` invocation. Live-delivery context is a valid signal — don't refuse to pick slides just because the user said "brief" if they also said "showing tomorrow."
+
+**When NOT to choose slides.** A document meant for asynchronous reading (memo, audit, RFC, recap, status report) is a scrolling page, not a deck. If the user says "brief" or "memo" without any live-delivery context, default to scrolling. If genuinely ambiguous between brief and deck, ask one question.
 
 Slides are a different medium, not pages reformatted. Each slide is exactly one viewport tall (100dvh) with no scrolling. Typography 2–3× larger. Compose a narrative arc (impact → context → deep dive → resolution), not mechanically paginated source.
 
@@ -281,14 +291,36 @@ Grade against the rubric inline before delivering. Six weighted dimensions, 100 
 
 | # | Dimension | Pts | What it checks |
 |---|---|---|---|
-| 1 | **Form-Audience Match** | 25 | Right form for the routed intent + framed audience? Re-teaching audit passed? Tabs vs scroll vs side-by-side chosen correctly? |
+| 1 | **Form-Audience Match** | 25 | Right form for the routed intent + framed audience? Re-teaching audit passed? **Translation audit passed (Gate 5) if non-expert audience?** Tabs vs scroll vs side-by-side chosen correctly? |
 | 2 | **Story Discipline** | 20 | Spine sentence written? Argument vs report decided? Each section advances or supports the spine? No decoration sections? |
-| 3 | **Voice & Diction** | 15 | Zero em-dashes in body prose. Sentences ≤22 words. No yap. One italic per heading max. Direct address only when reader is an actor. |
+| 3 | **Voice & Diction** | 15 | Zero em-dashes in body prose. Sentences ≤22 words. No yap. One italic per heading max. Direct address only when reader is an actor. **Pre-ship grep required (see below).** |
 | 4 | **Grounding** | 15 | Claims sourced. Names, dates, paths, numbers verifiable. `scripts/strip-html.py` + grep against source confirms (for system-claim pages). |
 | 5 | **Visual Quality** | 15 | Typography distinctive. Atmosphere present (void test). Both themes intentional. No anti-patterns from `references/anti-patterns.md`. |
 | 6 | **Anti-Pattern Free** | 10 | No Frankenstein form mixing. No forbidden fonts/colors/animations. No glow/pulse. No gradient text. No three-dot code chrome. |
 
 If you score yourself below 75, don't ship. Fix the lowest dimension first. Inflated self-grading is also a failure mode: if you're scoring 78 with re-teaching present or no spine statement, you're grading lenient. The dimensions that matter most for argument-led pages are #1 and #2. A page with beautiful typography (#5) still fails if the spine is missing.
+
+**Pre-ship text checks (Bash, before opening browser).** Run these from the shell. Visual inspection is unreliable across surfaces; text checks are not. If shell is available, every page goes through these before delivery.
+
+```bash
+# 1. Em-dash audit. Should return only structural uses (titles, citations, list labels).
+#    Any em-dash inside a paragraph or sentence is a fail.
+grep -n "—" ~/.agent/diagrams/<file>.html
+
+# 2. Forbidden body fonts.
+grep -niE "font-body:[^;]*\b(Inter|Roboto|Arial|Helvetica|Space Grotesk|Manrope|General Sans|Cabinet Grotesk)\b" ~/.agent/diagrams/<file>.html
+
+# 3. Forbidden accent colors (Tailwind defaults).
+grep -niE "#(8b5cf6|7c3aed|a78bfa|d946ef|06b6d4)" ~/.agent/diagrams/<file>.html
+
+# 4. Mermaid post-processing present (only for pages using Mermaid).
+grep -c "mermaid.run().then" ~/.agent/diagrams/<file>.html
+
+# 5. Atmosphere present (any of: gradient, dot grid, hairline, vignette).
+grep -ciE "radial-gradient|linear-gradient|repeating-linear-gradient|background-image" ~/.agent/diagrams/<file>.html
+```
+
+If any check returns a hit you didn't intend, fix it before opening. Inspecting em-dashes by reading is unreliable; grep is not.
 
 Fast-pass tests:
 - **Squint:** hierarchy still readable when blurred? Sections distinct?

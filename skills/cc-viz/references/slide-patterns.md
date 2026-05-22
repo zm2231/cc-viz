@@ -469,6 +469,8 @@ Each type has a defined HTML structure and CSS layout. The agent can adapt color
 
 Full-viewport hero. Background treatment via gradient, texture, or surf-generated image. 80–120px display type.
 
+**Alignment rule.** Every element on a title slide shares the same alignment — all center, or all left-edge. Never mix (centered eyebrow + logo above a left-aligned hero h1 is the failure mode; reads as broken). If you place a logo or chip above the title with `text-align: center`, the h1 and subtitle below must also be `text-align: center`. If the design calls for a left-aligned hero, then the eyebrow + logo also go on the left edge.
+
 ```html
 <section class="slide slide--title">
   <svg class="slide__decor" ...><!-- optional decorative accent --></svg>
@@ -483,6 +485,15 @@ Full-viewport hero. Background treatment via gradient, texture, or surf-generate
 .slide--title {
   justify-content: center;
   align-items: center;
+  text-align: center;
+}
+/* All children inherit text-align: center. Do NOT override on .slide__display
+   or .slide__subtitle without also overriding on the eyebrow/logo, or the
+   slide reads broken. */
+.slide--title .slide__display,
+.slide--title .slide__subtitle,
+.slide--title .slide__eyebrow,
+.slide--title .slide__decor {
   text-align: center;
 }
 ```
@@ -706,7 +717,9 @@ Full-viewport Mermaid diagram. Max 8–10 nodes (presentation scale — fewer, l
 
 ### CSS Pipeline Slide
 
-For simple linear flows (build steps, deployment stages, data pipelines) where Mermaid would render too small. CSS cards with arrow connectors give full control over sizing and fill the viewport naturally. Each step card expands to fill available space via `flex: 1`.
+For simple linear flows (build steps, deployment stages, data pipelines) where Mermaid would render too small. CSS cards with arrow connectors give full control over sizing.
+
+**Sizing rule (avoid the hollow-card failure mode).** The default below uses `flex: 1` on `.pipeline__step` for equal-width horizontal sizing only — NOT to stretch cards vertically. Use `align-items: flex-start` on `.pipeline` so cards size to their content height, then `margin: auto 0` to center the whole pipeline vertically in the slide. The old pattern (`align-items: stretch` + `flex: 1`) produces tall hollow cards when content is short. If your cards have 1–3 lines of body text, vertical stretch creates 60% empty space inside each card.
 
 ```html
 <section class="slide" style="background-image:radial-gradient(...);">
@@ -731,15 +744,14 @@ For simple linear flows (build steps, deployment stages, data pipelines) where M
 ```css
 .pipeline {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;   /* cards size to content; do NOT stretch vertically */
   gap: 0;
-  flex: 1;
+  margin: auto 0;            /* vertically center the pipeline in available slide space */
   min-height: 0;
-  margin-top: clamp(12px, 2vh, 24px);
 }
 
 .pipeline__step {
-  flex: 1;
+  flex: 1;                   /* equal horizontal width across cards */
   background: var(--surface);
   border: 1px solid var(--border);
   border-top: 3px solid var(--accent);
