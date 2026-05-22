@@ -79,8 +79,8 @@ Five gates. All five must be filled before Step 2. Skipping them is the most com
 > *"[Subject] [does / is / argues] [X]. [Why-it-matters clause]."*
 
 Examples:
-- *"context-layer was built to extract a four-dimension framework but quietly invented two things the framework hasn't named yet: system metacognition and source-level epistemics. The interesting question is whether they generalize."*
-- *"Dennis is gone and the SOW is an orphan, but the systems intelligence is real. Here's what we actually need to know to proposal this correctly."*
+- *"The ingestion service was built to extract a four-dimension framework but quietly invented two things the framework hasn't named yet: system metacognition and source-level epistemics. The interesting question is whether they generalize."*
+- *"The point of contact is gone and the contract is an orphan, but the systems intelligence is real. Here's what we need to know to proposal this correctly."*
 - *"The migration cuts query p99 latency by 40% but introduces a backfill window we have to plan for."*
 
 If you can't write the spine sentence in 10 seconds, stop. Re-read the source. Don't proceed until the sentence is on the page (literally, in your draft notes, before you write any HTML).
@@ -91,7 +91,7 @@ If you can't write the spine sentence in 10 seconds, stop. Re-read the source. D
 
 **Gate 3 — Report vs argument.** Most analytical work is argument-led: artifacts (files, columns, schema, citations) are *evidence FOR a claim*, not the claim itself. A page listing "these files exist, these columns exist, this maps to that" has shown evidence but not told a story. If the page's spine is a matrix, decide: catalog intent (report) or claim about the catalog (argument)? Argument-led pages lead with the claim, support each section with the evidence that defends it, close with the implication.
 
-**Gate 4 — Re-teaching audit.** List in your head (or notes) what the reader *already knows* from the conversation, the project, or their role. Any section that re-teaches that list is decoration. Cut it. A page mapping context-layer to a framework should NOT re-introduce what context-layer is to someone who built it; it should foreground the *mapping*, which is the new thing. Re-teaching is the most common failure for pages that look thorough but feel flat.
+**Gate 4 — Re-teaching audit.** List in your head (or notes) what the reader *already knows* from the conversation, the project, or their role. Any section that re-teaches that list is decoration. Cut it. A page mapping a subsystem to a framework should not re-introduce what the subsystem is to the person who built it; it should foreground the *mapping*, which is the new thing. Re-teaching is the most common failure for pages that look thorough but feel flat.
 
 **Gate 5 — Translation audit.** When the audience is non-expert in the subject (non-coders reading about a dev tool, executives reading about a system, customers reading about engineering work), translate at three levels, not one:
 
@@ -165,7 +165,7 @@ Palette and font detail in `references/libraries.md`. Surface and atmosphere det
 - Data tables, comparisons, audits, feature matrices: `./templates/data-table.html`
 - Slide decks (when `--slides` or `/generate-slides`): `./templates/slide-deck.html` + `./references/slide-patterns.md`
 - Multi-doc sites: `./templates/multi-doc-site/` (render.py + styles.css + markdown scaffolds)
-- Ready-to-paste font `<link>` blocks for all 13 pairings: `./templates/font-loaders.html`
+- Ready-to-paste font `<link>` blocks for all 16 pairings: `./templates/font-loaders.html`
 
 CSS/layout patterns + SVG connectors: `./references/css-patterns.md`. Pages with 4+ sections: `./references/responsive-nav.md` for sticky sidebar TOC + mobile horizontal scroll.
 
@@ -192,7 +192,7 @@ CSS/layout patterns + SVG connectors: `./references/css-patterns.md`. Pages with
 Apply these inline rules; reach for the references for detail.
 
 **Typography.** Pick a font pairing from `./references/libraries.md`. Vary from recent generations. cc-viz outputs should read as documents, not brand sites or landing pages. The font list and bans reflect that.
-- **Forbidden as `--font-body`:** Inter (and any Inter variant: Tight, Display, etc.), Roboto, Arial, Helvetica, system-ui alone, **Space Grotesk, Manrope, General Sans, Cabinet Grotesk** (current-decade AI-startup landing-page tells), italic-by-design display serifs (Instrument Serif, Playfair Italic, Fraunces Italic). Display serifs go in `--font-display`, never `--font-body`.
+- **Forbidden as `--font-body`:** Inter (and any Inter variant: Tight, Display, etc.), Roboto, Arial, Helvetica, system-ui alone, **Space Grotesk, Manrope, General Sans, Cabinet Grotesk** (current-decade AI-startup landing-page tells), italic-by-design display serifs (Instrument Serif, Playfair Display Italic, Fraunces Italic, EB Garamond Italic). Display serifs go in `--font-display`, never `--font-body`.
 - **Strongest cc-viz signal:** reading-serif body pairings (Source Serif 4, Lora, Newsreader; pairings 14/15/16 in libraries.md). Long-form body serifs almost never appear on landing pages; they read as "report" immediately.
 
 **Color.** CSS custom properties for the full palette. Define at minimum `--bg`, `--surface`, `--border`, `--text`, `--text-dim`, 3-5 semantic accents. Both themes (light + dark) intentional.
@@ -221,7 +221,7 @@ Apply these inline rules; reach for the references for detail.
 
 **Output location:** `~/.agent/diagrams/`. Descriptive filename: `modem-architecture.html`, `pipeline-flow.html`, `schema-overview.html`. Directory persists across sessions. For multi-doc sites: a folder, `~/.agent/diagrams/<site-name>/`.
 
-**Always open in the browser after writing.** Required, not optional.
+**Always open in the browser after writing** (when the surface has shell + local browser access — Claude Code CLI, IDE, or another shell-enabled environment). On Claude.ai web or desktop, the agent cannot open files in the user's browser; in that case, hand off the file path and let the user open it. Required when possible, skip when not.
 - macOS: `open ~/.agent/diagrams/filename.html`
 - Linux: `xdg-open ~/.agent/diagrams/filename.html`
 - Multi-doc: open `index.html` from the folder.
@@ -260,7 +260,7 @@ Slides are a different medium, not pages reformatted. Each slide is exactly one 
 
 **Content completeness.** Changing medium doesn't drop content. Every section, decision, data point, and collapsible detail in the source appears in the deck. A 22-slide deck covering everything beats a 13-slide deck that looks polished but misses 40%.
 
-Full slide-type catalog (10 types), composition variety rules, presets, and the "Planning a Deck from a Source Document" process: `references/slide-patterns.md`. Reference template: `./templates/slide-deck.html`.
+Full slide-type catalog (11 types), composition variety rules, presets, and the "Planning a Deck from a Source Document" process: `references/slide-patterns.md`. Reference template: `./templates/slide-deck.html`.
 
 ## File Structure
 
@@ -293,10 +293,10 @@ Grade against the rubric inline before delivering. Six weighted dimensions, 100 
 |---|---|---|---|
 | 1 | **Form-Audience Match** | 25 | Right form for the routed intent + framed audience? Re-teaching audit passed? **Translation audit passed (Gate 5) if non-expert audience?** Tabs vs scroll vs side-by-side chosen correctly? |
 | 2 | **Story Discipline** | 20 | Spine sentence written? Argument vs report decided? Each section advances or supports the spine? No decoration sections? |
-| 3 | **Voice & Diction** | 15 | Zero em-dashes in body prose. Sentences ≤22 words. No yap. One italic per heading max. Direct address only when reader is an actor. **Pre-ship grep required (see below).** |
+| 3 | **Voice & Diction** | 20 | Zero em-dashes in body prose. Sentences ≤22 words. No yap. One italic per heading max. Direct address only when reader is an actor. **Pre-ship grep required (see below).** |
 | 4 | **Grounding** | 15 | Claims sourced. Names, dates, paths, numbers verifiable. `scripts/strip-html.py` + grep against source confirms (for system-claim pages). |
 | 5 | **Visual Quality** | 15 | Typography distinctive. Atmosphere present (void test). Both themes intentional. No anti-patterns from `references/anti-patterns.md`. |
-| 6 | **Anti-Pattern Free** | 10 | No Frankenstein form mixing. No forbidden fonts/colors/animations. No glow/pulse. No gradient text. No three-dot code chrome. |
+| 6 | **Anti-Pattern Free** | 5 | No Frankenstein form mixing. No forbidden fonts/colors/animations. No glow/pulse. No gradient text. No three-dot code chrome. |
 
 If you score yourself below 75, don't ship. Fix the lowest dimension first. Inflated self-grading is also a failure mode: if you're scoring 78 with re-teaching present or no spine statement, you're grading lenient. The dimensions that matter most for argument-led pages are #1 and #2. A page with beautiful typography (#5) still fails if the spine is missing.
 

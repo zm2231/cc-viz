@@ -71,7 +71,7 @@ Use `<blockquote>` with a `<cite>`. Never `<pre>` (it preserves whitespace and f
 
 ```html
 <blockquote class="pull">
-  <p>Session is the minimum CF unit. A single commit at 11:47pm is not the unit — the six-hour session is.</p>
+  <p>The session is the minimum unit of work. A single commit at 11:47pm is not the unit; the six-hour session is.</p>
   <cite>— Invariant #4, ARCHITECTURE.md</cite>
 </blockquote>
 ```

@@ -59,10 +59,10 @@ Read while drafting if your form matches one of these.
   <tbody>
     <tr class="options__pick">
       <td><strong>A.</strong> Recommit to infrastructure <span class="tag">DO THIS</span></td>
-      <td>Lock the stack down as Cadence's delivery rails.</td>
+      <td>Lock the stack down as the team's delivery rails.</td>
       <td>Sprint week · 3 days focused</td>
       <td>95%</td>
-      <td>Are we Cadence's infrastructure team?</td>
+      <td>Are we the infrastructure team?</td>
     </tr>
     <!-- other rows -->
   </tbody>
@@ -150,7 +150,7 @@ Read while drafting if your form matches one of these.
 <section class="hero">
   <span class="kicker">A position memo</span>
   <h1>The substrate already speaks the methodology, and where it doesn't.</h1>
-  <p class="lede">Five CF dimensions. Three layers. The page reads the substrate against the methodology, names which artifacts <strong>instantiate</strong> which dimension, and flags two places the implementation has quietly invented something the framework hasn't named yet.</p>
+  <p class="lede">Five framework dimensions. Three layers. The page reads the substrate against the methodology, names which artifacts <strong>instantiate</strong> which dimension, and flags two places the implementation has quietly invented something the framework hasn't named yet.</p>
 </section>
 
 <!-- Each section is a claim, with evidence under it -->
@@ -229,7 +229,7 @@ Read while drafting if your form matches one of these.
 ```html
 <blockquote class="pull">
   <p>None is launched in the sense that the team has stopped working on it and started selling it.</p>
-  <cite>— Cadence team CF, Pattern note</cite>
+  <cite>— Internal team analysis, pattern note</cite>
 </blockquote>
 
 <style>
@@ -287,7 +287,7 @@ Read while drafting if your form matches one of these.
 | Bricolage Grotesque | DM Sans | Fragment Mono | Bold, characterful |
 | Sora | Sora (450) | JetBrains Mono | Modern, precise |
 
-**Body weight 450 is critical for dark-mode pages** (per `voice-and-diction.md` dark-mode triad). Use 500 if the font lacks a 450 cut.
+**Body weight 450 is critical for dark-mode pages** (per `css-patterns.md` dark-mode text-compensation triad). Use 500 if the font lacks a 450 cut.
 
 ---
 

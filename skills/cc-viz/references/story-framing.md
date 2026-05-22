@@ -4,7 +4,7 @@ Elaboration of SKILL.md Step 1. The inline rules (frame story before drafting, g
 
 Load this when the routed mode is Internal brief, External deliverable, Strategic / decision memo, or anytime the page is making claims about a real system, project, person, market, or decision and the stakes warrant grounding past README-depth.
 
-> **Examples below reference `context-layer`, a real internal system, illustratively. Substitute your own subject when applying the methodology — the shape of the framing matters, not the names.**
+> **Example spine sentences below are illustrative — built around a hypothetical "ingestion service" subsystem. Substitute your own subject when applying the methodology. The shape of the framing matters, not the names.**
 
 ## The grounding pass
 
@@ -31,7 +31,7 @@ These are not the same kind of page and they need different structures.
 
 A **report** presents facts. *"Here are the eight source connectors. Here are the four layers. Here are the columns and thresholds."* The reader walks away knowing what exists. Spine is the inventory; structure is the matrix or the schema.
 
-An **argument** makes a claim. *"context-layer was built to extract a four-dimension framework but quietly invented two things the framework hasn't named yet: system metacognition and source-level epistemics. The interesting question is whether they generalize."* The reader walks away with a position they can agree with, push back on, or build on. Spine is the claim; structure is claim → evidence → implication.
+An **argument** makes a claim. *"The ingestion service was built to extract a four-dimension framework but quietly invented two things the framework hasn't named yet: system metacognition and source-level epistemics. The interesting question is whether they generalize."* The reader walks away with a position they can agree with, push back on, or build on. Spine is the claim; structure is claim → evidence → implication.
 
 Most analytical, mapping, comparison, synthesis, decision-memo, or strategic work is argument-led. The artifacts (files, columns, thresholds, schema references, commit hashes, framework citations) are *evidence FOR the argument*, not the argument itself. A page that lists "these files exist, these columns exist, this maps to that" has shown evidence; it has not told a story. The page must be summarizable in one sentence as: *"X is the case, and here's why it matters."*
 
@@ -39,7 +39,7 @@ If you find yourself building a feature inventory or a matrix as the page's spin
 
 ## Story arc
 
-From start to end, what does the reader walk away knowing? State it in one sentence. *"context-layer ingests ten source types, classifies every observation against the existing entity graph, and lets confirmed patterns surface as Logseq pages. Backed by one Postgres and one inference gateway."* If you can't write that sentence, the diagram has no spine.
+From start to end, what does the reader walk away knowing? State it in one sentence. *"The ingestion service classifies every incoming event against the existing entity graph and surfaces confirmed patterns to the editor surface. Backed by one Postgres and one inference gateway."* If you can't write that sentence, the diagram has no spine.
 
 The arc is the page's compression. Each section either advances the arc or supports it with evidence. Sections that do neither are decoration and should be cut.
 
@@ -70,7 +70,7 @@ Inventory what must appear (file paths, decision rationale, error rates, schema 
 
 Separate two lists for the audience: *what they already know* and *what they need to know from this page*. The page exists only to close the gap between them. Re-teaching the first list reads as condescending; assuming the second is already known reads as opaque. Neither is digestible.
 
-For technical subjects: name the reader's expertise level concretely (junior in this stack, senior in this stack, methodology specialist, executive who has seen demos). Then write to the gap, not from scratch and not from the assumption that everything is already understood. A page mapping context-layer to a methodology framework should NOT re-introduce what context-layer is to someone who built it; it should foreground the *mapping*, which is the new thing.
+For technical subjects: name the reader's expertise level concretely (junior in this stack, senior in this stack, methodology specialist, executive who has seen demos). Then write to the gap, not from scratch and not from the assumption that everything is already understood. A page mapping a subsystem to a methodology framework should not re-introduce what the subsystem is to someone who built it; it should foreground the *mapping*, which is the new thing.
 
 Ask, before writing each section: *"Does the reader already know this? If yes, why is it on the page?"*
 

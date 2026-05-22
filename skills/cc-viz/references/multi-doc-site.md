@@ -157,4 +157,4 @@ If one page needs a unique visual treatment (a ladder diagram, a flow diagram, a
 
 ## Origin
 
-Pattern extracted from a real internal site (`cf-architecture-2`, May 2026) — a three-layer architecture spec covering brand, sales, technical architecture, plus engagement-paths, products, and next-steps. Replaced a single ~2000-line working doc with seven shorter, structurally-distinct documents under one stylesheet. The split was the win: each page got its own register and visual treatment while staying coherent through shared CSS.
+Pattern extracted from a real internal site: a seven-page architecture spec covering brand, sales, technical architecture, engagement paths, products, and next-steps. Replaced a single ~2000-line working doc with seven shorter, structurally-distinct documents under one stylesheet. The split was the win. Each page got its own register and visual treatment while staying coherent through shared CSS.

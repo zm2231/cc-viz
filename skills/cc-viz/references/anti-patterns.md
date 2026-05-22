@@ -52,7 +52,7 @@ Read this before generating. Re-read the relevant section while drafting if the 
 **Script check:** `grep -i 'Inter[\s,]' <css>` should not match `--font-body` declarations.
 
 ### 2.2 Italic-by-design display serif as `--font-body`
-**What happens:** Subagent uses Instrument Serif, Playfair Display Italic, or EB Garamond Italic for body paragraphs.
+**What happens:** Subagent uses Instrument Serif, Playfair Display Italic, Fraunces Italic, or EB Garamond Italic for body paragraphs.
 **Why bad:** These are exquisite for headlines. Unreadable as paragraph body — italic at body size loses x-height clarity.
 **Rule:** Italic-by-design display serifs may appear as `--font-display` only. Pair with a sans body and a mono.
 **Fix:** Tri-font pairing. Display serif for h1/h2/pull-quote; sans for body; mono for labels.
@@ -235,7 +235,7 @@ These break the parser silently and produce "Syntax error in text mermaid versio
 ## 8. Voice modulation
 
 ### 8.1 Direct address over-applied to framing prose
-**What happens:** *"You read this to get a working mental model in one pass."* / *"You'll find one row per classified event in the cf_observation table."*
+**What happens:** *"You read this to get a working mental model in one pass."* / *"You'll find one row per classified event in the observations table."*
 **Why bad:** The reader IS reading; telling them so is awkward. Schema descriptions don't have an actor.
 **Rule:** Use *you/your* only when the reader is an actor in the sentence — system behavior they interact with, touchpoints, or workflow consequences. NOT in framing prose about the page itself or in neutral reference captions.
 **Fix:** *"This page walks the pipeline top to bottom"* > *"You read this page to walk the pipeline top to bottom."*
@@ -247,7 +247,7 @@ These break the parser silently and produce "Syntax error in text mermaid versio
 **Fix:** Read the page aloud. If a section sounds like a different person wrote it, the register slipped.
 
 ### 8.3 Audience leakage
-**What happens:** Subagent is told audience = Cadence team (non-engineering) and subject = context-layer (technical codebase). Subagent picks a generic non-technical illustration (cross-examination) instead of the named subject.
+**What happens:** Subagent is told audience = a non-engineering team and subject = a technical codebase. Subagent picks a generic non-technical illustration instead of the named subject.
 **Why bad:** Audience-derived register pulled the agent away from the named subject. Subject lost.
 **Rule:** The subject does not change with the audience. Only the register changes. If subject = X, the page is about X regardless of who's reading.
 **Fix:** State subject and audience as separate constraints. Don't let one override the other.
@@ -257,7 +257,7 @@ These break the parser silently and produce "Syntax error in text mermaid versio
 ## 9. Content discipline
 
 ### 9.1 Re-teaching the audience what they already know
-**What happens:** A page mapping context-layer to CF spends a section explaining what context-layer is to the person who built it.
+**What happens:** A page mapping a subsystem to a methodology framework spends a section explaining what the subsystem is to the person who built it.
 **Why bad:** Condescending to the audience and pads the page. They came for the new claim, not a refresher.
 **Rule:** Inventory two lists at Frame: *what the reader already knows* and *what they need to know from this page*. Foreground the second; cut the first.
 **Fix:** Walk every section and ask: *"Does the reader already know this? If yes, why is it here?"*
@@ -273,7 +273,7 @@ These break the parser silently and produce "Syntax error in text mermaid versio
 ## 10. Grounding
 
 ### 10.1 Fabricated identifiers
-**What happens:** Page claims `cf_temporal_window` and `cf_temporal_link` exist as tables. They don't.
+**What happens:** Page claims `temporal_window` and `temporal_link` exist as tables. They don't.
 **Why bad:** Claims about real systems must be true. A fabricated identifier in a technical doc is the worst kind of error — confident-sounding and wrong.
 **Rule:** Every claimed file path, table name, column name, or schema identifier must exist in the referenced repo. Verify before claiming.
 **Fix:** `grep` or read the actual schema before naming it on the page. If unsure, omit.

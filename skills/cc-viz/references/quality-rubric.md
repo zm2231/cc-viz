@@ -57,7 +57,7 @@ Script gates the mechanical failures; judgment grades register match.
 - Zero adjective stacking (any string of three adjectives in a row).
 - All body sentences ≤22 words. **Exception:** a single longer sentence per page is permitted for technical-precision content (API contracts, invariants, edge-case conditions).
 - All body paragraphs ≤3 sentences.
-- `--font-body` is not Inter (any variant: Inter, Inter Tight, Inter Display), Roboto, Arial, Helvetica, system-ui alone, or an italic-by-design display serif (Instrument Serif, Playfair Display Italic, EB Garamond Italic).
+- `--font-body` is not Inter (any variant: Inter, Inter Tight, Inter Display), Roboto, Arial, Helvetica, system-ui alone, Space Grotesk, Manrope, General Sans, Cabinet Grotesk, or an italic-by-design display serif (Instrument Serif, Playfair Display Italic, Fraunces Italic, EB Garamond Italic).
 
 **Judgment PASS criteria:**
 - Register matches the routed audience (we-pronoun for team-collaborative; you-pronoun for system-behavior or consequence prose; declarative third-person for framing/reference; past-tense narrative for postmortem).
@@ -83,8 +83,8 @@ Claims about real systems, projects, people, markets, or decisions are supported
 - Time/effort estimates are grounded in observed velocity (git log for codebases, recent activity for projects), not theoretical complexity.
 
 **FAIL:**
-- A file, table, or column referenced on the page does not exist in the repo (the test-a14 `cf_temporal_window` failure mode).
-- Claims about external state are training-stale (the test-a8 "Anthropic crushes the wedge" failure mode — Anthropic had already shipped 4 months prior).
+- A file, table, or column referenced on the page does not exist in the repo (the fabricated-identifier failure mode).
+- Claims about external state are training-stale (the "vendor will eventually ship" failure mode where the vendor already shipped months ago).
 - Time estimates are 2-3× inflated relative to observed sprint velocity.
 
 ---

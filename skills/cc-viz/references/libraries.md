@@ -453,11 +453,11 @@ Always load with `display=swap` for fast rendering. Pick a distinctive pairing �
 - **Space Grotesk** — current-decade AI-startup landing-page tell
 - **Manrope** — same niche, even more overused on marketing pages
 - **General Sans, Cabinet Grotesk** — Fontshare landing-page defaults; instantly read as "AI brand site"
-- **Italic-by-design display serifs** (Instrument Serif, Playfair Italic, Fraunces Italic) — these go in `--font-display`, never `--font-body`
+- **Italic-by-design display serifs** (Instrument Serif, Playfair Display Italic, Fraunces Italic, EB Garamond Italic): these go in `--font-display`, never `--font-body`
 
 These bans aren't because the fonts are bad — they're because they're the *current decade's defaults* for AI-generated marketing pages. cc-viz outputs should read as **documents** (reports, memos, technical writing), not as **brand sites** or **landing pages**.
 
-**Ready-to-paste `<link>` blocks for all 13 pairings live in `templates/font-loaders.html`.** Pick a pairing from the table below, then copy the matching block from that file into your `<head>` — saves URL-construction time and weight-spec typos. Satoshi (Fontshare) and the preconnect block are also there.
+**Ready-to-paste `<link>` blocks for all 16 pairings live in `templates/font-loaders.html`.** Pick a pairing from the table below, then copy the matching block from that file into your `<head>`. This saves URL-construction time and weight-spec typos. Satoshi (Fontshare) and the preconnect block are also there.
 
 Single-pairing example (Outfit + Space Mono, pairing 6):
 

@@ -6,7 +6,7 @@ The words on a cc-viz page carry as much weight as the layout. Wrong voice is un
 
 ## Audience first, register second
 
-The four story questions in SKILL.md Step 1 (story arc / audience / register / information detail) are not optional. The audience determines vocabulary, density, and pronoun choice — get the audience wrong and every downstream choice compounds the error.
+The five gates in SKILL.md Step 1 (spine, ground claims, report-vs-argument, re-teaching audit, translation audit) are not optional. The audience determines vocabulary, density, and pronoun choice. Get the audience wrong and every downstream choice compounds the error.
 
 | Audience | Register | Pronoun | Vocabulary |
 |---|---|---|---|
@@ -17,7 +17,7 @@ The four story questions in SKILL.md Step 1 (story arc / audience / register / i
 | Executive / leadership | Executive-impact, strategic | depends; often third-person declarative | Numbers, tradeoffs, no implementation detail |
 | Postmortem / historical | Past-tense narrative | varies | Specific to the incident |
 
-If the audience isn't named explicitly in the request, default to **the team that owns the work** — the people who would actually read this if it were finished. The agent's most common audience-leakage failure is defaulting to "abstract stakeholder" when the real audience is the small team.
+If the audience isn't named explicitly in the request, default to **the team that owns the work**: the people who would read this if it were finished. The agent's most common audience-leakage failure is defaulting to "abstract stakeholder" when the real audience is the small team.
 
 ---
 
@@ -25,11 +25,11 @@ If the audience isn't named explicitly in the request, default to **the team tha
 
 Before writing a single section, state the page's spine in one sentence:
 
-> *"context-layer ingests ten source types, classifies every observation against the existing entity graph, and lets confirmed patterns surface as Logseq pages, backed by one Postgres and one inference gateway."*
+> *"The ingestion service classifies every incoming event against the existing entity graph, surfaces confirmed patterns to the editor surface, and runs on one Postgres plus one inference gateway."*
 
 If you can't write that sentence, the page has no spine. Stop and write it before continuing.
 
-For analytical, mapping, comparison, synthesis, or decision-oriented work: the spine is a load-bearing **claim**, not a feature inventory. See `quality-rubric.md` Dimension 2 (Story Discipline) and `anti-patterns.md` §7.3 for the report-vs-argument distinction.
+For analytical, mapping, comparison, synthesis, or decision-oriented work: the spine is a load-bearing **claim**, not a feature inventory. See `quality-rubric.md` Dimension 2 (Story Discipline) and `anti-patterns.md` for the report-vs-argument distinction.
 
 ---
 
@@ -44,7 +44,7 @@ The page exists only to close the gap between them. Re-teaching list 1 is condes
 
 For technical subjects: name the reader's expertise level concretely (junior in this stack, senior in this stack, methodology specialist, executive who has seen demos). Then write to the gap, not from scratch.
 
-A page mapping context-layer to a methodology framework should NOT re-introduce what context-layer is to the person who built it. It should foreground the *mapping*, which is the new thing.
+A page mapping a subsystem to a framework should not re-introduce what the subsystem is to the person who built it. It should foreground the *mapping*, which is the new thing.
 
 Ask, before writing each section: *"Does the reader already know this? If yes, why is it on the page?"*
 
@@ -65,9 +65,9 @@ These words and phrases trigger the "AI authored this" reflex in technical reade
 
 **Adjective stacking.** No string of three adjectives in a row. *"A robust, scalable, modern architecture..."* is a tell. Pick one adjective that earns its place.
 
-### Em dashes — banned in body prose
+### Em dashes: banned in body prose
 
-The em dash (`—`) interruption pattern is the single strongest AI tell in 2026. *"L1, added in Phase 5, is an agent that calls 11 substrate tools — and that loop is how the conditional ridge becomes legible."* — appears in nearly every LLM-authored paragraph and reads as machine cadence.
+The em dash (`—`) interruption pattern is the strongest AI tell in 2026. The interruption pattern appears in nearly every LLM-authored paragraph and reads as machine cadence.
 
 **Rule:** Zero em dashes in body prose. Allowed only in citation lines (`— Author, Source`).
 
@@ -86,14 +86,14 @@ The read-aloud test: if you can't say the sentence in one breath, it's too long.
 
 Use *you* and *your* only when the reader is an actor in the sentence:
 - System behavior they experience: *"when you go quiet for 30 minutes"*
-- Touchpoints: *"your Chrome history flows in"*
+- Touchpoints: *"your data flows in through the connector"*
 - Workflow consequences: *"if your code breaks one of these, your code is wrong"*
 
 Do NOT use direct address in:
-- Meta-framing about the page itself: *"You read this to get a mental model"* ← awkward, the reader IS reading
-- Neutral reference captions: *"You'll find one row per classified event in cf_observation"* ← schemas don't have actors
+- Meta-framing about the page itself: *"You read this to get a mental model"*. The reader is already reading.
+- Neutral reference captions: *"You'll find one row per classified event in the observations table"*. Schemas don't have actors.
 
-The Cadence-register example: *"This page walks the pipeline top to bottom"* > *"You read this page to walk the pipeline top to bottom."*
+Prefer: *"This page walks the pipeline top to bottom"* over *"You read this page to walk the pipeline top to bottom."*
 
 **Exceptions:** postmortems and historical timelines may use past-tense narrative without direct address.
 
@@ -116,15 +116,15 @@ Hard heuristics:
 ## Headings: narrate vs label
 
 **Story sections** narrate a claim or a beat:
-- *"Three layers, one Dream cycle"* > *"Architecture Overview"*
+- *"Three layers, one full cycle"* > *"Architecture Overview"*
 - *"Where it has been, and where it is now"* > *"Roadmap"*
 - *"Sources flow into one substrate, then leave as pages"* > *"Data Flow"*
 - *"Five paths. One we'd pick. Three we wouldn't"* > *"Options"*
 
 **Reference sections** (file maps, schema reference, decision logs, invariant lists, dependency tables) MAY use literal headings when scanability matters more than voice:
-- *"Schema reference"* — fine, this is a Cmd-F target
-- *"File map"* — fine
-- *"Invariants"* — fine
+- *"Schema reference"*: fine, this is a Cmd-F target
+- *"File map"*: fine
+- *"Invariants"*: fine
 
 The test: *would a reader Cmd-F to find this section?* If yes, the heading should be the word they'd search for.
 
@@ -134,12 +134,12 @@ If a story heading reads like a textbook table of contents, rewrite it.
 
 ## Italic emphasis is a budget
 
-One italic-color emphasis point per heading, per pull quote, per card. Not two italic-color phrases competing in the same element.
+One italic-color emphasis point per heading, per pull quote, per card. Not two italic-color phrases competing in the same element. At display scale (≥40px) on serif headlines, prefer zero italic emphasis.
 
 **Wrong:**
 > What we should *do*, and *do* first.
 
-(Two italic-color "do"s plus the lede underneath also has an italic-color phrase. Three accent points in the same hero element.)
+(Two italic *do*s plus the lede underneath also has an italic phrase. Three accent points in the same hero element.)
 
 **Right:**
 > What we should do, and do first.
@@ -167,6 +167,6 @@ A page where the hero is editorial-warm and the closing is engineering-formal fe
 
 When a request gives both a subject and an audience, the audience determines the *register*, not the *subject*. If subject = X, the page is about X regardless of who's reading.
 
-**Failure pattern observed:** subject = context-layer (technical codebase), audience = Cadence team (non-engineering). Agent picks generic non-technical example (cross-examination) to fit the audience. Subject lost.
+**Failure pattern observed:** subject = a technical codebase, audience = a non-engineering team. Agent picks a generic non-technical example to fit the audience. Subject lost.
 
 **Fix:** state subject and audience as separate constraints in the Frame step. Don't let one override the other.
