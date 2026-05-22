@@ -1,0 +1,245 @@
+<!--
+  cc-viz — Font Loader Snippets
+
+  HOW TO USE:
+  1. Pick a pairing from references/libraries.md (the 16-row table).
+  2. Copy the PRECONNECT block once into your <head>.
+  3. Copy ONE pairing block (or two — body pairing + the Satoshi add-on if your
+     pairing specifies Satoshi as body) into your <head>.
+  4. Apply the suggested :root variables (shown as a CSS comment in each block).
+
+  Notes:
+  - All pairings here ship from Google Fonts EXCEPT Satoshi (Fontshare).
+  - "display=swap" means the page renders with fallback fonts immediately,
+    then swaps in the real font on load. No FOIT.
+  - Display serifs (Instrument Serif, Playfair, Fraunces, Crimson Pro) load
+    both regular and italic via ital@0;1.
+  - Body fonts default to weights 400/500/600/700. Monos default to 400/500.
+  - Numbered to match the order in references/libraries.md.
+  - Pairings 14/15/16 (Source Serif 4 / Lora / Newsreader) are reading
+    serifs — the strongest "this is a document, not a landing page" signal.
+-->
+
+
+<!-- =============================================================
+     PRECONNECT — include once, regardless of pairing.
+     ============================================================= -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<!-- =============================================================
+     PAIRING 1/16 — DM Sans + Fira Code
+     Feel: Technical, precise.  Use for: Blueprint, technical docs.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'Fira Code', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 2/16 — Instrument Serif + JetBrains Mono
+     Feel: Editorial, refined.  Use for: Plan reviews, decision logs.
+     NOTE: Instrument Serif is display-only. Pair with a sans for body.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  /* Add a sans for --font-body — e.g., DM Sans (pairing 1) */
+} -->
+
+
+<!-- =============================================================
+     PAIRING 3/16 — IBM Plex Sans + IBM Plex Mono
+     Feel: Reliable, readable.  Use for: Architecture diagrams.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 4/16 — Bricolage Grotesque + Fragment Mono
+     Feel: Bold, characterful.  Use for: Data tables, dashboards.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Fragment+Mono&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-mono: 'Fragment Mono', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 5/16 — Plus Jakarta Sans + Azeret Mono
+     Feel: Rounded, approachable.  Use for: Status reports, audits.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'Azeret Mono', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 6/16 — Outfit + Space Mono
+     Feel: Clean geometric, modern.  Use for: Flowcharts, pipelines.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Outfit', system-ui, sans-serif;
+  --font-mono: 'Space Mono', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 7/16 — Sora + IBM Plex Mono
+     Feel: Technical, precise.  Use for: ER diagrams, schemas.
+     NOTE: Sora has low x-height — use 15–16px minimum body size.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Sora', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 8/16 — Crimson Pro + Noto Sans Mono
+     Feel: Scholarly, serious.  Use for: RFC reviews, specs.
+     NOTE: Good at 16px+. Feels cramped at 13px.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Crimson Pro', Georgia, serif;
+  --font-mono: 'Noto Sans Mono', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 9/16 — Fraunces + Source Code Pro
+     Feel: Warm, distinctive.  Use for: Project recaps.
+     NOTE: Fraunces is display-only (≥28px). Pair with a sans for body.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-mono: 'Source Code Pro', 'SF Mono', Consolas, monospace;
+  /* Add a sans for --font-body */
+} -->
+
+
+<!-- =============================================================
+     PAIRING 10/16 — Geist + Geist Mono
+     Feel: Vercel-inspired, sharp.  Use for: Modern API docs, tools.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 11/16 — Red Hat Display + Red Hat Mono
+     Feel: Cohesive family.  Use for: System overviews, infra.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Red Hat Display', system-ui, sans-serif;
+  --font-mono: 'Red Hat Mono', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 12/16 — Libre Franklin + Inconsolata
+     Feel: Classic, reliable.  Use for: Data-dense, comparison tables.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Libre Franklin', system-ui, sans-serif;
+  --font-mono: 'Inconsolata', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 13/16 — Playfair Display + Roboto Mono
+     Feel: Elegant contrast.  Use for: Executive summaries, titles only.
+     NOTE: Playfair is display-only. Pair with a sans for body.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono: 'Roboto Mono', 'SF Mono', Consolas, monospace;
+  /* Add a sans for --font-body */
+} -->
+
+
+<!-- =============================================================
+     PAIRING 14/16 — Source Serif 4 + JetBrains Mono       ★ READING SERIF
+     Feel: True reading serif, document-grade.
+     Use for: Long-form specs, RFCs, internal reports.
+     NOTE: Strongest "this is a document, not a landing page" signal.
+     Pair body serif with a clean sans (DM Sans, IBM Plex Sans) for headers.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Source Serif 4', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  /* Optional sans for headers — load separately */
+} -->
+
+
+<!-- =============================================================
+     PAIRING 15/16 — Lora + IBM Plex Mono                  ★ READING SERIF
+     Feel: Editorial body serif, calm.
+     Use for: Decision memos, narrative briefs.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Lora', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     PAIRING 16/16 — Newsreader + Fira Code                ★ READING SERIF
+     Feel: News-optimized serif, on-screen reading.
+     Use for: Project recaps, multi-page analysis.
+     ============================================================= -->
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Newsreader', Georgia, serif;
+  --font-mono: 'Fira Code', 'SF Mono', Consolas, monospace;
+} -->
+
+
+<!-- =============================================================
+     ADD-ON — Satoshi (Fontshare, not Google Fonts)
+     Use as --font-body when a pairing or scaffold specifies Satoshi.
+     Requires the extra Fontshare preconnect line below.
+     ============================================================= -->
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" rel="stylesheet">
+<!-- :root {
+  --font-body: 'Satoshi', system-ui, sans-serif;
+} -->
+
+
+<!--
+  PAIRINGS REQUIRING A SECOND BODY-FONT BLOCK:
+    Pairings 2, 9, 13 are display + mono only.
+    Add a sans body block (typically pairing 1, 3, or 5) alongside.
+
+  EXAMPLE — pairing 2 (Instrument Serif display) + pairing 1 (DM Sans body):
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  Combine families with `&family=` in the URL — one request, many fonts.
+-->

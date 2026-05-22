@@ -4,7 +4,7 @@ CSS patterns, JS engine, slide type layouts, transitions, navigation chrome, and
 
 **When to use slides:** Only when the user explicitly requests them — `/generate-slides`, `--slides` flag on an existing prompt, or natural language like "as a slide deck." Never auto-select slide format.
 
-**Before generating**, also read `./css-patterns.md` for shared patterns (Mermaid zoom controls, overflow protection, depth tiers, status badges) and `./libraries.md` for Mermaid theming, Chart.js, and font pairings. Those patterns apply to slides too — this file adds slide-specific patterns on top.
+**Before generating**, also read `./css-patterns.md` for shared patterns (Mermaid zoom controls, overflow protection, depth tiers, status badges) and `./libraries.md` for Mermaid theming, Chart.js, and font pairings. Those patterns apply to slides too. This file adds slide-specific patterns on top.
 
 ## Planning a Deck from a Source Document
 
@@ -13,13 +13,13 @@ When converting a plan, spec, review, or any structured document into slides, fo
 **Step 1 — Inventory the source.** Read the entire source document and enumerate every section, subsection, card, table row, decision, specification, collapsible detail, and footnote. Count them. A plan with 7 sections, 6 decision cards, a 7-row file table, 4 presets, 6 technique guides, and an engine spec with 3 sub-specs and 2 collapsibles is ~25 distinct content items that all need slide real estate.
 
 **Step 2 — Map source to slides.** Assign each inventory item to one or more slides. Every item must appear somewhere. Rules:
-- If a section has 6 decisions, all 6 need slides — not the 2 that fit on one split slide.
+- If a section has 6 decisions, all 6 need slides, not the 2 that fit on one split slide.
 - If a table has 7 rows, all 7 rows show up.
-- Collapsible/expandable details in the source are not optional in the deck — they become their own slides.
+- Collapsible/expandable details in the source are not optional in the deck; they become their own slides.
 - Subsections with multiple cards (e.g., "6 Visual Technique cards") may need 2–3 slides to cover at readable density.
 - Each plan section typically needs a divider slide + 1–3 content slides depending on density.
 
-**Step 3 — Choose layouts.** For each planned slide, pick a slide type and spatial composition. Vary across the sequence (see Compositional Variety below). This is where narrative pacing happens — alternate dense slides with sparse ones.
+**Step 3 — Choose layouts.** For each planned slide, pick a slide type and spatial composition. Vary across the sequence (see Compositional Variety below). This is where narrative pacing happens; alternate dense slides with sparse ones.
 
 **Step 4 — Plan visuals.** For each planned slide, consider what SVG decorations, CSS gradients, or inline Mermaid diagrams would reinforce the content. Target the **title slide** and **full-bleed slides** for the richest visual treatment.
 
@@ -457,7 +457,7 @@ function autoFit() {
 ```
 
 Three cases, one function:
-- **Mermaid:** SVGs render with fixed dimensions inside flex containers — force them to fill available width.
+- **Mermaid:** SVGs render with fixed dimensions inside flex containers; force them to fill available width.
 - **KPI values:** Long text strings at hero scale overflow card boundaries — `transform: scale()` shrinks visually without reflow.
 - **Blockquotes:** Quotes longer than ~100 characters get proportionally smaller font. The 0.5 floor prevents unreadably small text; if it needs more than 50% shrink, it should have been a content slide.
 
@@ -468,6 +468,10 @@ Each type has a defined HTML structure and CSS layout. The agent can adapt color
 ### Title Slide
 
 Full-viewport hero. Background treatment via gradient, texture, or surf-generated image. 80–120px display type.
+
+**Alignment rule.** Every element on a title slide shares the same alignment: all center, or all left-edge. Never mix (centered eyebrow + logo above a left-aligned hero h1 is the failure mode; reads as broken). If you place a logo or chip above the title with `text-align: center`, the h1 and subtitle below must also be `text-align: center`. If the design calls for a left-aligned hero, then the eyebrow + logo also go on the left edge.
+
+**Italic emphasis rule.** Title slides almost always look better with no italic emphasis on individual words in the hero h1. Italic-on-serif at 80–120px reads decorative, fashion-magazine. The visual weight of italic letterforms at hero scale dominates the plain words around them, and the slide reads as styled rather than direct. *"Stop chatting with AI. Start handing it the job."* is stronger than *"Stop chatting **with** AI. Start **handing it** the job."* Save italic for divider slides, pull quotes, or body callouts where the contrast is quieter. The "one italic per heading" budget from SKILL.md is a ceiling, not a target. For title slides specifically, the target is zero.
 
 ```html
 <section class="slide slide--title">
@@ -483,6 +487,15 @@ Full-viewport hero. Background treatment via gradient, texture, or surf-generate
 .slide--title {
   justify-content: center;
   align-items: center;
+  text-align: center;
+}
+/* All children inherit text-align: center. Do NOT override on .slide__display
+   or .slide__subtitle without also overriding on the eyebrow/logo, or the
+   slide reads broken. */
+.slide--title .slide__display,
+.slide--title .slide__subtitle,
+.slide--title .slide__eyebrow,
+.slide--title .slide__decor {
   text-align: center;
 }
 ```
@@ -522,7 +535,7 @@ Oversized decorative number (200px+, ultra-light weight) with heading. Breathing
 
 ### Content Slide
 
-Heading + bullets or paragraphs. Asymmetric layout — content offset to one side. Max 5–6 bullets (2 lines each).
+Heading + bullets or paragraphs. Asymmetric layout with content offset to one side. Max 5–6 bullets (2 lines each).
 
 ```html
 <section class="slide slide--content">
@@ -578,7 +591,7 @@ Heading + bullets or paragraphs. Asymmetric layout — content offset to one sid
 
 ### Split Slide
 
-Asymmetric two-panel (60/40 or 70/30). Before/after, text+diagram, text+image. Each panel has its own background tier. Zero padding on the slide itself — panels fill edge to edge.
+Asymmetric two-panel (60/40 or 70/30). Before/after, text+diagram, text+image. Each panel has its own background tier. Zero padding on the slide itself; panels fill edge to edge.
 
 ```html
 <section class="slide slide--split">
@@ -623,11 +636,11 @@ Asymmetric two-panel (60/40 or 70/30). Before/after, text+diagram, text+image. E
 
 ### Diagram Slide
 
-Full-viewport Mermaid diagram. Max 8–10 nodes (presentation scale — fewer, larger than page diagrams). Node labels at 18px+, edges at 2px+. Zoom controls from `css-patterns.md` apply here.
+Full-viewport Mermaid diagram. Max 8–10 nodes (presentation scale: fewer, larger than page diagrams). Node labels at 18px+, edges at 2px+. Zoom controls from `css-patterns.md` apply here.
 
-**When to use Mermaid vs CSS in slides.** Mermaid renders SVGs at a fixed size the agent can't control — node dimensions are set by the library, not by CSS. This creates a recurring problem: small diagrams (fewer than ~7 nodes, no branching) render as tiny elements floating in a huge viewport with acres of dead space. The rule:
+**When to use Mermaid vs CSS in slides.** Mermaid renders SVGs at a fixed size the agent can't control; node dimensions are set by the library, not by CSS. This creates a recurring problem: small diagrams (fewer than ~7 nodes, no branching) render as tiny elements floating in a huge viewport with acres of dead space. The rule:
 
-- **Use Mermaid** for complex graphs: 8+ nodes, branching paths, cycles, multiple edge crossings — anything where automatic edge routing saves real effort.
+- **Use Mermaid** for complex graphs: 8+ nodes, branching paths, cycles, multiple edge crossings; anything where automatic edge routing saves real effort.
 - **Use CSS Pipeline** (below) for simple linear flows: A → B → C → D sequences, build steps, deployment stages. CSS cards give full control over sizing, typography, and fill the viewport naturally.
 - **Never leave a small Mermaid diagram alone on a slide.** If the diagram is small, either switch to CSS, or pair it with supporting content (description cards, bullet annotations, a summary panel) in a split layout. A slide with a tiny diagram and empty space is a failed slide.
 
@@ -706,7 +719,9 @@ Full-viewport Mermaid diagram. Max 8–10 nodes (presentation scale — fewer, l
 
 ### CSS Pipeline Slide
 
-For simple linear flows (build steps, deployment stages, data pipelines) where Mermaid would render too small. CSS cards with arrow connectors give full control over sizing and fill the viewport naturally. Each step card expands to fill available space via `flex: 1`.
+For simple linear flows (build steps, deployment stages, data pipelines) where Mermaid would render too small. CSS cards with arrow connectors give full control over sizing.
+
+**Sizing rule (avoid the hollow-card failure mode).** The default below uses `flex: 1` on `.pipeline__step` for equal-width horizontal sizing only — NOT to stretch cards vertically. Use `align-items: flex-start` on `.pipeline` so cards size to their content height, then `margin: auto 0` to center the whole pipeline vertically in the slide. The old pattern (`align-items: stretch` + `flex: 1`) produces tall hollow cards when content is short. If your cards have 1–3 lines of body text, vertical stretch creates 60% empty space inside each card.
 
 ```html
 <section class="slide" style="background-image:radial-gradient(...);">
@@ -731,15 +746,14 @@ For simple linear flows (build steps, deployment stages, data pipelines) where M
 ```css
 .pipeline {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;   /* cards size to content; do NOT stretch vertically */
   gap: 0;
-  flex: 1;
+  margin: auto 0;            /* vertically center the pipeline in available slide space */
   min-height: 0;
-  margin-top: clamp(12px, 2vh, 24px);
 }
 
 .pipeline__step {
-  flex: 1;
+  flex: 1;                   /* equal horizontal width across cards */
   background: var(--surface);
   border: 1px solid var(--border);
   border-top: 3px solid var(--accent);
@@ -796,7 +810,7 @@ For simple linear flows (build steps, deployment stages, data pipelines) where M
 }
 ```
 
-Each `.pipeline__step` uses `flex: 1` to fill available width equally, and the pipeline container itself uses `flex: 1` to fill available vertical space in the slide. Step cards stretch to fill, so the content isn't floating in empty space. The `.pipeline__file` badge at the bottom anchors each card and adds a practical detail. Max 5–6 steps — beyond that, split across two slides.
+Each `.pipeline__step` uses `flex: 1` to fill available width equally, and the pipeline container itself uses `flex: 1` to fill available vertical space in the slide. Step cards stretch to fill, so the content isn't floating in empty space. The `.pipeline__file` badge at the bottom anchors each card and adds a practical detail. Max 5–6 steps; beyond that, split across two slides.
 
 ### Dashboard Slide
 
@@ -855,7 +869,7 @@ KPI cards at presentation scale (48–64px hero numbers). Mini-charts via Chart.
 
 ### Table Slide
 
-18–20px cell text for projection readability. Max 8 rows per slide — overflow paginates to the next slide. Stronger alternating row contrast than page tables.
+18–20px cell text for projection readability. Max 8 rows per slide; overflow paginates to the next slide. Stronger alternating row contrast than page tables.
 
 ```html
 <section class="slide slide--table">
@@ -1046,7 +1060,7 @@ Background image (surf-generated or CSS gradient) dominates the viewport. Text o
 
 ## Decorative SVG Elements
 
-Inline SVG accents lift slides from functional to editorial. Use sparingly — one or two per slide, never on every slide.
+Inline SVG accents lift slides from functional to editorial. Use sparingly: one or two per slide, never on every slide.
 
 ### Corner Accent
 
@@ -1145,13 +1159,13 @@ Slides get projected, screen-shared, viewed at distance. Design accordingly:
 
 - **Minimum body text: 16px.** Nothing smaller except labels and captions.
 - **One focal point per slide.** Not three competing elements.
-- **Higher contrast than pages.** Dimmed text (`--text-dim`) should still be easily readable at distance — test against the background.
+- **Higher contrast than pages.** Dimmed text (`--text-dim`) should still be easily readable at distance; test against the background.
 - **Nav chrome opacity.** Dots and progress bar must be visible on any slide background (light or dark) without being distracting. Use the backdrop blur or text-shadow approach from the Nav Chrome section.
 - **Simpler Mermaid diagrams.** Max 8–10 nodes, 18px+ labels, 2px+ edges. The diagram should be readable without zoom at presentation distance. Zoom controls remain available for detail inspection.
 
 ## Content Density Limits
 
-Each slide must fit in exactly 100dvh. If content exceeds these limits, the agent splits across multiple slides — never scrolls within a slide.
+Each slide must fit in exactly 100dvh. If content exceeds these limits, the agent splits across multiple slides; never scrolls within a slide.
 
 | Slide type | Max content |
 |-----------|-------------|
@@ -1207,7 +1221,7 @@ Height-based scaling is more critical for slides than width. Each breakpoint pro
 
 ## Curated Presets
 
-Starting points the agent can riff on. Each defines a font pairing, palette, and background treatment. The agent adapts these to the content — different decks with the same preset should still feel distinct.
+Starting points the agent can riff on. Each defines a font pairing, palette, and background treatment. The agent adapts these to the content; different decks with the same preset should still feel distinct.
 
 ### Midnight Editorial
 

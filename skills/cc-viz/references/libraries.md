@@ -1,10 +1,10 @@
 # External Libraries (CDN)
 
-Optional CDN libraries for cases where pure CSS/HTML isn't enough. Only include what the diagram actually needs — most diagrams need zero external JS.
+Optional CDN libraries for cases where pure CSS/HTML isn't enough. Only include what the diagram needs. Most diagrams need zero external JS.
 
 ## Mermaid.js — Diagramming Engine
 
-Use for flowcharts, sequence diagrams, ER diagrams, state machines, mind maps, class diagrams, and any diagram where automatic node positioning and edge routing saves effort. Mermaid handles layout — you handle theming.
+Use for flowcharts, sequence diagrams, ER diagrams, state machines, mind maps, class diagrams, and any diagram where automatic node positioning and edge routing saves effort. Mermaid handles layout; you handle theming.
 
 Do NOT use for dashboards — CSS Grid card layouts with Chart.js look better for those. Data tables use `<table>` elements.
 
@@ -28,7 +28,7 @@ Do NOT use for dashboards — CSS Grid card layouts with Chart.js look better fo
 </script>
 ```
 
-Without the ELK import and registration, `layout: 'elk'` silently falls back to dagre. Only import ELK when you actually need it — it adds significant bundle weight. Most simple diagrams render fine with dagre.
+Without the ELK import and registration, `layout: 'elk'` silently falls back to dagre. Only import ELK when you need it; it adds significant bundle weight. Most simple diagrams render fine with dagre.
 
 ### Deep Theming
 
@@ -203,7 +203,23 @@ Auth --> API
 | `--x` | Cross | Rejected or blocked |
 | `-->\|label\|` | Labeled | Decision branches, data descriptions |
 
-**Escape pipes in labels.** If a label contains a literal `|`, use `#124;` (HTML entity) or rephrase to avoid it — pipes delimit edge labels in flowcharts.
+**Escape pipes in labels.** If a label contains a literal `|`, use `#124;` (HTML entity) or rephrase to avoid it. Pipes delimit edge labels in flowcharts.
+
+**Dotted edge labels with `-. text .->` cannot contain periods.** The dots delimit the label, so `A -.below 0.60.-> B` parses as `-.below 0.` (label = "below 0") and then garbage. Quote the label whenever it contains a period, decimal, ellipsis, or any `.`:
+
+```
+%% WRONG — parser splits on the inner period
+A -.below 0.60.-> B
+A -.alpha=0.3.-> B
+A -.v1.2 fallback.-> B
+
+%% RIGHT — quoted label tolerates periods
+A -. "below 0.60" .-> B
+A -. "alpha=0.3" .-> B
+A -. "v1.2 fallback" .-> B
+```
+
+Same rule applies to thick labeled edges (`==text==>`) — quote any label containing `=`, `.`, or special characters: `A == "step.5" ==> B`.
 
 **Sequence diagram messages must be plain text.** Unlike flowchart labels, sequence diagram messages (the text after `:`) cannot be quoted or escaped. Curly braces `{}`, square brackets `[]`, angle brackets `<>`, and `&` will silently break the parser and the entire diagram renders as raw text. Write human-readable descriptions, not code:
 
@@ -306,18 +322,18 @@ mindmap
 
 ### Dark Mode Handling
 
-Mermaid initializes once — it can't reactively switch themes. Read the preference at load time inside your `<script type="module">`:
+Mermaid initializes once. It can't reactively switch themes. Read the preference at load time inside your `<script type="module">`:
 
 ```javascript
 const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 // Use isDark to pick light or dark values in themeVariables
 ```
 
-The CSS overrides on the container (`.mermaid-wrap`) and page will still respond to `prefers-color-scheme` normally — only the Mermaid SVG internals are static.
+The CSS overrides on the container (`.mermaid-wrap`) and page will still respond to `prefers-color-scheme` normally. Only the Mermaid SVG internals are static.
 
 ## Chart.js — Data Visualizations
 
-Use for bar charts, line charts, pie/doughnut charts, radar charts, and other data-driven visualizations in dashboard-type diagrams. Overkill for static numbers — use pure SVG/CSS for simple progress bars and sparklines.
+Use for bar charts, line charts, pie/doughnut charts, radar charts, and other data-driven visualizations in dashboard-type diagrams. Overkill for static numbers; use pure SVG/CSS for simple progress bars and sparklines.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
@@ -427,21 +443,31 @@ When using anime.js, set initial opacity to 0 in CSS so elements don't flash bef
 
 ## Google Fonts — Typography
 
-Always load with `display=swap` for fast rendering. Pick a distinctive pairing — body + mono at minimum, optionally a display font for the title.
+Always load with `display=swap` for fast rendering. Pick a distinctive pairing: body + mono at minimum, optionally a display font for the title.
 
 **FORBIDDEN as `--font-body` (AI slop signals):**
-- Inter — the single most overused AI default font
+- Inter (and any Inter variant: Inter Tight, Inter Display, etc.) — the most overused AI default font
 - Roboto — generic Android/Google default
 - Arial, Helvetica — system defaults with no character
 - system-ui alone without a named font — signals zero design intent
+- **Space Grotesk** — current-decade AI-startup landing-page tell
+- **Manrope** — same niche, even more overused on marketing pages
+- **General Sans, Cabinet Grotesk** — Fontshare landing-page defaults; instantly read as "AI brand site"
+- **Italic-by-design display serifs** (Instrument Serif, Playfair Display Italic, Fraunces Italic, EB Garamond Italic): these go in `--font-display`, never `--font-body`
+
+These bans aren't because the fonts are bad. They're the *current decade's defaults* for AI-generated marketing pages. cc-viz outputs should read as **documents** (reports, memos, technical writing), not as **brand sites** or **landing pages**.
+
+**Ready-to-paste `<link>` blocks for all 16 pairings live in `templates/font-loaders.html`.** Pick a pairing from the table below, then copy the matching block from that file into your `<head>`. This saves URL-construction time and weight-spec typos. Satoshi (Fontshare) and the preconnect block are also there.
+
+Single-pairing example (Outfit + Space Mono, pairing 6):
 
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 ```
 
-Define as CSS variables for easy reference:
+Then define CSS variables:
 ```css
 :root {
   --font-body: 'Outfit', system-ui, sans-serif;
@@ -466,5 +492,10 @@ Define as CSS variables for easy reference:
 | Red Hat Display | Red Hat Mono | Cohesive family | System overviews |
 | Libre Franklin | Inconsolata | Classic, reliable | Data-dense tables |
 | Playfair Display | Roboto Mono | Elegant contrast | Executive summaries |
+| **Source Serif 4** | JetBrains Mono | True reading serif, document-grade | Long-form specs, RFCs, internal reports |
+| **Lora** | IBM Plex Mono | Editorial body serif, calm | Decision memos, narrative briefs |
+| **Newsreader** | Fira Code | News-optimized serif, on-screen reading | Project recaps, multi-page analysis |
 
 The first 5 pairings are recommended for most use cases. Vary across consecutive diagrams.
+
+**Reading-serif pairings (14, 15, 16) are the most differentiating choice cc-viz can make.** Long-form body serifs almost never appear on landing pages or AI brand sites. They read as "this is a document meant to be read at length." Use a clean sans (DM Sans, IBM Plex Sans) for headers and labels, then the serif for body paragraphs. Strongest signal that cc-viz output is a report, not a marketing page.

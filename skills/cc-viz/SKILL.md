@@ -1,232 +1,253 @@
 ---
 name: cc-viz
-description: Generate beautiful, self-contained HTML pages that visually explain systems, code changes, plans, and data. Use when the user asks for a diagram, architecture overview, diff review, plan review, project recap, comparison table, or any visual explanation of technical concepts. Also use proactively when you are about to render a complex ASCII table (4+ rows or 3+ columns) — present it as a styled HTML page instead.
+description: Generate self-contained HTML pages that visually explain systems, code, plans, and data. Produces documents, briefs, memos, diagrams, audits, recaps, comparison tables, slide decks, multi-doc sites. Triggers: "diagram", "visualize", "render as a page", "build a brief", "memo for the team", "deck about", "audit", "recap", "fact-check", "plan review", "diff review", "small site I'll edit". Also fires proactively when about to render an ASCII table with 4+ rows or 3+ columns (generate HTML instead). NOT for applications, interactive UIs, landing pages, brand sites, dashboards-as-products, or component libraries. NOT for one-line answers, tiny markdown tables, code-as-artifact responses, or discussion-not-document conversations.
 license: MIT
-compatibility: Requires a browser to view generated HTML files.
-metadata:
-  version: "1.0.0"
 ---
 
 # cc-viz
 
-Generate self-contained HTML files for technical diagrams, visualizations, and data tables. Always open the result in the browser. Never fall back to ASCII art when this skill is loaded.
+Generate self-contained HTML files for technical diagrams, visualizations, and data tables. Open the result in the browser when the surface supports it (Step 6 details the surface caveat). Never fall back to ASCII art when this skill is loaded.
 
-**Proactive table rendering.** When you're about to present tabular data as an ASCII box-drawing table in the terminal (comparisons, audits, feature matrices, status reports, any structured rows/columns), generate an HTML page instead. The threshold: if the table has 4+ rows or 3+ columns, it belongs in the browser. Don't wait for the user to ask — render it as HTML automatically and tell them the file path. You can still include a brief text summary in the chat, but the table itself should be the HTML page.
+**Proactive table rendering.** When you're about to present tabular data as an ASCII box-drawing table in the terminal (comparisons, audits, feature matrices, status reports, any structured rows/columns), generate an HTML page instead. The threshold: if the table has 4+ rows or 3+ columns, it belongs in the browser. Don't wait for the user to ask. Render it as HTML automatically and tell them the file path. Brief text summary in the chat is fine; the table itself is the HTML page. Proactive tables are implicitly **Quick share mode**: skip routing and framing, just ship the table.
+
+## When NOT to use cc-viz
+
+Skill mis-fires are nearly as bad as not firing at all. Don't generate an HTML page when:
+
+- **Small tables** — ≤3 rows or ≤2 columns. A markdown table in chat is the right answer.
+- **One-line or short-paragraph answers** — if the response fits in 3 chat lines, ship it as chat. Don't paginate prose into HTML.
+- **Code is the artifact** — when the user asks for a function, a config, a script, the code goes in chat or a file, not wrapped in an HTML page.
+- **Discussion, not document** — when the user is thinking through a problem with you, finish the discussion before generating anything. Mid-conversation HTML pages interrupt the reasoning.
+- **Marketing / UI / brand sites** — landing pages, app shells, dashboards-as-products, component libraries are out of scope. Different skill, different output shape.
+- **Trivial confirmations** — "yes that works", "looks good", "shipped" don't need a styled page.
+
+If unsure, ask one short question before generating, or default to chat. A page that should have been chat is a worse failure than chat that should have been a page.
 
 ## Workflow
 
-### 1. Think (5 seconds, not 5 minutes)
+cc-viz is a router. The same invocation can mean wildly different things depending on context, audience, and intent. Route correctly before committing to a path or you'll spend ten rounds correcting the output. The most common failure mode is running the deepest, slowest path on a request that wanted the fastest, lightest one (or the reverse).
 
-Before writing HTML, commit to a direction. Don't default to "dark theme with blue accents" every time.
+### 0. Route the request
 
-**Who is looking?** A developer understanding a system? A PM seeing the big picture? A team reviewing a proposal? This shapes information density and visual complexity.
+Classify what kind of visualization this is. Signals:
 
-**What type of diagram?** Architecture, flowchart, sequence, data flow, schema/ER, state machine, mind map, data table, timeline, or dashboard. Each has distinct layout needs and rendering approaches (see Diagram Types below).
+- **Conversation context**: working in a specific repo for a while? Files already read? Subject already loaded? Rich context = lean on what's loaded, ship fast. Cold start (`/cc-viz make me a diagram of X` with no prior context) = scope first.
+- **Invocation phrasing**: *"throw something together to share"* vs *"draft a strategic brief"* vs *"diagram this"* vs *"deck for the board"* vs *"a small site I'll edit"* — different requests.
+- **Mode commands**: if a more specific mode (`/project-recap`, `/diff-review`, `/plan-review`, `/generate-slides`, `/fact-check`) fits the request better than the top-level skill, surface that to the user first. Don't quietly run the wrong tool.
 
-**What aesthetic?** Pick one and commit. The constrained aesthetics (Blueprint, Editorial, Paper/ink) are safer — they have specific requirements that prevent generic output. The flexible ones (IDE-inspired) require more discipline.
+Map the intent to a mode:
 
-**Constrained aesthetics (prefer these):**
-- Blueprint (technical drawing feel, subtle grid background, deep slate/blue palette, monospace labels, precise borders) — see `websocket-implementation-plan.html` for reference
-- Editorial (serif headlines like Instrument Serif or Crimson Pro, generous whitespace, muted earth tones or deep navy + gold)
-- Paper/ink (warm cream `#faf7f5` background, terracotta/sage accents, informal feel)
-- Monochrome terminal (green/amber on near-black, monospace everything, CRT glow optional)
+| Intent | Signals | Methodology |
+|---|---|---|
+| **Quick share** | Mid-flow in a repo, "make me a quick page", subject already loaded | Lean on conversation context. Skip deep research. Single-pass form, fast aesthetic, ship in minutes. |
+| **Internal brief / memo** | "Memo for the team", "decision doc", "what should we do" | Grounded research. Tight prose. Tables + status. Audience-specific register. See `references/story-framing.md`. |
+| **External / client deliverable** | "Page for the client", "external review", "publish-grade" | Polish-grade. Form commitment. No internal jargon. Atmosphere matters. See `references/story-framing.md`. |
+| **Diagram / topology** | "Draw / visualize / show how X works" | Architecture or flow primary. Mermaid or CSS-grid topology. Prose minimal. |
+| **Slide deck** | "Deck about X" or `--slides` flag | Magazine-quality scroll-snap deck. See `references/slide-patterns.md`. |
+| **Multi-doc / iterated site** | "Small site", "3 pages I'll edit", "versioned overview" | Folder output: markdown sources + render.py + shared styles.css. See `references/multi-doc-site.md` and `templates/multi-doc-site/`. |
+| **Recap / fact-check / diff-review / plan-review** | Specific intent named | Defer to the matching mode-specific skill. |
 
-**Flexible aesthetics (use with caution):**
-- IDE-inspired (borrow a real, named color scheme: Dracula, Nord, Catppuccin Mocha/Latte, Solarized Dark/Light, Gruvbox, One Dark, Rosé Pine) — commit to the actual palette, don't approximate
-- Data-dense (small type, tight spacing, maximum information, muted colors)
+### 0.5. When the intent is ambiguous, ask. When it's clear, don't.
 
-**Explicitly forbidden:**
-- Neon dashboard (cyan + magenta + purple on dark) — always produces AI slop
-- Gradient mesh (pink/purple/cyan blobs) — too generic
-- Any combination of Inter font + violet/indigo accents + gradient text
+If two or more modes plausibly apply and the conversation context doesn't disambiguate, surface one or two clarifying questions before drafting:
 
-Vary the choice each time. If the last diagram was dark and technical, make the next one light and editorial. The swap test: if you replaced your styling with a generic dark theme and nobody would notice the difference, you haven't designed anything.
+- *"Quick share, internal brief, or external deliverable?"*
+- *"Who's reading it: you, your team, or someone outside?"*
+- *"Form preference: board memo, magazine editorial, broadside, or something else?"*
 
-### 2. Structure
+Ask at most two. Ask only what conversation context doesn't already answer. Don't ask "what's this about" when invoked in a project where the answer is obvious from prior turns.
 
-**Read the reference template** before generating. Don't memorize it — read it each time to absorb the patterns.
-- For text-heavy architecture overviews (card content matters more than topology): read `./templates/architecture.html`
-- For flowcharts, sequence diagrams, ER, state machines, mind maps: read `./templates/mermaid-flowchart.html`
-- For data tables, comparisons, audits, feature matrices: read `./templates/data-table.html`
-- For slide deck presentations (when `--slides` flag is present or `/generate-slides` is invoked): read `./templates/slide-deck.html` and `./references/slide-patterns.md`
+**Skip 0.5 entirely when invoked mid-session with rich context from prior turns.** If you've been working on a subject for an hour and the user asks for a page about it, the audience and form are already known. Don't ask. Asking what conversation context already answers feels like a wizard.
 
-**For CSS/layout patterns and SVG connectors**, read `./references/css-patterns.md`.
+### 0.7. Load accumulated judgment (if present)
 
-**For pages with 4+ sections** (reviews, recaps, dashboards), also read `./references/responsive-nav.md` for section navigation with sticky sidebar TOC on desktop and horizontal scrollable bar on mobile.
+Before drafting, check for `.cc-viz/context.md` in the project root. **Most invocations won't have one.** Don't expect it. When the file exists, the user created it intentionally after a few iterations on this project, and it captures: typical audience, register preferences, anti-pattern history, prior decisions about form, accumulated diction notes, things to never repeat.
+
+If present, read it and apply. If absent, proceed normally.
+
+**Writing back.** At the end of a session, if something non-obvious got established (an aesthetic that landed, a phrase that didn't, an audience preference, a font that worked) and the user gives a signal the work will continue (multiple iterations, "next time", "for future runs"), offer to create or update `.cc-viz/context.md` with one or two lines capturing the lesson. Don't write back unprompted on a one-off run; the file should accumulate slowly, not bloat.
+
+### 1. Frame the story (before anything visual)
+
+Five gates. All five must be filled before Step 2. Skipping them is the most common cc-viz failure: agent jumps from source to HTML, page becomes a list of facts in boxes. Gate 5 only applies when the audience is non-expert in the subject; skip it for peer-audience pages.
+
+**Gate 1 — Spine sentence (REQUIRED, fill the blank before continuing):**
+
+> *"[Subject] [does / is / argues] [X]. [Why-it-matters clause]."*
+
+Examples:
+- *"The ingestion service was built to extract a four-dimension framework but quietly invented two things the framework hasn't named yet: system metacognition and source-level epistemics. The interesting question is whether they generalize."*
+- *"The point of contact is gone and the contract is an orphan, but the systems intelligence is real. Here's what we need to know to proposal this correctly."*
+- *"The migration cuts query p99 latency by 40% but introduces a backfill window we have to plan for."*
+
+If you can't write the spine sentence in 10 seconds, stop. Re-read the source. Don't proceed until the sentence is on the page, in your draft notes, before you write any HTML.
+
+**Gate 2 — Ground claims.** Speculation reads identical to truth on the page; only the reader who knows the territory can tell the difference. Any page making claims about a real system, project, or decision must be grounded in evidence first. Adjust depth to the routed mode (Quick share = lean on what's loaded; Internal brief = thorough; External deliverable = exhaustive). Never skip entirely. Methodology: `references/story-framing.md`.
+
+> **Context-rich escape.** If the session has already loaded the source material (you've been reading transcripts, files, docs for this subject for the last 30+ minutes), Gate 2 is satisfied. Don't re-fetch what's already in context. Re-verify only specific claims that feel uncertain or that came from memory rather than the loaded context.
+
+**Gate 3 — Report vs argument.** Most analytical work is argument-led: artifacts (files, columns, schema, citations) are *evidence FOR a claim*, not the claim itself. A page listing "these files exist, these columns exist, this maps to that" has shown evidence but not told a story. If the page's spine is a matrix, decide: catalog intent (report) or claim about the catalog (argument)? Argument-led pages lead with the claim, support each section with the evidence that defends it, close with the implication.
+
+**Gate 4 — Re-teaching audit.** List in your head (or notes) what the reader *already knows* from the conversation, the project, or their role. Any section that re-teaches that list is decoration. Cut it. A page mapping a subsystem to a framework should not re-introduce what the subsystem is to the person who built it; it should foreground the *mapping*, which is the new thing. Re-teaching is the most common failure for pages that look thorough but feel flat.
+
+**Gate 5 — Translation audit.** When the audience is non-expert in the subject (non-coders reading about a dev tool, executives reading about a system, customers reading about engineering work), translate at three levels, not one:
+
+1. **Vocabulary:** swap technical terms for plain analogues (worktree → sealed room, YAML → recipe, orchestrator → kitchen line).
+2. **Framing:** the *category* of thing you're describing must come from their world, not yours. *"Running a small operation through ChatGPT"* assumes business-operator framing; *"software teams"* assumes professional context. Both fail for a general community audience. Pick framings the reader already lives inside.
+3. **Examples and aspirations:** every example, every "if you've been feeling…" hook, every comparison must point at a situation the reader has lived. If the example needs translation, the example is wrong. Pick a different one.
+
+The most common Gate-5 failure is translating vocabulary while leaving framing and examples in the original audience's world. The page reads like a tech doc with the words swapped, not a piece written for the reader from scratch.
+
+**Audience, register, baseline** — name the audience concretely (not "technical reader" but "senior backend engineer who knows our stack but hasn't seen this subsystem"), pick one register and hold it. Full taxonomy and baseline discipline in `references/story-framing.md`.
+
+**Voice & diction rules** — non-negotiable, even in Quick share mode. Full set in `references/voice-and-diction.md`:
+
+- No em dashes (`—`) in body prose. Strongest single AI tell. Citations only.
+- Sentences ≤22 words; paragraphs ≤3 sentences. One technical-precision exception per page.
+- Direct address (*you / your*) only when the reader is an actor (system behavior, touchpoints, consequences). Not in meta-framing.
+- One italic-emphasis point per heading, per pull quote, per card. Italic is a budget, not a default. **At display scale (≥40px) on serif headlines, prefer zero italic emphasis.** Italic-on-serif at hero size reads decorative or fashion-magazine, not editorial. Save italic for body text and sub-headings where the contrast is quieter.
+- No yap. Cut every hedge-starting sentence. Trim before commit.
+
+### 2. Pick a form, commit fully
+
+Form precedes aesthetic. Pick one form's structural vocabulary and commit. Frankensteins read as half-finished: a board-memo recommendation card grafted onto a magazine drop-cap, a slide-deck hero pasted above a dashboard grid.
+
+| Form | Register | Structural vocabulary | When |
+|---|---|---|---|
+| **Board memo** | Calm, plain, scannable | Eyebrow + hero h1 + status strip + recommendation card + comparison tables + brief paragraphs + plain footer | Internal team decisions, status updates, planning notes |
+| **Magazine editorial** | Voice-driven, gravitas | Three-column kicker masthead + display hero + drop-cap + multi-column body + full-bleed feature strip + roman-numeraled close + colophon | Strategy briefs, narrative-heavy explainers, when the prose is the art |
+| **Broadside / one-page poster** | Maximalist, declarative | Single bold composition fitting one viewport, oversized type, a typographic system instead of tables | Manifestos, statements, single-page advocacy |
+| **Slide deck** | Visual-first, paced | Viewport-snapped slides, one big idea per slide, scroll-snap | Pitches, walkthroughs intended to be shown not read |
+| **Data journalism** | Cold, precise, numerical | Tabular numerics, axis lines, sparklines, mono-font headers, FT/Bloomberg cadence | Quantitative comparisons, audits, dashboards |
+| **Notebook / margin spread** | Personal, warm, informal | Warm cream base, marginalia, hand-drawn-feeling rules, pencil-sketch arrows, asides as if jotted | Self-briefs, working notes, inside-the-head register |
+| **Architecture / topology** | Technical, structural | Mermaid or CSS-grid topology primary; prose minimal and supporting | "Show how X works" — the diagram IS the document |
+| **Quick share / lightweight** | Direct, low-friction | Single page, focused, fast, minimal chrome | Mid-flow shares, work-in-progress pings, "send Max this" |
+| **Multi-doc site** | Form follows page register | Per-page registers under one shared stylesheet | 3+ pages user will iterate; see `references/multi-doc-site.md` |
+
+Pick based on routed intent (Step 0) and framed audience/register (Step 1). If two forms could plausibly fit, pick the one that does the audience's reading work for them: the form that lets them read in three minutes what would take ten in another form.
+
+**Anti-Frankenstein rule.** Once the form is chosen, every element on the page serves that form. The form's structural vocabulary is the only structural vocabulary you use.
+
+**Patterns that have landed.** Before inventing new composition, check `references/patterns.md`. It catalogs specific cc-viz forms that worked in real runs (status strip + recommendation card, three-column kicker masthead, etc.) with markup examples. A pattern that's worked before is more likely to work again than a freshly invented one.
+
+**Tabs vs scrolling.** Tabs are right when content has 3+ distinct lenses on the same subject (who / what / how / when, or technical / business / risk / next-steps). 4–5 is the sweet spot; ≥6 means the lenses aren't distinct, fold some together. Tabs are wrong when content flows linearly (intro → context → analysis → recommendation): use a single scrolling page. For side-by-side comparison, use a two-column layout instead.
+
+**Serif body vs sans body.** Reading-serif body (Source Serif 4, Lora, Newsreader) is the strongest "document" signal. Use it when body is paragraphs of prose (memos, briefs, analyses, recaps). Sans body (IBM Plex Sans, DM Sans) is right when body is dense cards, short labels, tables, or status indicators where a serif at 13–14px feels slow. Don't force serif body on a card-heavy page; the form decides.
+
+### 3. Aesthetic (5 seconds, not 5 minutes)
+
+Commit to a visual direction. Don't default to "dark theme with blue accents" every time. Vary from recent generations.
+
+**Aesthetic serves the form's reading task; memorability is a side effect, not the goal.** A cc-viz page exists to be read, scanned, and acted on. If you find yourself reaching for spectacle (dramatic shadows, gradient meshes, noise grain, oversized hero typography for the sake of impact), you're designing a brand site, not a document. Pull back. Form-fit produces memorability on its own when the fit is high.
+
+**Constrained aesthetics (prefer):** their specific requirements prevent generic output.
+- **Blueprint:** technical drawing feel, subtle grid background, deep slate/blue, monospace labels, precise borders
+- **Editorial:** serif headlines (Instrument Serif / Crimson Pro), generous whitespace, muted earth tones or deep navy + gold
+- **Paper/ink:** warm cream `#faf7f5`, terracotta/sage accents, informal feel
+- **Monochrome terminal:** green/amber on near-black, monospace everything, CRT glow optional
+
+**Flexible aesthetics (use with discipline):** IDE-inspired (borrow a real named scheme: Dracula, Nord, Catppuccin, Solarized, Gruvbox, One Dark, or Rosé Pine; commit to the actual palette); data-dense (small type, tight spacing, muted colors).
+
+**Forbidden.** Neon dashboard (cyan + magenta + purple on dark) is always AI slop. Same for gradient mesh (pink/purple/cyan blobs) and Inter + violet/indigo + gradient text.
+
+**Swap test.** If you replaced your styling with a generic dark theme and nobody would notice the difference, you haven't designed anything.
+
+Palette and font detail in `references/libraries.md`. Surface and atmosphere detail in `references/css-patterns.md`.
+
+### 4. Structure
+
+**Read the reference template before generating.** Read each time to absorb the patterns; don't memorize.
+- Text-heavy architecture (card content > topology): `./templates/architecture.html`
+- Flowcharts, sequence, ER, state machines, mind maps: `./templates/mermaid-flowchart.html`
+- Data tables, comparisons, audits, feature matrices: `./templates/data-table.html`
+- Slide decks (when `--slides` or `/generate-slides`): `./templates/slide-deck.html` + `./references/slide-patterns.md`
+- Multi-doc sites: `./templates/multi-doc-site/` (render.py + styles.css + markdown scaffolds)
+- Ready-to-paste font `<link>` blocks for all 16 pairings: `./templates/font-loaders.html`
+
+CSS/layout patterns + SVG connectors: `./references/css-patterns.md`. Pages with 4+ sections: `./references/responsive-nav.md` for sticky sidebar TOC + mobile horizontal scroll.
 
 **Choosing a rendering approach:**
 
 | Diagram type | Approach | Why |
 |---|---|---|
-| Architecture (text-heavy) | CSS Grid cards + flow arrows | Rich card content (descriptions, code, tool lists) needs CSS control |
-| Architecture (topology-focused) | **Mermaid** | Visible connections between components need automatic edge routing |
-| Flowchart / pipeline | **Mermaid** | Automatic node positioning and edge routing |
-| Sequence diagram | **Mermaid** | Lifelines, messages, and activation boxes need automatic layout |
-| Data flow | **Mermaid** with edge labels | Connections and data descriptions need automatic edge routing |
-| ER / schema diagram | **Mermaid** | Relationship lines between many entities need auto-routing |
-| State machine | **Mermaid** | State transitions with labeled edges need automatic layout |
-| Mind map | **Mermaid** | Hierarchical branching needs automatic positioning |
-| Data table | HTML `<table>` | Semantic markup, accessibility, copy-paste behavior |
-| Timeline | CSS (central line + cards) | Simple linear layout doesn't need a layout engine |
+| Architecture (text-heavy) | CSS Grid cards + flow arrows | Rich card content needs CSS control |
+| Architecture (topology) | **Mermaid** | Connections need automatic edge routing |
+| Flowchart / pipeline | **Mermaid** | Automatic node positioning |
+| Sequence diagram | **Mermaid** | Lifelines, messages, activation boxes |
+| Data flow | **Mermaid** with edge labels | Connection labels + auto-routing |
+| ER / schema | **Mermaid** | Relationship lines between many entities |
+| State machine | **Mermaid** | Labeled transitions |
+| Mind map | **Mermaid** | Radial hierarchical layout |
+| Data table | HTML `<table>` | Semantic markup, a11y, copy-paste |
+| Timeline | CSS (central line + cards) | Simple linear, no layout engine needed |
 | Dashboard | CSS Grid + Chart.js | Card grid with embedded charts |
 
-**Mermaid theming:** Always use `theme: 'base'` with custom `themeVariables` so colors match your page palette. Use `layout: 'elk'` for complex graphs (requires the `@mermaid-js/layout-elk` package — see `./references/libraries.md` for the CDN import). Override Mermaid's SVG classes with CSS for pixel-perfect control. See `./references/libraries.md` for full theming guide.
+**Mermaid theming, zoom controls, and class-collision constraints** all live in `references/libraries.md` and `references/css-patterns.md`. Three rules to remember inline: (1) `theme: 'base'` with custom `themeVariables`, never the default; (2) zoom controls require `target.style.zoom` on the `.mermaid` div (not transform, not SVG width); (3) never define `.node` as a page-level CSS class. Mermaid uses it internally; scope under `.mermaid` only.
 
-**Mermaid zoom controls:** Always add zoom controls (+/−/reset buttons) to every `.mermaid-wrap` container. Complex diagrams render at small sizes and need zoom to be readable. Include Ctrl/Cmd+scroll zoom on the container. See the zoom controls pattern in `./references/css-patterns.md` and the reference template at `./templates/mermaid-flowchart.html`.
+### 5. Style
 
-**Mermaid CSS class collision constraint:** Never define `.node` as a page-level CSS class. Mermaid.js uses `.node` internally on SVG `<g>` elements with `transform: translate(x, y)` for positioning. Page-level `.node` styles (hover transforms, box-shadows) leak into diagrams and break layout. Use the namespaced `.ve-card` class for card components instead. The only safe way to style Mermaid's `.node` is scoped under `.mermaid` (e.g., `.mermaid .node rect`).
+Apply these inline rules; reach for the references for detail.
 
+**Typography.** Pick a font pairing from `./references/libraries.md`. Vary from recent generations. cc-viz outputs should read as documents, not brand sites or landing pages. The font list and bans reflect that.
+- **Forbidden as `--font-body`:** Inter (and any Inter variant: Tight, Display, etc.), Roboto, Arial, Helvetica, system-ui alone, **Space Grotesk, Manrope, General Sans, Cabinet Grotesk** (current-decade AI-startup landing-page tells), italic-by-design display serifs (Instrument Serif, Playfair Display Italic, Fraunces Italic, EB Garamond Italic). Display serifs go in `--font-display`, never `--font-body`.
+- **Strongest cc-viz signal:** reading-serif body pairings (Source Serif 4, Lora, Newsreader; pairings 14/15/16 in libraries.md). Long-form body serifs almost never appear on landing pages; they read as "report" immediately.
 
-### 3. Style
+**Color.** CSS custom properties for the full palette. Define at minimum `--bg`, `--surface`, `--border`, `--text`, `--text-dim`, 3-5 semantic accents. Both themes (light + dark) intentional.
+- **Forbidden accents:** `#8b5cf6` `#7c3aed` `#a78bfa` `#d946ef`, the cyan-magenta-pink combination. Tailwind defaults signaling zero design intent.
 
-Apply these principles to every diagram:
+**Atmosphere is mandatory in dark mode** (also recommended in light). Flat backgrounds produce a void with text floating on it. The void test: corner vs. center distinguishable? If not, fix it.
 
-**Typography is the diagram.** Pick a distinctive font pairing from the list in `./references/libraries.md`. Every page should use a different pairing from recent generations.
+**Prefer reading-friendly atmospheres** — they support the document register:
+- Faint dot or hairline grid (1–3% opacity)
+- Fine paper texture (subtle warm tint variation)
+- Subtle vignette darkening at corners
+- Two-stop gradient with very low contrast (≤4% lightness shift)
 
-**Forbidden as `--font-body`:** Inter, Roboto, Arial, Helvetica, system-ui alone. These are AI slop signals.
+**Skip spectacle atmospheres** — they pull the page toward "brand site" feel:
+- Gradient meshes (multiple overlapping radial color blobs)
+- Large radial glows behind the hero (more than 25% of the viewport)
+- Noise / film grain overlays
+- Dramatic depth via layered drop shadows on the page background
 
-**Good pairings (use these):**
-- DM Sans + Fira Code (technical, precise)
-- Instrument Serif + JetBrains Mono (editorial, refined)
-- IBM Plex Sans + IBM Plex Mono (reliable, readable)
-- Bricolage Grotesque + Fragment Mono (bold, characterful)
-- Plus Jakarta Sans + Azeret Mono (rounded, approachable)
+**Visual weight + surface depth.** Hero sections elevated (accent-tinted, larger type). Body content flat. Code/secondary recessed. `<details>/<summary>` for useful-but-not-primary content. Detail in `references/css-patterns.md`.
 
-Load via `<link>` in `<head>`. Include a system font fallback in the `font-family` stack for offline resilience.
+**Animation earns its place.** Staggered fade-ins guide the eye through hierarchy. Mix `fadeUp` / `fadeScale` / `drawIn` / `countUp` by role. Respect `prefers-reduced-motion`.
+- **Forbidden:** glowing/pulsing box-shadows (`@keyframes glow` is AI slop), continuous animations after page load, opacity-0 stuck state if entry animation skips.
 
-**Color tells a story.** Use CSS custom properties for the full palette. Define at minimum: `--bg`, `--surface`, `--border`, `--text`, `--text-dim`, and 3-5 accent colors. Each accent should have a full and a dim variant (for backgrounds). Name variables semantically when possible (`--pipeline-step` not `--blue-3`). Support both themes.
+### 6. Deliver
 
-**Forbidden accent colors:** `#8b5cf6` `#7c3aed` `#a78bfa` (indigo/violet), `#d946ef` (fuchsia), the cyan-magenta-pink combination. These are Tailwind defaults that signal zero design intent.
+**Output location:** `~/.agent/diagrams/`. Descriptive filename: `modem-architecture.html`, `pipeline-flow.html`, `schema-overview.html`. Directory persists across sessions. For multi-doc sites: a folder, `~/.agent/diagrams/<site-name>/`.
 
-**Good accent palettes (use these):**
-- Terracotta + sage (`#c2410c`, `#65a30d`) — warm, earthy
-- Teal + slate (`#0891b2`, `#0369a1`) — technical, precise
-- Rose + cranberry (`#be123c`, `#881337`) — editorial, refined
-- Amber + emerald (`#d97706`, `#059669`) — data-focused
-- Deep blue + gold (`#1e3a5f`, `#d4a73a`) — premium, sophisticated
-
-Put your primary aesthetic in `:root` and the alternate in the media query:
-
-```css
-/* Light-first (editorial, paper/ink, blueprint): */
-:root { /* light values */ }
-@media (prefers-color-scheme: dark) { :root { /* dark values */ } }
-
-/* Dark-first (neon, IDE-inspired, terminal): */
-:root { /* dark values */ }
-@media (prefers-color-scheme: light) { :root { /* light values */ } }
-```
-
-**Surfaces whisper, they don't shout.** Build depth through subtle lightness shifts (2-4% between levels), not dramatic color changes. Borders should be low-opacity rgba (`rgba(255,255,255,0.08)` in dark mode, `rgba(0,0,0,0.08)` in light) — visible when you look, invisible when you don't.
-
-**Backgrounds create atmosphere.** Don't use flat solid colors for the page background. Subtle gradients, faint grid patterns via CSS, or gentle radial glows behind focal areas. The background should feel like a space, not a void.
-
-**Visual weight signals importance.** Not every section deserves equal visual treatment. Executive summaries and key metrics should dominate the viewport on load (larger type, more padding, subtle accent-tinted background zone). Reference sections (file maps, dependency lists, decision logs) should be compact and stay out of the way. Use `<details>/<summary>` for sections that are useful but not primary — the collapsible pattern is in `./references/css-patterns.md`.
-
-**Surface depth creates hierarchy.** Vary card depth to signal what matters. Hero sections get elevated shadows and accent-tinted backgrounds (`ve-card--hero` pattern). Body content stays flat (default `.ve-card`). Code blocks and secondary content feel recessed (`ve-card--recessed`). See the depth tiers in `./references/css-patterns.md`. Don't make everything elevated — when everything pops, nothing does.
-
-**Animation earns its place.** Staggered fade-ins on page load are almost always worth it — they guide the eye through the diagram's hierarchy. Mix animation types by role: `fadeUp` for cards, `fadeScale` for KPIs and badges, `drawIn` for SVG connectors, `countUp` for hero numbers. Hover transitions on interactive-feeling elements make the diagram feel alive. Always respect `prefers-reduced-motion`. CSS transitions and keyframes handle most cases. For orchestrated multi-element sequences, anime.js via CDN is available (see `./references/libraries.md`).
-
-**Forbidden animations:**
-- Animated glowing box-shadows (`@keyframes glow { box-shadow: 0 0 20px... }`) — this is AI slop
-- Pulsing/breathing effects on static content
-- Continuous animations that run after page load (except for progress indicators)
-
-Keep animations purposeful: entrance reveals, hover feedback, and user-initiated interactions. Nothing should glow or pulse on its own.
-
-### 4. Deliver
-
-**Output location:** Write to `~/.agent/diagrams/`. Use a descriptive filename based on content: `modem-architecture.html`, `pipeline-flow.html`, `schema-overview.html`. The directory persists across sessions.
-
-**Open in browser:**
+**Always open in the browser after writing** when the surface has shell and local browser access (Claude Code CLI, IDE, or another shell-enabled environment). On Claude.ai web or desktop, the agent cannot open files in the user's browser; hand off the file path and let the user open it. Required when possible, skip when not.
 - macOS: `open ~/.agent/diagrams/filename.html`
 - Linux: `xdg-open ~/.agent/diagrams/filename.html`
+- Multi-doc: open `index.html` from the folder.
 
-**Tell the user** the file path so they can re-open or share it.
+After opening, **tell the user** the absolute file path so they can re-open, attach, or share.
 
-## Diagram Types
+**Share / handoff (mode-conditional):**
 
-### Architecture / System Diagrams
-Two approaches depending on what matters more:
+- **Quick share / internal brief / memo:** state the path. The user opens or attaches as they need.
+- **External / client deliverable:** ask whether the user wants it published before handing off. If yes and the surface has shell access, offer the wrangler/vercel options from `references/multi-doc-site.md`. If no, just hand off the path.
+- **Multi-doc site:** open `index.html`; publish options in `references/multi-doc-site.md`.
 
-**Text-heavy overviews** (card content matters more than connections): CSS Grid with explicit row/column placement. Sections as rounded cards with colored borders and monospace labels. Vertical flow arrows between sections. Nested grids for subsystems. The reference template at `./templates/architecture.html` demonstrates this pattern. Use when cards need descriptions, code references, tool lists, or other rich content that Mermaid nodes can't hold.
+Don't auto-publish. Generation and distribution are different concerns; the user decides where the artifact goes.
 
-**Topology-focused diagrams** (connections matter more than card content): **Use Mermaid.** A `graph TD` or `graph LR` with custom `themeVariables` produces proper diagrams with automatic edge routing. Use when the point is showing how components connect rather than describing what each component does in detail.
+## Diagram-specific detail
 
-### Flowcharts / Pipelines
-**Use Mermaid.** Automatic node positioning and edge routing produces proper diagrams with connecting lines, decision diamonds, and parallel branches — dramatically better than CSS flexbox with arrow characters. Use `graph TD` for top-down or `graph LR` for left-right. Color-code node types with Mermaid's `classDef` or rely on `themeVariables` for automatic styling.
-
-### Sequence Diagrams
-**Use Mermaid.** Lifelines, messages, activation boxes, notes, and loops all need automatic layout. Use Mermaid's `sequenceDiagram` syntax. Style actors and messages via CSS overrides on `.actor`, `.messageText`, `.activation` classes.
-
-### Data Flow Diagrams
-**Use Mermaid.** Data flow diagrams emphasize connections over boxes — exactly what Mermaid excels at. Use `graph LR` or `graph TD` with edge labels for data descriptions. Thicker, colored edges for primary flows. Source/sink nodes styled differently from transform nodes via Mermaid's `classDef`.
-
-### Schema / ER Diagrams
-**Use Mermaid.** Relationship lines between entities need automatic routing. Use Mermaid's `erDiagram` syntax with entity attributes. Style via `themeVariables` and CSS overrides on `.er.entityBox` and `.er.relationshipLine`.
-
-### State Machines / Decision Trees
-**Use Mermaid.** Use `stateDiagram-v2` for states with labeled transitions. Supports nested states, forks, joins, and notes. Decision trees can use `graph TD` with diamond decision nodes.
-
-**`stateDiagram-v2` label caveat:** Transition labels have a strict parser — colons, parentheses, `<br/>`, HTML entities, and most special characters cause silent parse failures ("Syntax error in text"). If your labels need any of these (e.g., `cancel()`, `curate: true`, multi-line labels), use `flowchart LR` instead with rounded nodes and quoted edge labels (`|"label text"|`). Flowcharts handle all special characters and support `<br/>` for line breaks. Reserve `stateDiagram-v2` for simple single-word or plain-text labels.
-
-### Mind Maps / Hierarchical Breakdowns
-**Use Mermaid.** Use `mindmap` syntax for hierarchical branching from a root node. Mermaid handles the radial layout automatically. Style with `themeVariables` to control node colors at each depth level.
-
-### Data Tables / Comparisons / Audits
-Use a real `<table>` element — not CSS Grid pretending to be a table. Tables get accessibility, copy-paste behavior, and column alignment for free. The reference template at `./templates/data-table.html` demonstrates all patterns below.
-
-**Use proactively.** Any time you'd render an ASCII box-drawing table in the terminal, generate an HTML table instead. This includes: requirement audits (request vs plan), feature comparisons, status reports, configuration matrices, test result summaries, dependency lists, permission tables, API endpoint inventories — any structured rows and columns.
-
-Layout patterns:
-- Sticky `<thead>` so headers stay visible when scrolling long tables
-- Alternating row backgrounds via `tr:nth-child(even)` (subtle, 2-3% lightness shift)
-- First column optionally sticky for wide tables with horizontal scroll
-- Responsive wrapper with `overflow-x: auto` for tables wider than the viewport
-- Column width hints via `<colgroup>` or `th` widths — let text-heavy columns breathe
-- Row hover highlight for scanability
-
-Status indicators (use styled `<span>` elements, never emoji):
-- Match/pass/yes: colored dot or checkmark with green background
-- Gap/fail/no: colored dot or cross with red background
-- Partial/warning: amber indicator
-- Neutral/info: dim text or muted badge
-
-Cell content:
-- Wrap long text naturally — don't truncate or force single-line
-- Use `<code>` for technical references within cells
-- Secondary detail text in `<small>` with dimmed color
-- Keep numeric columns right-aligned with `tabular-nums`
-
-### Timeline / Roadmap Views
-Vertical or horizontal timeline with a central line (CSS pseudo-element). Phase markers as circles on the line. Content cards branching left/right (alternating) or all to one side. Date labels on the line. Color progression from past (muted) to future (vivid).
-
-### Dashboard / Metrics Overview
-Card grid layout. Hero numbers large and prominent. Sparklines via inline SVG `<polyline>`. Progress bars via CSS `linear-gradient` on a div. For real charts (bar, line, pie), use **Chart.js via CDN** (see `./references/libraries.md`). KPI cards with trend indicators (up/down arrows, percentage deltas).
+Per-type specifics (Architecture topology vs text-heavy, state-machine parser caveats, data-table sticky-header patterns, timeline composition, dashboard with Chart.js) live in the relevant templates (`./templates/architecture.html`, `./templates/data-table.html`, `./templates/mermaid-flowchart.html`) and in `references/libraries.md` (Mermaid syntax limits, Chart.js theming) and `references/patterns.md` (composition catalog). The Step 4 routing table above maps every diagram type to its primary approach.
 
 ## Slide Deck Mode
 
-An alternative output format for presenting content as a magazine-quality slide presentation instead of a scrollable page. **Opt-in only** — the agent generates slides when the user invokes `/generate-slides`, passes `--slides` to an existing prompt (e.g., `/diff-review --slides`), or explicitly asks for a slide deck. Never auto-select slide format.
+**Choose slides** when the artifact will be shown live (presentation, walkthrough, talk, demo, community session) or when the user explicitly asks for a deck. Trigger words: *"deck about"*, *"presenting"*, *"showing tomorrow"*, *"walk them through"*, *"talk on"*, *"slides for"*, `--slides`, `/generate-slides`.
 
-**Before generating slides**, read `./references/slide-patterns.md` (engine CSS, slide types, transitions, nav chrome, presets) and `./templates/slide-deck.html` (reference template showing all 10 types). Also read `./references/css-patterns.md` for shared patterns and `./references/libraries.md` for Mermaid/Chart.js theming.
+**Default to scrolling** for asynchronous-reading documents (memo, audit, RFC, recap, status report). If genuinely ambiguous, ask one question.
 
-**Slides are not pages reformatted.** They're a different medium. Each slide is exactly one viewport tall (100dvh) with no scrolling. Typography is 2–3× larger. Compositions are bolder. The agent composes a narrative arc (impact → context → deep dive → resolution) rather than mechanically paginating the source.
-
-**Content completeness.** Changing the medium does not mean dropping content. Follow the "Planning a Deck from a Source Document" process in `slide-patterns.md` before writing any HTML: inventory the source, map every item to slides, verify coverage. Every section, decision, data point, specification, and collapsible detail from the source must appear in the deck. If a plan has 7 sections, the deck covers all 7. If there are 6 decisions, present all 6 — not the 2 that fit on one slide. Collapsible details in the source become their own slides. Add more slides rather than cutting content. A 22-slide deck that covers everything beats a 13-slide deck that looks polished but is missing 40% of the source.
-
-**Slide types (10):** Title, Section Divider, Content, Split, Diagram, Dashboard, Table, Code, Quote, Full-Bleed. Each has a defined layout in `slide-patterns.md`. Content that exceeds a slide's density limit splits across multiple slides — never scrolls within a slide.
-
-**Visual richness:** Use SVG decorative accents, per-slide background gradients, inline sparklines, and small Mermaid diagrams. Visual-first, text-second.
-
-**Compositional variety:** Consecutive slides must vary spatial approach — centered, left-heavy, right-heavy, split, edge-aligned, full-bleed. Three centered slides in a row means push one off-axis.
-
-**Curated presets:** Four slide-specific presets as starting points (Midnight Editorial, Warm Signal, Terminal Mono, Swiss Clean) plus the existing 8 aesthetic directions adapted for slides. Pick one and commit. See `slide-patterns.md` for preset CSS values.
-
-**`--slides` flag on existing prompts:** When a user passes `--slides` to `/diff-review`, `/plan-review`, `/project-recap`, or other prompts, the agent gathers data using the prompt's normal data-gathering instructions, then presents the content as a slide deck instead of a scrollable page. The slide version tells the same story with different structure and pacing — but the same breadth of coverage. Don't use the slide format as an excuse to summarize or skip sections that the scrollable version would have included.
+Slide-specific rules (slide types, transitions, composition variety, content completeness, planning process from a source document) live in `references/slide-patterns.md`. Reference template: `./templates/slide-deck.html`.
 
 ## File Structure
 
-Every diagram is a single self-contained `.html` file. No external assets except CDN links (fonts, optional libraries). Structure:
+Single-file modes (Instant, Framed, Slides): one self-contained `.html`. No external assets except CDN links (fonts, optional libraries).
 
 ```html
 <!DOCTYPE html>
@@ -235,95 +256,46 @@ Every diagram is a single self-contained `.html` file. No external assets except
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Descriptive Title</title>
-  <link href="https://fonts.googleapis.com/css2?family=...&display=swap" rel="stylesheet">
-  <style>
-    /* CSS custom properties, theme, layout, components — all inline */
-  </style>
+  <link href="https://fonts.googleapis.com/..." rel="stylesheet">
+  <style>/* All inline. */</style>
 </head>
 <body>
   <!-- Semantic HTML: sections, headings, lists, tables, inline SVG -->
-  <!-- No script needed for static CSS-only diagrams -->
-  <!-- Optional: <script> for Mermaid, Chart.js, or anime.js when used -->
+  <!-- Optional <script> for Mermaid, Chart.js, anime.js when used -->
 </body>
 </html>
 ```
 
+Multi-doc mode: a folder with `index.md`, `*.md`, `render.py`, `styles.css`, and generated `*.html`. See `references/multi-doc-site.md`.
+
 ## Quality Checks
 
-Before delivering, verify:
-- **The squint test**: Blur your eyes. Can you still perceive hierarchy? Are sections visually distinct?
-- **The swap test**: Would replacing your fonts and colors with a generic dark theme make this indistinguishable from a template? If yes, push the aesthetic further.
-- **Both themes**: Toggle your OS between light and dark mode. Both should look intentional, not broken.
-- **Information completeness**: Does the diagram actually convey what the user asked for? Pretty but incomplete is a failure.
-- **No overflow**: Resize the browser to different widths. No content should clip or escape its container. Every grid and flex child needs `min-width: 0`. Side-by-side panels need `overflow-wrap: break-word`. Never use `display: flex` on `<li>` for marker characters — it creates anonymous flex items that can't shrink, causing lines with many inline `<code>` badges to overflow. Use absolute positioning for markers instead. See the Overflow Protection section in `./references/css-patterns.md`.
-- **Mermaid zoom controls**: Every `.mermaid-wrap` container must have zoom controls (+/−/reset buttons), Ctrl/Cmd+scroll zoom, and click-and-drag panning. Complex diagrams render too small without them. The cursor should change to `grab` when zoomed in and `grabbing` while dragging. See `./references/css-patterns.md` for the full pattern.
-- **File opens cleanly**: No console errors, no broken font loads, no layout shifts.
+Grade against the rubric inline before delivering. Six weighted dimensions, 100 points total. Passing score **≥ 75/100** with no FAIL on `script` or `hybrid` dimensions. Full criteria in `references/quality-rubric.md`.
 
-## Anti-Patterns (AI Slop)
+| # | Dimension | Pts | What it checks |
+|---|---|---|---|
+| 1 | **Form-Audience Match** | 25 | Right form for the routed intent + framed audience? Re-teaching audit passed? **Translation audit passed (Gate 5) if non-expert audience?** Tabs vs scroll vs side-by-side chosen correctly? |
+| 2 | **Story Discipline** | 20 | Spine sentence written? Argument vs report decided? Each section advances or supports the spine? No decoration sections? |
+| 3 | **Voice & Diction** | 20 | Zero em-dashes in body prose. Sentences ≤22 words. No yap. One italic per heading max. Direct address only when reader is an actor. **Pre-ship grep required (see below).** |
+| 4 | **Grounding** | 15 | Claims sourced. Names, dates, paths, numbers verifiable. `scripts/strip-html.py` + grep against source confirms (for system-claim pages). |
+| 5 | **Visual Quality** | 15 | Typography distinctive. Atmosphere present (void test). Both themes intentional. No anti-patterns from `references/anti-patterns.md`. |
+| 6 | **Anti-Pattern Free** | 5 | No Frankenstein form mixing. No forbidden fonts/colors/animations. No glow/pulse. No gradient text. No three-dot code chrome. |
 
-These patterns are explicitly forbidden. They signal "AI-generated template" and undermine the skill's purpose of producing distinctive, high-quality diagrams. Review every generated page against this list.
+If you score yourself below 75, don't ship. Fix the lowest dimension first. Inflated self-grading is also a failure mode: if you're scoring 78 with re-teaching present or no spine statement, you're grading lenient. The dimensions that matter most for argument-led pages are #1 and #2. A page with beautiful typography (#5) still fails if the spine is missing.
 
-### Typography
+**Pre-ship text checks.** On shell-enabled surfaces, run the five Bash grep commands in `references/quality-rubric.md` ("Pre-ship Bash checks") before opening the browser: em-dash audit, forbidden body fonts, forbidden accent colors, Mermaid post-processor presence, atmosphere presence. If any check returns a hit you didn't intend, fix it before opening. Visual inspection is unreliable across surfaces; grep is not.
 
-**Forbidden fonts as primary `--font-body`:**
-- Inter — the single most overused AI default
-- Roboto, Arial, Helvetica — generic system fallbacks promoted to primary
-- system-ui, sans-serif alone — no character, no intent
+Fast-pass tests:
+- **Squint:** hierarchy still readable when blurred? Sections distinct?
+- **Swap:** replace your styling with a generic dark theme. Would anyone notice?
+- **Both themes:** light and dark both intentional, not broken.
+- **Void (dark mode):** corner vs. center visually distinguishable.
+- **Re-teaching audit:** *"Does the reader already know this? If yes, why is it here?"* for every section.
+- **Argument vs report:** can you summarize the spine in one sentence? Right shape (claim for argument, inventory for report)?
+- **Mermaid syntax:** scan against the parser-break list in `references/anti-patterns.md` §6 and `references/libraries.md` "Common Pitfalls".
 
-**Required:** Pick from the font pairings in `./references/libraries.md`. Every generation should use a different pairing from the last.
+**Self-audit script.** For pages claiming things about real systems (file paths, table names, schema columns, framework definitions), run `scripts/strip-html.py <output.html> --stdout` and grep the result against the source repos. The grounding rubric dimension requires this.
 
-### Color Palette
+## Anti-Patterns
 
-**Forbidden accent colors:**
-- Indigo-500/violet-500 (`#8b5cf6`, `#7c3aed`, `#a78bfa`) — Tailwind's default purple range
-- The cyan + magenta + pink neon gradient combination (`#06b6d4` → `#d946ef` → `#f472b6`)
-- Any palette that could be described as "Tailwind defaults with purple/pink/cyan accents"
-
-**Forbidden color effects:**
-- Gradient text on headings (`background: linear-gradient(...); background-clip: text;`) — this screams AI-generated
-- Animated glowing box-shadows on cards (`box-shadow: 0 0 20px var(--glow); animation: glow 2s...`)
-- Multiple overlapping radial glows in accent colors creating a "neon haze"
-
-**Required:** Build palettes from the reference templates (terracotta/sage, teal/cyan, rose/cranberry, slate/blue) or derive from real IDE themes (Dracula, Nord, Solarized, Gruvbox, Catppuccin). Accents should feel intentional, not default.
-
-### Section Headers
-
-**Forbidden:**
-- Emoji icons in section headers (🏗️, ⚙️, 📁, 💻, 📅, 🔗, ⚡, 🔧, 📦, 🚀, etc.)
-- Section headers that all use the same icon-in-rounded-box pattern
-
-**Required:** Use styled monospace labels with colored dot indicators (see `.section-label` in templates), numbered badges (`section__num` pattern), or asymmetric section dividers. If an icon is genuinely needed, use an inline SVG that matches the palette — not emoji.
-
-### Layout & Hierarchy
-
-**Forbidden:**
-- Perfectly centered everything with uniform padding
-- All cards styled identically with the same border-radius, shadow, and spacing
-- Every section getting equal visual treatment — no hero/primary vs. secondary distinction
-- Symmetric layouts where left and right halves mirror each other
-
-**Required:** Vary visual weight. Hero sections should dominate (larger type, more padding, accent-tinted background). Reference sections should feel compact. Use the depth tiers (hero → elevated → default → recessed). Asymmetric layouts create interest.
-
-### Template Patterns
-
-**Forbidden:**
-- Three-dot window chrome (red/yellow/green dots) on code blocks — this is a cliché
-- KPI cards where every metric has identical gradient text treatment
-- "Neon Dashboard" as an aesthetic choice — it always produces generic results
-- Gradient meshes with pink/purple/cyan blobs in the background
-
-**Required:** Code blocks use a simple header with filename or language label. KPI cards vary by importance — hero numbers for the primary metric, subdued treatment for supporting metrics. Pick aesthetics with natural constraints: Blueprint (must feel technical/precise), Editorial (must have generous whitespace and serif typography), Paper/ink (must feel warm and informal).
-
-### The Slop Test
-
-Before delivering, apply this test: **Would a developer looking at this page immediately think "AI generated this"?** The telltale signs:
-
-1. Inter or Roboto font with purple/violet gradient accents
-2. Every heading has `background-clip: text` gradient
-3. Emoji icons leading every section
-4. Glowing cards with animated shadows
-5. Cyan-magenta-pink color scheme on dark background
-6. Perfectly uniform card grid with no visual hierarchy
-7. Three-dot code block chrome
-
-If two or more of these are present, the page is slop. Regenerate with a different aesthetic direction — Editorial, Blueprint, Paper/ink, or a specific IDE theme. These constrained aesthetics are harder to mess up because they have specific visual requirements that prevent defaulting to generic patterns.
+Full library: `references/anti-patterns.md` (10 categories, ~30 documented failure modes). Read before generating; re-read the relevant section while drafting if the page touches that category.
