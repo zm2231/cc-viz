@@ -60,7 +60,7 @@ If two or more modes plausibly apply and the conversation context doesn't disamb
 
 Ask at most two. Ask only what conversation context doesn't already answer. Don't ask "what's this about" when invoked in a project where the answer is obvious from prior turns.
 
-**Skip 0.5 entirely when invoked mid-session with rich context from prior turns.** If you've been working with the user for an hour on a subject and they ask for a page about it, the audience and form are already known. Asking degrades trust. The cost of the wrong question is the same as the cost of the wrong answer — it makes the skill feel like a wizard.
+**Skip 0.5 entirely when invoked mid-session with rich context from prior turns.** If you've been working on a subject for an hour and the user asks for a page about it, the audience and form are already known. Don't ask. Asking what conversation context already answers feels like a wizard.
 
 ### 0.7. Load accumulated judgment (if present)
 
@@ -72,7 +72,7 @@ If present, read it and apply. If absent, proceed normally.
 
 ### 1. Frame the story (before anything visual)
 
-Four checkpoints. **All four are gates** — don't proceed to Step 2 with any of them unfilled. Skipping these is the single most common cc-viz failure mode (the agent jumps from source material to HTML, the page becomes "list of facts in nice boxes" — voice-flat, forgettable).
+Four gates. All four must be filled before Step 2. Skipping them is the most common cc-viz failure: agent jumps from source to HTML, page becomes a list of facts in boxes.
 
 **Gate 1 — Spine sentence (REQUIRED, fill the blank before continuing):**
 
@@ -105,7 +105,7 @@ If you can't write the spine sentence in 10 seconds, stop. Re-read the source. D
 
 ### 2. Pick a form, commit fully
 
-Form precedes aesthetic. Pick one form's structural vocabulary and commit. Frankensteins — a board-memo recommendation card grafted onto a magazine drop-cap, a slide-deck hero pasted above a dashboard grid — read as half-finished.
+Form precedes aesthetic. Pick one form's structural vocabulary and commit. Frankensteins read as half-finished: a board-memo recommendation card grafted onto a magazine drop-cap, a slide-deck hero pasted above a dashboard grid.
 
 | Form | Register | Structural vocabulary | When |
 |---|---|---|---|
@@ -119,15 +119,15 @@ Form precedes aesthetic. Pick one form's structural vocabulary and commit. Frank
 | **Quick share / lightweight** | Direct, low-friction | Single page, focused, fast, minimal chrome | Mid-flow shares, work-in-progress pings, "send Max this" |
 | **Multi-doc site** | Form follows page register | Per-page registers under one shared stylesheet | 3+ pages user will iterate; see `references/multi-doc-site.md` |
 
-Pick based on routed intent (Step 0) and framed audience/register (Step 1). If two forms could plausibly fit, pick the one that does the audience's reading work for them — the form that lets them read in three minutes what would take ten in another form.
+Pick based on routed intent (Step 0) and framed audience/register (Step 1). If two forms could plausibly fit, pick the one that does the audience's reading work for them: the form that lets them read in three minutes what would take ten in another form.
 
 **Anti-Frankenstein rule.** Once the form is chosen, every element on the page serves that form. The form's structural vocabulary is the only structural vocabulary you use.
 
-**Patterns that have landed.** Before inventing new composition, check `references/patterns.md` — a catalog of specific cc-viz forms that worked in real runs (status strip + recommendation card, three-column kicker masthead, etc.) with markup examples. A pattern that's worked before is more likely to work again than a freshly invented one.
+**Patterns that have landed.** Before inventing new composition, check `references/patterns.md`. It catalogs specific cc-viz forms that worked in real runs (status strip + recommendation card, three-column kicker masthead, etc.) with markup examples. A pattern that's worked before is more likely to work again than a freshly invented one.
 
-**Tabs vs scrolling.** Tabs are right when the content has 3+ distinct lenses on the same subject (who / what / how / when, or technical / business / risk / next-steps). 4–5 tabs is the sweet spot; ≥6 means the lenses aren't actually distinct, fold some together. Tabs are wrong when content flows linearly (intro → context → analysis → recommendation): use a single scrolling page so the reader can scan and back-reference. If the reader needs to compare sections side-by-side, neither tabs nor scroll works — use a two-column layout.
+**Tabs vs scrolling.** Tabs are right when content has 3+ distinct lenses on the same subject (who / what / how / when, or technical / business / risk / next-steps). 4–5 is the sweet spot; ≥6 means the lenses aren't actually distinct, fold some together. Tabs are wrong when content flows linearly (intro → context → analysis → recommendation): use a single scrolling page. For side-by-side comparison, use a two-column layout instead.
 
-**Serif body vs sans body.** Reading-serif body (Source Serif 4, Lora, Newsreader) is the strongest "document" signal — use when body is paragraphs of prose (memos, briefs, analyses, project recaps). Sans body (IBM Plex Sans, DM Sans) is right when body is dense cards, short labels, tables, or status indicators where a serif at 13–14px feels slow. Don't force a serif body on a card-heavy page; the form decides.
+**Serif body vs sans body.** Reading-serif body (Source Serif 4, Lora, Newsreader) is the strongest "document" signal. Use it when body is paragraphs of prose (memos, briefs, analyses, recaps). Sans body (IBM Plex Sans, DM Sans) is right when body is dense cards, short labels, tables, or status indicators where a serif at 13–14px feels slow. Don't force serif body on a card-heavy page; the form decides.
 
 ### 3. Aesthetic (5 seconds, not 5 minutes)
 
@@ -135,15 +135,15 @@ Commit to a visual direction. Don't default to "dark theme with blue accents" ev
 
 **Aesthetic serves the form's reading task; memorability is a side effect, not the goal.** A cc-viz page exists to be read, scanned, and acted on. If you find yourself reaching for spectacle (dramatic shadows, gradient meshes, noise grain, oversized hero typography for the sake of impact), you're designing a brand site, not a document. Pull back. Form-fit produces memorability on its own when the fit is high.
 
-**Constrained aesthetics (prefer these — they have specific requirements that prevent generic output):**
-- Blueprint — technical drawing feel, subtle grid background, deep slate/blue, monospace labels, precise borders
-- Editorial — serif headlines (Instrument Serif / Crimson Pro), generous whitespace, muted earth tones or deep navy + gold
-- Paper/ink — warm cream `#faf7f5`, terracotta/sage accents, informal feel
-- Monochrome terminal — green/amber on near-black, monospace everything, CRT glow optional
+**Constrained aesthetics (prefer):** their specific requirements prevent generic output.
+- **Blueprint:** technical drawing feel, subtle grid background, deep slate/blue, monospace labels, precise borders
+- **Editorial:** serif headlines (Instrument Serif / Crimson Pro), generous whitespace, muted earth tones or deep navy + gold
+- **Paper/ink:** warm cream `#faf7f5`, terracotta/sage accents, informal feel
+- **Monochrome terminal:** green/amber on near-black, monospace everything, CRT glow optional
 
-**Flexible aesthetics (use with discipline):** IDE-inspired (borrow a real, named scheme: Dracula, Nord, Catppuccin, Solarized, Gruvbox, One Dark, Rosé Pine — commit to the actual palette); data-dense (small type, tight spacing, muted colors).
+**Flexible aesthetics (use with discipline):** IDE-inspired (borrow a real named scheme — Dracula, Nord, Catppuccin, Solarized, Gruvbox, One Dark, Rosé Pine — and commit to the actual palette); data-dense (small type, tight spacing, muted colors).
 
-**Forbidden.** Neon dashboard (cyan + magenta + purple on dark) — always AI slop. Gradient mesh (pink/purple/cyan blobs). Inter + violet/indigo + gradient text — closes the loophole on the worst combo.
+**Forbidden.** Neon dashboard (cyan + magenta + purple on dark) is always AI slop. Same for gradient mesh (pink/purple/cyan blobs) and Inter + violet/indigo + gradient text.
 
 **Swap test.** If you replaced your styling with a generic dark theme and nobody would notice the difference, you haven't designed anything.
 
@@ -177,20 +177,20 @@ CSS/layout patterns + SVG connectors: `./references/css-patterns.md`. Pages with
 | Timeline | CSS (central line + cards) | Simple linear, no layout engine needed |
 | Dashboard | CSS Grid + Chart.js | Card grid with embedded charts |
 
-**Mermaid theming, zoom controls, and class-collision constraints** — all in `references/libraries.md` and `references/css-patterns.md`. Three rules to remember inline: (1) `theme: 'base'` with custom `themeVariables`, never the default; (2) zoom controls require `target.style.zoom` on the `.mermaid` div (not transform, not SVG width); (3) never define `.node` as a page-level CSS class — Mermaid uses it internally, scope under `.mermaid` only.
+**Mermaid theming, zoom controls, and class-collision constraints** all live in `references/libraries.md` and `references/css-patterns.md`. Three rules to remember inline: (1) `theme: 'base'` with custom `themeVariables`, never the default; (2) zoom controls require `target.style.zoom` on the `.mermaid` div (not transform, not SVG width); (3) never define `.node` as a page-level CSS class. Mermaid uses it internally; scope under `.mermaid` only.
 
 ### 5. Style
 
 Apply these inline rules; reach for the references for detail.
 
-**Typography.** Pick a font pairing from `./references/libraries.md`. Vary from recent generations. cc-viz outputs should read as **documents**, not **brand sites or landing pages** — the font list and bans reflect that.
-- **Forbidden as `--font-body`:** Inter (and any Inter variant: Tight / Display / etc.), Roboto, Arial, Helvetica, system-ui alone, **Space Grotesk, Manrope, General Sans, Cabinet Grotesk** (current-decade AI-startup landing-page tells), italic-by-design display serifs (Instrument Serif, Playfair Italic, Fraunces Italic). Display serifs go in `--font-display`, never `--font-body`.
-- **Strongest cc-viz signal:** reading-serif body pairings (Source Serif 4, Lora, Newsreader — pairings 14/15/16 in libraries.md). Long-form body serifs almost never appear on landing pages; they read as "report" immediately.
+**Typography.** Pick a font pairing from `./references/libraries.md`. Vary from recent generations. cc-viz outputs should read as documents, not brand sites or landing pages. The font list and bans reflect that.
+- **Forbidden as `--font-body`:** Inter (and any Inter variant: Tight, Display, etc.), Roboto, Arial, Helvetica, system-ui alone, **Space Grotesk, Manrope, General Sans, Cabinet Grotesk** (current-decade AI-startup landing-page tells), italic-by-design display serifs (Instrument Serif, Playfair Italic, Fraunces Italic). Display serifs go in `--font-display`, never `--font-body`.
+- **Strongest cc-viz signal:** reading-serif body pairings (Source Serif 4, Lora, Newsreader; pairings 14/15/16 in libraries.md). Long-form body serifs almost never appear on landing pages; they read as "report" immediately.
 
 **Color.** CSS custom properties for the full palette. Define at minimum `--bg`, `--surface`, `--border`, `--text`, `--text-dim`, 3-5 semantic accents. Both themes (light + dark) intentional.
 - **Forbidden accents:** `#8b5cf6` `#7c3aed` `#a78bfa` `#d946ef`, the cyan-magenta-pink combination. Tailwind defaults signaling zero design intent.
 
-**Atmosphere is mandatory in dark mode** (also recommended in light). Flat backgrounds produce a void with text floating on it — the worst output cc-viz can emit. The void test: corner vs. center distinguishable? If not, fix it.
+**Atmosphere is mandatory in dark mode** (also recommended in light). Flat backgrounds produce a void with text floating on it. The void test: corner vs. center distinguishable? If not, fix it.
 
 **Prefer reading-friendly atmospheres** — they support the document register:
 - Faint dot or hairline grid (1–3% opacity)
@@ -213,7 +213,7 @@ Apply these inline rules; reach for the references for detail.
 
 **Output location:** `~/.agent/diagrams/`. Descriptive filename: `modem-architecture.html`, `pipeline-flow.html`, `schema-overview.html`. Directory persists across sessions. For multi-doc sites: a folder, `~/.agent/diagrams/<site-name>/`.
 
-**Always open in the browser after writing.** This is not optional — a cc-viz output that isn't opened is half-delivered. The user shouldn't have to click a path to see what you made.
+**Always open in the browser after writing.** Required, not optional.
 - macOS: `open ~/.agent/diagrams/filename.html`
 - Linux: `xdg-open ~/.agent/diagrams/filename.html`
 - Multi-doc: open `index.html` from the folder.
@@ -234,7 +234,7 @@ Most diagram types are routed through Mermaid (see Step 4 table). Notes that don
 
 **Architecture / system.** Two approaches. *Text-heavy overviews* (card content > connections) → CSS Grid with explicit row/column placement, rounded cards with colored borders, monospace labels, vertical flow arrows, nested grids for subsystems (`./templates/architecture.html`). *Topology-focused* (connections > card content) → Mermaid `graph TD` / `graph LR` with custom `themeVariables`.
 
-**State machines.** `stateDiagram-v2` has a strict parser — colons, parens, `<br/>`, HTML entities cause silent parse failures. If labels need any of these (e.g., `cancel()`, `curate: true`, multi-line), use `flowchart LR` with quoted edge labels (`|"label text"|`) instead. Reserve `stateDiagram-v2` for plain-text labels.
+**State machines.** `stateDiagram-v2` has a strict parser: colons, parens, `<br/>`, and HTML entities cause silent parse failures. If labels need any of these (e.g., `cancel()`, `curate: true`, multi-line), use `flowchart LR` with quoted edge labels (`|"label text"|`) instead. Reserve `stateDiagram-v2` for plain-text labels.
 
 **Data tables.** Real `<table>`, not CSS-Grid-pretending. Sticky `<thead>`, alternating row backgrounds, optionally sticky first column, responsive `overflow-x: auto`, column-width hints, row-hover. Status as styled `<span>`, never emoji. Detail + reference in `./templates/data-table.html`.
 
@@ -244,7 +244,7 @@ Most diagram types are routed through Mermaid (see Step 4 table). Notes that don
 
 ## Slide Deck Mode
 
-Opt-in only — invoke via `/generate-slides`, `--slides` flag, or explicit "slide deck" request. Never auto-select.
+Opt-in only. Invoke via `/generate-slides`, the `--slides` flag, or an explicit "slide deck" request. Never auto-select.
 
 Slides are a different medium, not pages reformatted. Each slide is exactly one viewport tall (100dvh) with no scrolling. Typography 2–3× larger. Compose a narrative arc (impact → context → deep dive → resolution), not mechanically paginated source.
 
@@ -288,11 +288,11 @@ Grade against the rubric inline before delivering. Six weighted dimensions, 100 
 | 5 | **Visual Quality** | 15 | Typography distinctive. Atmosphere present (void test). Both themes intentional. No anti-patterns from `references/anti-patterns.md`. |
 | 6 | **Anti-Pattern Free** | 10 | No Frankenstein form mixing. No forbidden fonts/colors/animations. No glow/pulse. No gradient text. No three-dot code chrome. |
 
-If you score yourself below 75, **don't ship — fix the lowest dimension first**. Inflated self-grading is also a failure mode: if you're scoring 78 with re-teaching present or no spine statement, you're grading lenient. The dimensions that matter most for argument-led pages are #1 and #2; the page can have beautiful typography (#5) and still fail if the spine is missing.
+If you score yourself below 75, don't ship. Fix the lowest dimension first. Inflated self-grading is also a failure mode: if you're scoring 78 with re-teaching present or no spine statement, you're grading lenient. The dimensions that matter most for argument-led pages are #1 and #2. A page with beautiful typography (#5) still fails if the spine is missing.
 
 Fast-pass tests:
 - **Squint:** hierarchy still readable when blurred? Sections distinct?
-- **Swap:** generic dark theme replaces yours — would anyone notice?
+- **Swap:** replace your styling with a generic dark theme. Would anyone notice?
 - **Both themes:** light and dark both intentional, not broken.
 - **Void (dark mode):** corner vs. center visually distinguishable.
 - **Re-teaching audit:** *"Does the reader already know this? If yes, why is it here?"* for every section.
