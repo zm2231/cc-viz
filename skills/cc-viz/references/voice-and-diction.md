@@ -19,34 +19,7 @@ The five gates in SKILL.md Step 1 (spine, ground claims, report-vs-argument, re-
 
 If the audience isn't named explicitly in the request, default to **the team that owns the work**: the people who would read this if it were finished. The agent's most common audience-leakage failure is defaulting to "abstract stakeholder" when the real audience is the small team.
 
----
-
-## The story arc question
-
-Before writing a single section, state the page's spine in one sentence:
-
-> *"The ingestion service classifies every incoming event against the existing entity graph, surfaces confirmed patterns to the editor surface, and runs on one Postgres plus one inference gateway."*
-
-If you can't write that sentence, the page has no spine. Stop and write it before continuing.
-
-For analytical, mapping, comparison, synthesis, or decision-oriented work: the spine is a load-bearing **claim**, not a feature inventory. See `quality-rubric.md` Dimension 2 (Story Discipline) and `anti-patterns.md` for the report-vs-argument distinction.
-
----
-
-## Reader's knowledge baseline
-
-Before drafting, separate two lists:
-
-1. **What the reader already knows** about the subject.
-2. **What they need to know from this page.**
-
-The page exists only to close the gap between them. Re-teaching list 1 is condescending; assuming list 2 is opaque. Neither is digestible.
-
-For technical subjects: name the reader's expertise level concretely (junior in this stack, senior in this stack, methodology specialist, executive who has seen demos). Then write to the gap, not from scratch.
-
-A page mapping a subsystem to a framework should not re-introduce what the subsystem is to the person who built it. It should foreground the *mapping*, which is the new thing.
-
-Ask, before writing each section: *"Does the reader already know this? If yes, why is it on the page?"*
+> **Story arc and reader baseline** belong to story framing, not diction. See `story-framing.md` for the spine sentence requirement, the report-vs-argument distinction, and the reader's-knowledge-baseline audit. This file covers voice and diction only.
 
 ---
 

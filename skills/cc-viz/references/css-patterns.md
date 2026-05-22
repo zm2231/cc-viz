@@ -345,7 +345,7 @@ Do NOT use `transform: scale`. It scales visually but doesn't reflow at all, so 
 
 WKWebView caveat: `style.zoom` doesn't visually apply in WKWebView (cmux). Generated HTML is intended for real-browser viewing. If you need to validate in cmux, you won't see zoom changes — open the file in Chrome/Safari directly.
 
-**Small diagrams in slides.** If a diagram has fewer than ~7 nodes with no branching, it will render tiny in a full-viewport slide container. For simple linear flows (A → B → C → D), use CSS pipeline cards instead of Mermaid — see `slide-patterns.md` "CSS Pipeline Slide." Reserve Mermaid for complex graphs where automatic edge routing is actually needed.
+**Small diagrams in slides.** If a diagram has fewer than ~7 nodes with no branching, it will render tiny in a full-viewport slide container. For simple linear flows (A → B → C → D), use CSS pipeline cards instead of Mermaid (see `slide-patterns.md` "CSS Pipeline Slide"). Reserve Mermaid for complex graphs where automatic edge routing earns its place.
 
 ### CSS
 

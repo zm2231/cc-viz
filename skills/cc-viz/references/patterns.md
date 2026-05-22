@@ -177,7 +177,7 @@ Read while drafting if your form matches one of these.
 
 **When to use:** Genuinely matrix-shaped content where the reader's job is to scan a grid (which X touches which Y, which feature appears in which version). NOT when the content is argument-shaped — the matrix becomes a feature inventory and the page reports when it should argue.
 
-**Why it works:** When the content actually IS a matrix (capability vs platform, layer vs dimension, feature vs tier), the table is the most efficient form. Cold, precise, scannable.
+**Why it works:** When the content IS a matrix (capability vs platform, layer vs dimension, feature vs tier), the table is the most efficient form. Cold, precise, scannable.
 
 **Composition:**
 

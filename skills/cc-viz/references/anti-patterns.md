@@ -46,7 +46,7 @@ Read this before generating. Re-read the relevant section while drafting if the 
 
 ### 2.1 Inter or any Inter variant as `--font-body`
 **What happens:** Subagent picks "Inter Tight" or "Inter Display" thinking it's a different font.
-**Why bad:** Inter is the single most overused AI default. Variants are still Inter.
+**Why bad:** Inter is the most overused AI default. Variants are still Inter.
 **Rule:** No Inter, Inter Tight, Inter Display, Inter Pro, or any other Inter cut as `--font-body`.
 **Fix:** Pick from the approved pairings in `libraries.md` (DM Sans, IBM Plex Sans, Bricolage Grotesque, Plus Jakarta Sans, Sora, Fraunces with sans body, etc.).
 **Script check:** `grep -i 'Inter[\s,]' <css>` should not match `--font-body` declarations.

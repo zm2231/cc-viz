@@ -11,7 +11,7 @@ metadata:
 
 Generate self-contained HTML files for technical diagrams, visualizations, and data tables. Always open the result in the browser. Never fall back to ASCII art when this skill is loaded.
 
-**Proactive table rendering.** When you're about to present tabular data as an ASCII box-drawing table in the terminal (comparisons, audits, feature matrices, status reports, any structured rows/columns), generate an HTML page instead. The threshold: if the table has 4+ rows or 3+ columns, it belongs in the browser. Don't wait for the user to ask. Render it as HTML automatically and tell them the file path. Brief text summary in the chat is fine; the table itself is the HTML page. Proactive tables are implicitly **Quick share mode** — skip routing and framing, just ship the table.
+**Proactive table rendering.** When you're about to present tabular data as an ASCII box-drawing table in the terminal (comparisons, audits, feature matrices, status reports, any structured rows/columns), generate an HTML page instead. The threshold: if the table has 4+ rows or 3+ columns, it belongs in the browser. Don't wait for the user to ask. Render it as HTML automatically and tell them the file path. Brief text summary in the chat is fine; the table itself is the HTML page. Proactive tables are implicitly **Quick share mode**: skip routing and framing, just ship the table.
 
 ## When NOT to use cc-viz
 
@@ -55,8 +55,8 @@ Map the intent to a mode:
 If two or more modes plausibly apply and the conversation context doesn't disambiguate, surface one or two clarifying questions before drafting:
 
 - *"Quick share, internal brief, or external deliverable?"*
-- *"Who's reading it — you, your team, or someone outside?"*
-- *"Form preference — board memo, magazine editorial, broadside, or something else?"*
+- *"Who's reading it: you, your team, or someone outside?"*
+- *"Form preference: board memo, magazine editorial, broadside, or something else?"*
 
 Ask at most two. Ask only what conversation context doesn't already answer. Don't ask "what's this about" when invoked in a project where the answer is obvious from prior turns.
 
@@ -64,11 +64,11 @@ Ask at most two. Ask only what conversation context doesn't already answer. Don'
 
 ### 0.7. Load accumulated judgment (if present)
 
-Before drafting, check for `.cc-viz/context.md` in the project root. **Most invocations won't have one** — don't expect it. When it exists, it was created intentionally by the user after a few iterations on this project, and it captures: typical audience, register preferences, anti-pattern history, prior decisions about form, accumulated diction notes, things to never repeat.
+Before drafting, check for `.cc-viz/context.md` in the project root. **Most invocations won't have one.** Don't expect it. When the file exists, the user created it intentionally after a few iterations on this project, and it captures: typical audience, register preferences, anti-pattern history, prior decisions about form, accumulated diction notes, things to never repeat.
 
 If present, read it and apply. If absent, proceed normally.
 
-**Writing back.** At the end of a session, if something non-obvious got established (an aesthetic that landed, a phrase that didn't, an audience preference, a font that worked) — and the user gives a signal the work will continue (multiple iterations, "next time", "for future runs") — offer to create or update `.cc-viz/context.md` with one or two lines capturing the lesson. Don't write back unprompted on a one-off run; the file should accumulate slowly, not bloat.
+**Writing back.** At the end of a session, if something non-obvious got established (an aesthetic that landed, a phrase that didn't, an audience preference, a font that worked) and the user gives a signal the work will continue (multiple iterations, "next time", "for future runs"), offer to create or update `.cc-viz/context.md` with one or two lines capturing the lesson. Don't write back unprompted on a one-off run; the file should accumulate slowly, not bloat.
 
 ### 1. Frame the story (before anything visual)
 
@@ -83,7 +83,7 @@ Examples:
 - *"The point of contact is gone and the contract is an orphan, but the systems intelligence is real. Here's what we need to know to proposal this correctly."*
 - *"The migration cuts query p99 latency by 40% but introduces a backfill window we have to plan for."*
 
-If you can't write the spine sentence in 10 seconds, stop. Re-read the source. Don't proceed until the sentence is on the page (literally, in your draft notes, before you write any HTML).
+If you can't write the spine sentence in 10 seconds, stop. Re-read the source. Don't proceed until the sentence is on the page, in your draft notes, before you write any HTML.
 
 **Gate 2 — Ground claims.** Speculation reads identical to truth on the page; only the reader who knows the territory can tell the difference. Any page making claims about a real system, project, or decision must be grounded in evidence first. Adjust depth to the routed mode (Quick share = lean on what's loaded; Internal brief = thorough; External deliverable = exhaustive). Never skip entirely. Methodology: `references/story-framing.md`.
 
@@ -97,7 +97,7 @@ If you can't write the spine sentence in 10 seconds, stop. Re-read the source. D
 
 1. **Vocabulary:** swap technical terms for plain analogues (worktree → sealed room, YAML → recipe, orchestrator → kitchen line).
 2. **Framing:** the *category* of thing you're describing must come from their world, not yours. *"Running a small operation through ChatGPT"* assumes business-operator framing; *"software teams"* assumes professional context. Both fail for a general community audience. Pick framings the reader already lives inside.
-3. **Examples and aspirations:** every example, every "if you've been feeling…" hook, every comparison must point at a situation the reader has actually been in. If the example needs translation, the example is wrong — pick a different one.
+3. **Examples and aspirations:** every example, every "if you've been feeling…" hook, every comparison must point at a situation the reader has lived. If the example needs translation, the example is wrong. Pick a different one.
 
 The most common Gate-5 failure is translating vocabulary while leaving framing and examples in the original audience's world. The page reads like a tech doc with the words swapped, not a piece written for the reader from scratch.
 
@@ -108,7 +108,7 @@ The most common Gate-5 failure is translating vocabulary while leaving framing a
 - No em dashes (`—`) in body prose. Strongest single AI tell. Citations only.
 - Sentences ≤22 words; paragraphs ≤3 sentences. One technical-precision exception per page.
 - Direct address (*you / your*) only when the reader is an actor (system behavior, touchpoints, consequences). Not in meta-framing.
-- One italic-emphasis point per heading, per pull quote, per card. Italic is a budget, not a default. **At display scale (≥40px) on serif headlines, prefer zero italic emphasis** — italic-on-serif at hero size reads decorative / fashion-magazine, not editorial. Save italic for body text and sub-headings where the contrast is quieter.
+- One italic-emphasis point per heading, per pull quote, per card. Italic is a budget, not a default. **At display scale (≥40px) on serif headlines, prefer zero italic emphasis.** Italic-on-serif at hero size reads decorative or fashion-magazine, not editorial. Save italic for body text and sub-headings where the contrast is quieter.
 - No yap. Cut every hedge-starting sentence. Trim before commit.
 
 ### 2. Pick a form, commit fully
@@ -133,7 +133,7 @@ Pick based on routed intent (Step 0) and framed audience/register (Step 1). If t
 
 **Patterns that have landed.** Before inventing new composition, check `references/patterns.md`. It catalogs specific cc-viz forms that worked in real runs (status strip + recommendation card, three-column kicker masthead, etc.) with markup examples. A pattern that's worked before is more likely to work again than a freshly invented one.
 
-**Tabs vs scrolling.** Tabs are right when content has 3+ distinct lenses on the same subject (who / what / how / when, or technical / business / risk / next-steps). 4–5 is the sweet spot; ≥6 means the lenses aren't actually distinct, fold some together. Tabs are wrong when content flows linearly (intro → context → analysis → recommendation): use a single scrolling page. For side-by-side comparison, use a two-column layout instead.
+**Tabs vs scrolling.** Tabs are right when content has 3+ distinct lenses on the same subject (who / what / how / when, or technical / business / risk / next-steps). 4–5 is the sweet spot; ≥6 means the lenses aren't distinct, fold some together. Tabs are wrong when content flows linearly (intro → context → analysis → recommendation): use a single scrolling page. For side-by-side comparison, use a two-column layout instead.
 
 **Serif body vs sans body.** Reading-serif body (Source Serif 4, Lora, Newsreader) is the strongest "document" signal. Use it when body is paragraphs of prose (memos, briefs, analyses, recaps). Sans body (IBM Plex Sans, DM Sans) is right when body is dense cards, short labels, tables, or status indicators where a serif at 13–14px feels slow. Don't force serif body on a card-heavy page; the form decides.
 
@@ -149,7 +149,7 @@ Commit to a visual direction. Don't default to "dark theme with blue accents" ev
 - **Paper/ink:** warm cream `#faf7f5`, terracotta/sage accents, informal feel
 - **Monochrome terminal:** green/amber on near-black, monospace everything, CRT glow optional
 
-**Flexible aesthetics (use with discipline):** IDE-inspired (borrow a real named scheme — Dracula, Nord, Catppuccin, Solarized, Gruvbox, One Dark, Rosé Pine — and commit to the actual palette); data-dense (small type, tight spacing, muted colors).
+**Flexible aesthetics (use with discipline):** IDE-inspired (borrow a real named scheme: Dracula, Nord, Catppuccin, Solarized, Gruvbox, One Dark, or Rosé Pine; commit to the actual palette); data-dense (small type, tight spacing, muted colors).
 
 **Forbidden.** Neon dashboard (cyan + magenta + purple on dark) is always AI slop. Same for gradient mesh (pink/purple/cyan blobs) and Inter + violet/indigo + gradient text.
 
@@ -221,7 +221,7 @@ Apply these inline rules; reach for the references for detail.
 
 **Output location:** `~/.agent/diagrams/`. Descriptive filename: `modem-architecture.html`, `pipeline-flow.html`, `schema-overview.html`. Directory persists across sessions. For multi-doc sites: a folder, `~/.agent/diagrams/<site-name>/`.
 
-**Always open in the browser after writing** (when the surface has shell + local browser access — Claude Code CLI, IDE, or another shell-enabled environment). On Claude.ai web or desktop, the agent cannot open files in the user's browser; in that case, hand off the file path and let the user open it. Required when possible, skip when not.
+**Always open in the browser after writing** when the surface has shell and local browser access (Claude Code CLI, IDE, or another shell-enabled environment). On Claude.ai web or desktop, the agent cannot open files in the user's browser; hand off the file path and let the user open it. Required when possible, skip when not.
 - macOS: `open ~/.agent/diagrams/filename.html`
 - Linux: `xdg-open ~/.agent/diagrams/filename.html`
 - Multi-doc: open `index.html` from the folder.
@@ -248,11 +248,11 @@ Most diagram types are routed through Mermaid (see Step 4 table). Notes that don
 
 **Timeline.** Vertical or horizontal with a CSS pseudo-element line. Phase markers as circles on the line. Cards alternating or single-side. Color progression from past (muted) to future (vivid).
 
-**Dashboard.** Card grid with hero numbers. Sparklines via inline SVG `<polyline>`. Progress bars via CSS gradient. Real charts via Chart.js (CDN — see `references/libraries.md`). KPI cards with trend indicators.
+**Dashboard.** Card grid with hero numbers. Sparklines via inline SVG `<polyline>`. Progress bars via CSS gradient. Real charts via Chart.js (CDN; see `references/libraries.md`). KPI cards with trend indicators.
 
 ## Slide Deck Mode
 
-**When to choose slides.** Slides are right when the artifact will be shown live (presentation, walkthrough, talk, demo, community session) or when the user explicitly asks for a deck. Trigger words that justify auto-selecting slides: *"deck about"*, *"presenting"*, *"showing tomorrow"*, *"walk them through"*, *"talk on"*, *"slides for"*, or the `--slides` / `/generate-slides` invocation. Live-delivery context is a valid signal — don't refuse to pick slides just because the user said "brief" if they also said "showing tomorrow."
+**When to choose slides.** Slides are right when the artifact will be shown live (presentation, walkthrough, talk, demo, community session) or when the user explicitly asks for a deck. Trigger words that justify auto-selecting slides: *"deck about"*, *"presenting"*, *"showing tomorrow"*, *"walk them through"*, *"talk on"*, *"slides for"*, or the `--slides` / `/generate-slides` invocation. Live-delivery context is a valid signal. Don't refuse to pick slides just because the user said "brief" if they also said "showing tomorrow."
 
 **When NOT to choose slides.** A document meant for asynchronous reading (memo, audit, RFC, recap, status report) is a scrolling page, not a deck. If the user says "brief" or "memo" without any live-delivery context, default to scrolling. If genuinely ambiguous between brief and deck, ask one question.
 

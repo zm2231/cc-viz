@@ -1,16 +1,16 @@
 # Story framing
 
-Elaboration of SKILL.md Step 1. The inline rules (frame story before drafting, ground claims, voice rules) are load-bearing and stay in SKILL.md. This file holds the *how* — the grounding-pass methodology, the report-vs-argument distinction at depth, and the reader-baseline discipline.
+Elaboration of SKILL.md Step 1. The inline rules (frame story before drafting, ground claims, voice rules) are load-bearing and stay in SKILL.md. This file holds the *how*: the grounding-pass methodology, the report-vs-argument distinction at depth, and the reader-baseline discipline.
 
 Load this when the routed mode is Internal brief, External deliverable, Strategic / decision memo, or anytime the page is making claims about a real system, project, person, market, or decision and the stakes warrant grounding past README-depth.
 
-> **Example spine sentences below are illustrative — built around a hypothetical "ingestion service" subsystem. Substitute your own subject when applying the methodology. The shape of the framing matters, not the names.**
+> **Example spine sentences below are illustrative, built around a hypothetical "ingestion service" subsystem. Substitute your own subject when applying the methodology. The shape of the framing matters, not the names.**
 
 ## The grounding pass
 
 Speculation reads identical to truth on the page; only the reader who knows the territory can tell the difference. Adjust depth to the routed mode (Quick share = lean on what's loaded; Internal brief = thorough; External deliverable = exhaustive). Never skip it entirely.
 
-The methodology is generic; the tooling is whatever this user/project has wired up. The skill does not mandate specific tools — it mandates that grounding happens.
+The methodology is generic; the tooling is whatever this user or project has wired up. The skill does not mandate specific tools. It mandates that grounding happens.
 
 **Read the system's actual state, not its description of itself.**
 - For a codebase: the entry file end-to-end, every config that defines runtime bindings, the schema or migrations, a sample of route handlers or core modules, the recent commit log.
@@ -19,7 +19,7 @@ The methodology is generic; the tooling is whatever this user/project has wired 
 
 **Check what's been changing.** `git log` for code, recent activity feeds for projects, recent web/news for markets. The story should foreground what's *currently* in motion, not what the docs froze months ago.
 
-**Read the corner files.** `CLAUDE.md`, `AGENTS.md`, `DEVELOPMENT.md`, design docs in subdirectories — these often hold the real invariants and gotchas the top-level README skips.
+**Read the corner files.** `CLAUDE.md`, `AGENTS.md`, `DEVELOPMENT.md`, design docs in subdirectories. These often hold the real invariants and gotchas the top-level README skips.
 
 **Use whatever evidence corpora the surface exposes.** On Claude.ai web/desktop: web search and uploaded files. In Claude Code (CLI / IDE) or another shell-enabled surface: also the project's grep/search tools, semantic indexes, MCP-exposed services, vector indexes over your own corpus, transcripts, prior session notes. The methodology is identical; the available tools differ.
 
@@ -35,7 +35,7 @@ An **argument** makes a claim. *"The ingestion service was built to extract a fo
 
 Most analytical, mapping, comparison, synthesis, decision-memo, or strategic work is argument-led. The artifacts (files, columns, thresholds, schema references, commit hashes, framework citations) are *evidence FOR the argument*, not the argument itself. A page that lists "these files exist, these columns exist, this maps to that" has shown evidence; it has not told a story. The page must be summarizable in one sentence as: *"X is the case, and here's why it matters."*
 
-If you find yourself building a feature inventory or a matrix as the page's spine, ask whether the page should actually be a report (intent: catalog or reference) or an argument (intent: make a claim about what the catalog means). For argument intent, restructure: lead with the load-bearing claim, support each section with the evidence that defends it, close with the implication. The matrix may still appear, but as one supporting element under a claim, not as the page's backbone.
+If you find yourself building a feature inventory or a matrix as the page's spine, ask whether the page should be a report (intent: catalog or reference) or an argument (intent: make a claim about what the catalog means). For argument intent, restructure: lead with the load-bearing claim, support each section with the evidence that defends it, close with the implication. The matrix may still appear, but as one supporting element under a claim, not as the page's backbone.
 
 ## Story arc
 
@@ -58,11 +58,11 @@ Pick one and hold it across every label, heading, and paragraph. Mixing register
 - **Engineering-confessional.** *"We got this wrong twice."* Honest about the path. For post-mortems, lessons-learned, retro decks.
 - **Executive-impact.** *"60% reduction in classification miss rate."* Numbers and consequence. For leadership reviews, proposals, board memos.
 
-The form chosen in Step 2 constrains register. Magazine editorial doesn't mix with executive-impact; broadside doesn't mix with engineering-confessional. If the chosen register fights the form, change one of them — don't ship the mix.
+The form chosen in Step 2 constrains register. Magazine editorial doesn't mix with executive-impact; broadside doesn't mix with engineering-confessional. If the chosen register fights the form, change one of them. Don't ship the mix.
 
 ## Information at what level of detail
 
-Every section answers a question the reader has at that point. The reader's questions arrive in an order — answer them in that order.
+Every section answers a question the reader has at that point. The reader's questions arrive in an order. Answer them in that order.
 
 Inventory what must appear (file paths, decision rationale, error rates, schema names) and assign each to the section where the reader will need it. Don't dump an inventory in one section and refer back to it; surface the relevant detail where the question lands.
 
@@ -78,6 +78,6 @@ Re-teaching is the most common failure mode for pages that look thorough but fee
 
 ## Connecting back to drafting
 
-By the time you've worked through grounding, story arc, report-vs-argument, audience, register, info-detail, and baseline — the actual draft is mostly inevitable. You know what each section answers, in what order, in what voice, with what evidence. The drafting itself takes minutes; the framing took the work.
+By the time you've worked through grounding, story arc, report-vs-argument, audience, register, info-detail, and baseline, the draft is mostly inevitable. You know what each section answers, in what order, in what voice, with what evidence. The drafting itself takes minutes; the framing took the work.
 
 Skip the framing and the drafting takes ten rounds.
