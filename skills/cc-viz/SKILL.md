@@ -108,7 +108,7 @@ The most common Gate-5 failure is translating vocabulary while leaving framing a
 - No em dashes (`—`) in body prose. Strongest single AI tell. Citations only.
 - Sentences ≤22 words; paragraphs ≤3 sentences. One technical-precision exception per page.
 - Direct address (*you / your*) only when the reader is an actor (system behavior, touchpoints, consequences). Not in meta-framing.
-- One italic-emphasis point per heading, per pull quote, per card. Italic is a budget, not a default.
+- One italic-emphasis point per heading, per pull quote, per card. Italic is a budget, not a default. **At display scale (≥40px) on serif headlines, prefer zero italic emphasis** — italic-on-serif at hero size reads decorative / fashion-magazine, not editorial. Save italic for body text and sub-headings where the contrast is quieter.
 - No yap. Cut every hedge-starting sentence. Trim before commit.
 
 ### 2. Pick a form, commit fully

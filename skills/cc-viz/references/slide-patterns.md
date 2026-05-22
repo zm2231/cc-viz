@@ -471,6 +471,8 @@ Full-viewport hero. Background treatment via gradient, texture, or surf-generate
 
 **Alignment rule.** Every element on a title slide shares the same alignment — all center, or all left-edge. Never mix (centered eyebrow + logo above a left-aligned hero h1 is the failure mode; reads as broken). If you place a logo or chip above the title with `text-align: center`, the h1 and subtitle below must also be `text-align: center`. If the design calls for a left-aligned hero, then the eyebrow + logo also go on the left edge.
 
+**Italic emphasis rule.** Title slides almost always look better with no italic emphasis on individual words in the hero h1. Italic-on-serif at 80–120px reads decorative, fashion-magazine — the visual weight of italic letterforms at hero scale dominates the plain words around them, and the slide reads as styled rather than direct. *"Stop chatting with AI. Start handing it the job."* is stronger than *"Stop chatting **with** AI. Start **handing it** the job."* Save italic for divider slides, pull quotes, or body callouts where the contrast is quieter. The "one italic per heading" budget from SKILL.md is a ceiling, not a target — for title slides specifically, the target is zero.
+
 ```html
 <section class="slide slide--title">
   <svg class="slide__decor" ...><!-- optional decorative accent --></svg>
