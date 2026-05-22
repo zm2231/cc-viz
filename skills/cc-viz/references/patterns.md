@@ -1,6 +1,6 @@
 # cc-viz Winning Patterns
 
-Patterns extracted from cc-viz outputs that landed well. Each entry: name, when to use, why it works, example markup or composition. Prefer reaching for these over inventing new patterns from scratch — a pattern that has worked once will likely work again on similar content shape.
+Patterns extracted from cc-viz outputs that landed well. Each entry: name, when to use, why it works, example markup or composition. Prefer reaching for these over inventing new patterns from scratch. A pattern that has worked once will likely work again on similar content shape.
 
 Read while drafting if your form matches one of these.
 
@@ -70,7 +70,7 @@ Read while drafting if your form matches one of these.
 ```
 
 **Key constraints:**
-- Tagged rows have a left-border accent rule plus the "DO THIS" pill — both, not either.
+- Tagged rows have a left-border accent rule plus the "DO THIS" pill (both, not either).
 - Untagged rows stay visually quieter (no accent, no border emphasis).
 - Effort column uses tier names (`Quick`, `Sprint week`, `Multi-week sprint`, `Multi-month`) followed by day counts, not just weeks.
 - Decision criterion column is a question, not a description.
@@ -130,7 +130,7 @@ Read while drafting if your form matches one of these.
 
 **Key constraints:**
 - Drop-cap caps at 5em, not 7.5em (theatrical).
-- `break-inside: avoid-column` on every paragraph — sentences don't split across columns.
+- `break-inside: avoid-column` on every paragraph so sentences don't split across columns.
 - Roman numerals are lowercase italic (i, ii, iii) for editorial register, not capital I/II/III.
 
 ---
@@ -166,7 +166,7 @@ Read while drafting if your form matches one of these.
 **Key constraints:**
 - Hero h1 IS the load-bearing claim, full sentence, single italic emphasis.
 - Each section heading is a claim ("X *is* Y", "Y is the spine", "Why we hold the four apart"), not a topic ("Conditional Dimension", "Section II").
-- Evidence appears as supporting markup under the claim — code tags, file paths, schema references — not as the section's primary content.
+- Evidence appears as supporting markup under the claim (code tags, file paths, schema references), not as the section's primary content.
 - Closing section names the implication or open question, not just a summary.
 
 ---
@@ -175,7 +175,7 @@ Read while drafting if your form matches one of these.
 
 **Form:** Data journalism / matrix ledger.
 
-**When to use:** Genuinely matrix-shaped content where the reader's job is to scan a grid (which X touches which Y, which feature appears in which version). NOT when the content is argument-shaped — the matrix becomes a feature inventory and the page reports when it should argue.
+**When to use:** Genuinely matrix-shaped content where the reader's job is to scan a grid (which X touches which Y, which feature appears in which version). NOT when the content is argument-shaped; the matrix becomes a feature inventory and the page reports when it should argue.
 
 **Why it works:** When the content IS a matrix (capability vs platform, layer vs dimension, feature vs tier), the table is the most efficient form. Cold, precise, scannable.
 
@@ -263,7 +263,7 @@ Read while drafting if your form matches one of these.
 **Key constraints:**
 - `<blockquote>` not `<pre>`. `<pre>` preserves trailing whitespace and inflates the bar past the text.
 - Inner `<p>` and `<cite>` — NOT free text and an inline cite tag.
-- `padding: 0.25em` top/bottom in em units — bar tracks text height naturally.
+- `padding: 0.25em` top/bottom in em units; bar tracks text height naturally.
 - Font-size 24px max. 32px+ overheats.
 - Em dash in cite is allowed (citation line). NOT in the quote body.
 
@@ -295,7 +295,7 @@ Read while drafting if your form matches one of these.
 
 **Form:** Any dark-mode page.
 
-**When to use:** Whenever the page's bg is dark — the void test demands atmosphere.
+**When to use:** Whenever the page's bg is dark. The void test demands atmosphere.
 
 **Why it works:** Two soft radial washes from corners give the page a horizon and depth without color shift. A single radial reads as a spotlight; two reads as a room.
 
@@ -313,7 +313,7 @@ body {
 
 **Key constraints:**
 - One radial in the accent color, one in a quieter secondary (slate, deep teal, etc.).
-- Linear gradient as the base layer — between two near-neighbor colors, not contrasty.
+- Linear gradient as the base layer, between two near-neighbor colors, not contrasty.
 - `background-attachment: fixed` so the atmosphere doesn't scroll with content.
 - Optional 2.5% opacity hairline grid pattern on top for surface texture.
 

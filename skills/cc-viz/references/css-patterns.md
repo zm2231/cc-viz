@@ -8,7 +8,7 @@ These rules fix the most common cc-viz readability defects: dense unbroken parag
 
 ### Body measure: 65–75ch
 
-Every prose container — `<p>`, `.section-intro`, card body — must cap at `max-width: 68ch` (or 65–75ch). Above 75ch the eye loses its place tracking line wraps; below 45ch reading rhythm fragments. This is the single highest-impact fix for "isn't very clean to read."
+Every prose container (`<p>`, `.section-intro`, card body) must cap at `max-width: 68ch` (or 65–75ch). Above 75ch the eye loses its place tracking line wraps; below 45ch reading rhythm fragments. This is the highest-impact fix for "isn't very clean to read."
 
 ```css
 p, .section-intro, .ve-card p, .pull p {
@@ -21,7 +21,7 @@ When a section has both prose and a wide diagram, the prose constrains to 68ch e
 
 ### Dark-mode text compensation triad
 
-Light text on a dark background looks lighter than dark text on light at the same numeric weight — perceived weight drops on three axes simultaneously, so all three need to be compensated:
+Light text on a dark background looks lighter than dark text on light at the same numeric weight. Perceived weight drops on three axes simultaneously, so all three need to be compensated:
 
 ```css
 @media (prefers-color-scheme: dark) {
@@ -33,7 +33,7 @@ Light text on a dark background looks lighter than dark text on light at the sam
 }
 ```
 
-If the body font doesn't have a 450 weight (most don't), use 500 and step display weights down by one to keep the scale ratio. Without this triad, dark-mode prose reads heavy-flat — visually thick but optically dim. The fix is invisible if you do all three; halfway fixes look broken.
+If the body font doesn't have a 450 weight (most don't), use 500 and step display weights down by one to keep the scale ratio. Without this triad, dark-mode prose reads heavy-flat: visually thick but optically dim. The fix is invisible if you do all three; halfway fixes look broken.
 
 ### Vertical rhythm: line-height as the spacing unit
 
@@ -47,7 +47,7 @@ Pick one:
 - **Space-between** (digital default): `p + p { margin-top: 1em; }`, no first-line indent.
 - **Indent-only** (long-form editorial): `p + p { text-indent: 1.5em; margin-top: 0; }`, no inter-paragraph space.
 
-Doing both — what most AI-generated layouts do by reflex — produces visual noise. The reader sees both an indent and a gap and the rhythm collapses.
+Doing both (what most AI-generated layouts do by reflex) produces visual noise. The reader sees both an indent and a gap and the rhythm collapses.
 
 ### Modular scale: ≥1.25 ratio between steps
 
@@ -59,11 +59,11 @@ Flat scales (14, 15, 16, 18, 20px) read as muddy hierarchy. Use one of these nam
 | Perfect fourth | 1.333 | 9 / 12 / 16 / 21 / 28 |
 | Perfect fifth | 1.5 | 7 / 11 / 16 / 24 / 36 |
 
-Headings step *up* the scale; small/caption text steps *down*. A page should never have more than 5 sizes total — fewer sizes with more contrast beats more sizes with less.
+Headings step *up* the scale; small/caption text steps *down*. A page should never have more than 5 sizes total. Fewer sizes with more contrast beats more sizes with less.
 
 ### Light text on color: gray is dead
 
-Never put gray text on a colored background — gray reads washed out and lifeless on color. Use a darker shade of the background color, or a low-opacity black/white. `color: rgba(0,0,0,0.7)` on a colored card reads infinitely better than `color: #6b7280`.
+Never put gray text on a colored background. Gray reads washed out and lifeless on color. Use a darker shade of the background color, or a low-opacity black/white. `color: rgba(0,0,0,0.7)` on a colored card reads infinitely better than `color: #6b7280`.
 
 ### Pull quotes — no `<pre>`
 
@@ -101,7 +101,7 @@ Use `<blockquote>` with a `<cite>`. Never `<pre>` (it preserves whitespace and f
 }
 ```
 
-The padding is `0.25em` top and bottom — the bar height tracks the text height naturally. With `<pre>`, the trailing newline adds blank space below the cite which inflates the bar.
+The padding is `0.25em` top and bottom; the bar height tracks the text height naturally. With `<pre>`, the trailing newline adds blank space below the cite which inflates the bar.
 
 ## Theme Setup
 
@@ -337,13 +337,13 @@ Mermaid diagrams are often too small to read comfortably, especially complex flo
 
 **SVG sizing fix (critical).** Mermaid bakes a hardcoded `height` attribute into every SVG it renders. Without removing it, the SVG keeps its fixed pixel height regardless of container size and zoom. After `mermaid.initialize()`, call `mermaid.run().then(...)` to strip the height attribute and set `width: 100%; height: auto` on every `.mermaid svg`. This is what makes diagrams fit their container and scale correctly.
 
-**Use `style.zoom` on `.mermaid`, with a flex+overflow:hidden wrap.** Set `target.style.zoom = next` on the `.mermaid` div. The `.mermaid-wrap` MUST be `display: flex; justify-content: center; align-items: center; overflow: hidden; min-height: 340px`. CSS `zoom` causes layout reflow in real Chrome/Safari, so the wrap grows with the diagram — the frame stays in proportion to content.
+**Use `style.zoom` on `.mermaid`, with a flex+overflow:hidden wrap.** Set `target.style.zoom = next` on the `.mermaid` div. The `.mermaid-wrap` MUST be `display: flex; justify-content: center; align-items: center; overflow: hidden; min-height: 340px`. CSS `zoom` causes layout reflow in real Chrome/Safari, so the wrap grows with the diagram. The frame stays in proportion to content.
 
 Do NOT switch to `svg.style.width` percentage scaling. That approach scales the SVG inside a fixed-width wrap with `overflow: auto` — which produces scrollbars and visually cuts off the diagram horizontally. Tested and rejected in favor of the e3-share pattern.
 
 Do NOT use `transform: scale`. It scales visually but doesn't reflow at all, so the wrap stays at min-height even when the diagram needs more room.
 
-WKWebView caveat: `style.zoom` doesn't visually apply in WKWebView (cmux). Generated HTML is intended for real-browser viewing. If you need to validate in cmux, you won't see zoom changes — open the file in Chrome/Safari directly.
+WKWebView caveat: `style.zoom` doesn't visually apply in WKWebView (cmux). Generated HTML is intended for real-browser viewing. If you need to validate in cmux, you won't see zoom changes; open the file in Chrome/Safari directly.
 
 **Small diagrams in slides.** If a diagram has fewer than ~7 nodes with no branching, it will render tiny in a full-viewport slide container. For simple linear flows (A → B → C → D), use CSS pipeline cards instead of Mermaid (see `slide-patterns.md` "CSS Pipeline Slide"). Reserve Mermaid for complex graphs where automatic edge routing earns its place.
 
@@ -440,7 +440,7 @@ WKWebView caveat: `style.zoom` doesn't visually apply in WKWebView (cmux). Gener
 
 ### JavaScript
 
-Two scripts required. First, the ESM Mermaid init block — add the `.then()` post-processor to fix SVG sizing:
+Two scripts required. First, the ESM Mermaid init block. Add the `.then()` post-processor to fix SVG sizing:
 
 ```javascript
 // In your <script type="module"> alongside mermaid.initialize(...)
@@ -454,7 +454,7 @@ mermaid.run().then(function() {
 });
 ```
 
-Second, the zoom/pan controls — add once at the end of the page:
+Second, the zoom/pan controls. Add once at the end of the page:
 
 ```javascript
 // Set style.zoom on .mermaid. CSS zoom causes layout reflow in real Chrome/Safari,
@@ -1184,7 +1184,7 @@ details.collapsible .collapsible__body {
 
 ## Generated Images
 
-For SVG or raster illustrations embedded inline. Use sparingly — hero banners, conceptual illustrations, educational diagrams, decorative accents.
+For SVG or raster illustrations embedded inline. Use sparingly: hero banners, conceptual illustrations, educational diagrams, decorative accents.
 
 ### Hero Banner
 

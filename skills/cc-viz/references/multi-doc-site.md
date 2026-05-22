@@ -49,8 +49,8 @@ Copy the template folder, rename it, edit the markdown sources, run `python3 ren
 Eight transforms turn N markdown files into a coherent site. Each one is in the scaffolded `render.py`; you adjust the inputs, not the machinery.
 
 1. **PAGES tuple** — single source of truth driving the render loop *and* the top-nav rendering. Add a page, register once.
-2. **Status-code badges.** Inline `` `STATUS` `` codes in markdown become styled `<span class="status …">` badges. Customize the `STATUS_TOKENS` whitelist and `cls_map` for your domain. A real-world example carried 12 tokens (`LOCKED`, `EVIDENCE`, `ALIGNMENT`, `OPEN`, `DEFINED`, `PARTIAL`, `AMBIGUOUS`, `DEPENDENT`, `FAIL`, `RISK`, `PASS-CONDITIONAL`, `PASS`) collapsed onto 5 visual classes — domain-specific. The default scaffold ships 5 (`PASS`, `FAIL`, `WARN`, `OPEN`, `LOCKED`); add or collapse as your domain needs.
-3. **TLDR block.** A paragraph beginning `<strong>TL;DR.</strong>` in the rendered HTML becomes a styled `.tldr` block — a label + body grid. Place it in the markdown wherever the TL;DR belongs (usually right after the lede).
+2. **Status-code badges.** Inline `` `STATUS` `` codes in markdown become styled `<span class="status …">` badges. Customize the `STATUS_TOKENS` whitelist and `cls_map` for your domain. A real-world example carried 12 tokens (`LOCKED`, `EVIDENCE`, `ALIGNMENT`, `OPEN`, `DEFINED`, `PARTIAL`, `AMBIGUOUS`, `DEPENDENT`, `FAIL`, `RISK`, `PASS-CONDITIONAL`, `PASS`) collapsed onto 5 visual classes (domain-specific). The default scaffold ships 5 (`PASS`, `FAIL`, `WARN`, `OPEN`, `LOCKED`); add or collapse as your domain needs.
+3. **TLDR block.** A paragraph beginning `<strong>TL;DR.</strong>` in the rendered HTML becomes a styled `.tldr` block (a label + body grid). Place it in the markdown wherever the TL;DR belongs (usually right after the lede).
 4. **Lede paragraph.** The first blockquote after the h1 promotes to a `.lede` element (serif, larger, max-width-constrained). Use markdown blockquote `>` syntax in the source.
 5. **h2 numbering + anchor ids + sidebar TOC.** `add_section_numbers_and_ids` increments a counter, slugifies the h2 text, sets `id` and `data-num` on each h2, and emits a `[(num, slug, text)]` list. `render_toc` turns that into a sticky on-this-page sidebar. The layout switches between `layout` (with sidebar) and `layout-no-sidebar` (index page only).
 6. **Card-grid index restructure.** A markdown table on the index page gets replaced with a card-grid HTML block. The table stays as the source-of-truth in markdown (scannable, editable); the grid is the visual rendering. Edit the cards-html in `render.py` to match your page set.
@@ -82,7 +82,7 @@ The scaffold's `_example-page.md` shows the shape. Key elements:
 - **h1** = page title. One per page.
 - **Lede blockquote** immediately after the h1: `> One-sentence orientation.`
 - **TL;DR paragraph** after the lede: `**TL;DR.** One-paragraph executive summary.`
-- **h2** = section. Numbered automatically. Use plain text — slugified to anchor id.
+- **h2** = section. Numbered automatically. Use plain text; slugified to anchor id.
 - **Status codes** inline: `` `EVIDENCE` `` or `` `EVIDENCE 2026-05-01` ``. Inline-code only; don't wrap in HTML.
 
 ## Optional: publish
@@ -122,7 +122,7 @@ Publishing is not part of the skill's contract. Generate the folder; the user de
 - **Don't use markdown for diagram-heavy content.** If a page is mostly a diagram, write HTML directly or embed a Mermaid block via a regex hook in render.py.
 - **Don't fight the markdown grammar.** If you need a card grid, add a regex transform; don't try to encode it in markdown syntax.
 - **Don't auto-number h2s across the whole site.** Reset per page in `add_section_numbers_and_ids` (already does). Otherwise page B starts at 11 because page A had 10 sections.
-- **Don't skip the atmosphere rule for the shared stylesheet.** The same void test applies — dark backgrounds need gradient, texture, or vignette.
+- **Don't skip the atmosphere rule for the shared stylesheet.** The same void test applies; dark backgrounds need gradient, texture, or vignette.
 - **Don't ship without the .md download button.** If you claim markdown is the source of truth, make the markdown reachable.
 
 ## When to drop this pattern
@@ -142,7 +142,7 @@ If one page needs a unique visual treatment (a ladder diagram, a flow diagram, a
 <!-- diagram: four-stage-flow -->
 ```
 
-`render.py` recognizes the marker and injects a hand-crafted HTML snippet at that point. The marker stays in the markdown (source intact); the visual lives in the script's snippet library. The scaffold leaves this as a comment placeholder — add hooks as needed.
+`render.py` recognizes the marker and injects a hand-crafted HTML snippet at that point. The marker stays in the markdown (source intact); the visual lives in the script's snippet library. The scaffold leaves this as a comment placeholder; add hooks as needed.
 
 ## Tradeoffs
 

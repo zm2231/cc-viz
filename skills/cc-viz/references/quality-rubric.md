@@ -1,6 +1,6 @@
 # cc-viz Quality Rubric
 
-Six weighted dimensions, 100 points total. Every cc-viz output should be gradable against this rubric — no hand-patching outputs without naming the dimension that failed first.
+Six weighted dimensions, 100 points total. Every cc-viz output should be gradable against this rubric. No hand-patching outputs without naming the dimension that failed first.
 
 Each dimension carries a `grading:` tag:
 - `script` — mechanical check (regex, word count, file existence). No human or LLM judgment.
@@ -41,7 +41,7 @@ The page has an identifiable spine and the right kind of spine. Argument-led wor
 **FAIL:**
 - The page reports when it should argue. The conceptual mapping (the new understanding) appears as embellishment under a feature list.
 - The audience built the system being mapped, but the page spends 30%+ of its real estate explaining what they built.
-- The page has no identifiable spine — sections accumulate but don't compose into a single takeaway.
+- The page has no identifiable spine; sections accumulate but don't compose into a single takeaway.
 
 **Notes:** This dimension caught the test-a14 → a16 inversion (matrix as spine vs argument as spine). When grading, ask: *"What's the one sentence the reader walks away with?"* If the answer is "here are the files" or "here are the dimensions," the spine is wrong.
 
@@ -61,7 +61,7 @@ Script gates the mechanical failures; judgment grades register match.
 
 **Judgment PASS criteria:**
 - Register matches the routed audience (we-pronoun for team-collaborative; you-pronoun for system-behavior or consequence prose; declarative third-person for framing/reference; past-tense narrative for postmortem).
-- Direct address (you/your) appears only where the reader is an actor — system-behavior, touchpoints, or workflow consequences. Not in framing prose about the page itself, not in neutral reference captions.
+- Direct address (you/your) appears only where the reader is an actor: system-behavior, touchpoints, or workflow consequences. Not in framing prose about the page itself, not in neutral reference captions.
 - Single italic-emphasis point per heading, per pull quote, per card. Not two italic-color emphases competing in the same element.
 
 **FAIL:** any script-checkable rule violated, or register mixes mid-page, or italic-emphasis budget exceeded.
@@ -142,6 +142,30 @@ Story Discipline check on test-a14:
 → FAIL
 </thinking>
 ```
+
+## Pre-ship Bash checks
+
+On shell-enabled surfaces (Claude Code CLI, IDE, or any environment with bash), run these five greps against every generated `.html` before opening. Visual inspection is unreliable across surfaces; text checks are not.
+
+```bash
+# 1. Em-dash audit. Should return only structural uses (titles, citations, list labels).
+#    Any em-dash inside a paragraph or sentence is a fail.
+grep -n "—" ~/.agent/diagrams/<file>.html
+
+# 2. Forbidden body fonts.
+grep -niE "font-body:[^;]*\b(Inter|Roboto|Arial|Helvetica|Space Grotesk|Manrope|General Sans|Cabinet Grotesk)\b" ~/.agent/diagrams/<file>.html
+
+# 3. Forbidden accent colors (Tailwind defaults).
+grep -niE "#(8b5cf6|7c3aed|a78bfa|d946ef|06b6d4)" ~/.agent/diagrams/<file>.html
+
+# 4. Mermaid post-processing present (only for pages using Mermaid).
+grep -c "mermaid.run().then" ~/.agent/diagrams/<file>.html
+
+# 5. Atmosphere present (any of: gradient, dot grid, hairline, vignette).
+grep -ciE "radial-gradient|linear-gradient|repeating-linear-gradient|background-image" ~/.agent/diagrams/<file>.html
+```
+
+If any check returns a hit you didn't intend, fix it before opening. Re-running the same greps after a fix confirms the change landed.
 
 ## When this rubric needs updating
 

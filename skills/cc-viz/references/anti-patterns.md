@@ -24,7 +24,7 @@ Read this before generating. Re-read the relevant section while drafting if the 
 
 ### 1.3 Adjective stacking
 **What happens:** *"A robust, scalable, modern architecture..."* / *"Clean, intuitive, powerful UX..."*
-**Why bad:** Three-adjective strings are a tell — they substitute volume for precision.
+**Why bad:** Three-adjective strings are a tell. They substitute volume for precision.
 **Rule:** No string of three adjectives in a row.
 **Fix:** Pick one adjective that earns its place. Cut the other two.
 
@@ -36,7 +36,7 @@ Read this before generating. Re-read the relevant section while drafting if the 
 
 ### 1.5 Restating the visual in prose
 **What happens:** A diagram shows L1 → L1.5 → L2 → L3, and the prose underneath says *"First L1 runs, then L1.5 runs, then L2 runs, then L3 runs."*
-**Why bad:** Doubles the read time without adding meaning. Prose should add what the diagram cannot show — the *why*, the constraint, the gotcha.
+**Why bad:** Doubles the read time without adding meaning. Prose should add what the diagram cannot show: the *why*, the constraint, the gotcha.
 **Rule:** Prose under a visual adds the why or the qualification, not a verbal version of the visual.
 **Fix:** Ask, for each prose paragraph adjacent to a visual: *"What does this say that the visual doesn't?"* If nothing, cut it.
 
@@ -53,7 +53,7 @@ Read this before generating. Re-read the relevant section while drafting if the 
 
 ### 2.2 Italic-by-design display serif as `--font-body`
 **What happens:** Subagent uses Instrument Serif, Playfair Display Italic, Fraunces Italic, or EB Garamond Italic for body paragraphs.
-**Why bad:** These are exquisite for headlines. Unreadable as paragraph body — italic at body size loses x-height clarity.
+**Why bad:** These are exquisite for headlines. Unreadable as paragraph body. Italic at body size loses x-height clarity.
 **Rule:** Italic-by-design display serifs may appear as `--font-display` only. Pair with a sans body and a mono.
 **Fix:** Tri-font pairing. Display serif for h1/h2/pull-quote; sans for body; mono for labels.
 
@@ -115,7 +115,7 @@ Read this before generating. Re-read the relevant section while drafting if the 
 **Fix:** Plain code block with filename or language label in the corner.
 
 ### 4.3 Card grid orphan rows
-**What happens:** 4 cards in a grid that auto-fits to 3 columns at the viewport width — produces 3 cards on top and 1 lonely orphan beneath.
+**What happens:** 4 cards in a grid that auto-fits to 3 columns at the viewport width. Produces 3 cards on top and 1 lonely orphan beneath.
 **Why bad:** Looks broken. Asymmetric without intent.
 **Rule:** Match column count to item count. 4 items → 2×2 or 4×1. 5 items → reorganize content. 6 items → 2×3 or 3×2.
 **Fix:** Force `grid-template-columns: repeat(2, 1fr)` for 4-item grids, or restructure content.
@@ -129,7 +129,7 @@ Read this before generating. Re-read the relevant section while drafting if the 
 ### 4.5 Italic-emphasis stacking
 **What happens:** Hero has *italic do* and *italic do* twice in the same heading, plus an italic phrase in the lede underneath, all in the same accent color.
 **Why bad:** Multiple emphases compete and dilute. Reads as theatrical.
-**Rule:** Single italic-emphasis point per heading, per pull quote, per card. The lede gets one accent point or the heading gets one — not both.
+**Rule:** Single italic-emphasis point per heading, per pull quote, per card. The lede gets one accent point or the heading gets one, not both.
 **Fix:** Pick one phrase to emphasize. Cut the others. The reader's eye should land on exactly one accent point per element.
 
 ### 4.6 Pull quote in `<pre>`
@@ -164,7 +164,7 @@ Read this before generating. Re-read the relevant section while drafting if the 
 **Why bad:** Page looks broken in a non-trivial fraction of viewing environments (cmux, screen readers, low-power mode).
 **Rule:** Animation visibility fallback. The end state must be reachable without the animation firing. Either use `animation-fill-mode: forwards` and trust the keyframe end state, OR initialize the element at the visible state and let the animation animate FROM the hidden state on a delay.
 **Fix:** Either:
-- `.fade { opacity: 1; animation: fadeUp 0.5s both; }` (start visible, animation runs and ends visible — if anim skips, still visible).
+- `.fade { opacity: 1; animation: fadeUp 0.5s both; }` (start visible, animation runs and ends visible; if anim skips, still visible).
 - Or: feature-detect `prefers-reduced-motion` and skip the initial-hidden state.
 
 ---
@@ -237,7 +237,7 @@ These break the parser silently and produce "Syntax error in text mermaid versio
 ### 8.1 Direct address over-applied to framing prose
 **What happens:** *"You read this to get a working mental model in one pass."* / *"You'll find one row per classified event in the observations table."*
 **Why bad:** The reader IS reading; telling them so is awkward. Schema descriptions don't have an actor.
-**Rule:** Use *you/your* only when the reader is an actor in the sentence — system behavior they interact with, touchpoints, or workflow consequences. NOT in framing prose about the page itself or in neutral reference captions.
+**Rule:** Use *you/your* only when the reader is an actor in the sentence: system behavior they interact with, touchpoints, or workflow consequences. NOT in framing prose about the page itself or in neutral reference captions.
 **Fix:** *"This page walks the pipeline top to bottom"* > *"You read this page to walk the pipeline top to bottom."*
 
 ### 8.2 Register shift mid-page
@@ -274,14 +274,14 @@ These break the parser silently and produce "Syntax error in text mermaid versio
 
 ### 10.1 Fabricated identifiers
 **What happens:** Page claims `temporal_window` and `temporal_link` exist as tables. They don't.
-**Why bad:** Claims about real systems must be true. A fabricated identifier in a technical doc is the worst kind of error — confident-sounding and wrong.
+**Why bad:** Claims about real systems must be true. A fabricated identifier in a technical doc is the worst kind of error: confident-sounding and wrong.
 **Rule:** Every claimed file path, table name, column name, or schema identifier must exist in the referenced repo. Verify before claiming.
 **Fix:** `grep` or read the actual schema before naming it on the page. If unsure, omit.
 
 ### 10.2 Training-stale claims about external state
 **What happens:** Page claims "Anthropic will eventually ship a marketplace and crush this wedge" — when Anthropic shipped it 4 months ago.
 **Why bad:** The page treats speculation as forecast when the event has already happened.
-**Rule:** For claims about external markets, current state of named players, or what's shipped — ground via web search, claude-code-guide, or whatever current-state tool is wired up. Don't speculate from training-stale knowledge.
+**Rule:** For claims about external markets, current state of named players, or what's shipped, ground via web search, claude-code-guide, or whatever current-state tool is wired up. Don't speculate from training-stale knowledge.
 **Fix:** When a claim depends on "what's true now in the world," verify before writing.
 
 ---

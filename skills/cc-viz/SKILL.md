@@ -2,14 +2,11 @@
 name: cc-viz
 description: Generate self-contained HTML pages that visually explain systems, code, plans, and data. Produces documents, briefs, memos, diagrams, audits, recaps, comparison tables, slide decks, multi-doc sites. Triggers: "diagram", "visualize", "render as a page", "build a brief", "memo for the team", "deck about", "audit", "recap", "fact-check", "plan review", "diff review", "small site I'll edit". Also fires proactively when about to render an ASCII table with 4+ rows or 3+ columns (generate HTML instead). NOT for applications, interactive UIs, landing pages, brand sites, dashboards-as-products, or component libraries. NOT for one-line answers, tiny markdown tables, code-as-artifact responses, or discussion-not-document conversations.
 license: MIT
-compatibility: Requires a browser to view generated HTML files.
-metadata:
-  version: "1.2.0"
 ---
 
 # cc-viz
 
-Generate self-contained HTML files for technical diagrams, visualizations, and data tables. Always open the result in the browser. Never fall back to ASCII art when this skill is loaded.
+Generate self-contained HTML files for technical diagrams, visualizations, and data tables. Open the result in the browser when the surface supports it (Step 6 details the surface caveat). Never fall back to ASCII art when this skill is loaded.
 
 **Proactive table rendering.** When you're about to present tabular data as an ASCII box-drawing table in the terminal (comparisons, audits, feature matrices, status reports, any structured rows/columns), generate an HTML page instead. The threshold: if the table has 4+ rows or 3+ columns, it belongs in the browser. Don't wait for the user to ask. Render it as HTML automatically and tell them the file path. Brief text summary in the chat is fine; the table itself is the HTML page. Proactive tables are implicitly **Quick share mode**: skip routing and framing, just ship the table.
 
@@ -236,31 +233,17 @@ After opening, **tell the user** the absolute file path so they can re-open, att
 
 Don't auto-publish. Generation and distribution are different concerns; the user decides where the artifact goes.
 
-## Diagram-specific notes
+## Diagram-specific detail
 
-Most diagram types are routed through Mermaid (see Step 4 table). Notes that don't fit the table:
-
-**Architecture / system.** Two approaches. *Text-heavy overviews* (card content > connections) → CSS Grid with explicit row/column placement, rounded cards with colored borders, monospace labels, vertical flow arrows, nested grids for subsystems (`./templates/architecture.html`). *Topology-focused* (connections > card content) → Mermaid `graph TD` / `graph LR` with custom `themeVariables`.
-
-**State machines.** `stateDiagram-v2` has a strict parser: colons, parens, `<br/>`, and HTML entities cause silent parse failures. If labels need any of these (e.g., `cancel()`, `curate: true`, multi-line), use `flowchart LR` with quoted edge labels (`|"label text"|`) instead. Reserve `stateDiagram-v2` for plain-text labels.
-
-**Data tables.** Real `<table>`, not CSS-Grid-pretending. Sticky `<thead>`, alternating row backgrounds, optionally sticky first column, responsive `overflow-x: auto`, column-width hints, row-hover. Status as styled `<span>`, never emoji. Detail + reference in `./templates/data-table.html`.
-
-**Timeline.** Vertical or horizontal with a CSS pseudo-element line. Phase markers as circles on the line. Cards alternating or single-side. Color progression from past (muted) to future (vivid).
-
-**Dashboard.** Card grid with hero numbers. Sparklines via inline SVG `<polyline>`. Progress bars via CSS gradient. Real charts via Chart.js (CDN; see `references/libraries.md`). KPI cards with trend indicators.
+Per-type specifics (Architecture topology vs text-heavy, state-machine parser caveats, data-table sticky-header patterns, timeline composition, dashboard with Chart.js) live in the relevant templates (`./templates/architecture.html`, `./templates/data-table.html`, `./templates/mermaid-flowchart.html`) and in `references/libraries.md` (Mermaid syntax limits, Chart.js theming) and `references/patterns.md` (composition catalog). The Step 4 routing table above maps every diagram type to its primary approach.
 
 ## Slide Deck Mode
 
-**When to choose slides.** Slides are right when the artifact will be shown live (presentation, walkthrough, talk, demo, community session) or when the user explicitly asks for a deck. Trigger words that justify auto-selecting slides: *"deck about"*, *"presenting"*, *"showing tomorrow"*, *"walk them through"*, *"talk on"*, *"slides for"*, or the `--slides` / `/generate-slides` invocation. Live-delivery context is a valid signal. Don't refuse to pick slides just because the user said "brief" if they also said "showing tomorrow."
+**Choose slides** when the artifact will be shown live (presentation, walkthrough, talk, demo, community session) or when the user explicitly asks for a deck. Trigger words: *"deck about"*, *"presenting"*, *"showing tomorrow"*, *"walk them through"*, *"talk on"*, *"slides for"*, `--slides`, `/generate-slides`.
 
-**When NOT to choose slides.** A document meant for asynchronous reading (memo, audit, RFC, recap, status report) is a scrolling page, not a deck. If the user says "brief" or "memo" without any live-delivery context, default to scrolling. If genuinely ambiguous between brief and deck, ask one question.
+**Default to scrolling** for asynchronous-reading documents (memo, audit, RFC, recap, status report). If genuinely ambiguous, ask one question.
 
-Slides are a different medium, not pages reformatted. Each slide is exactly one viewport tall (100dvh) with no scrolling. Typography 2–3× larger. Compose a narrative arc (impact → context → deep dive → resolution), not mechanically paginated source.
-
-**Content completeness.** Changing medium doesn't drop content. Every section, decision, data point, and collapsible detail in the source appears in the deck. A 22-slide deck covering everything beats a 13-slide deck that looks polished but misses 40%.
-
-Full slide-type catalog (11 types), composition variety rules, presets, and the "Planning a Deck from a Source Document" process: `references/slide-patterns.md`. Reference template: `./templates/slide-deck.html`.
+Slide-specific rules (slide types, transitions, composition variety, content completeness, planning process from a source document) live in `references/slide-patterns.md`. Reference template: `./templates/slide-deck.html`.
 
 ## File Structure
 
@@ -300,27 +283,7 @@ Grade against the rubric inline before delivering. Six weighted dimensions, 100 
 
 If you score yourself below 75, don't ship. Fix the lowest dimension first. Inflated self-grading is also a failure mode: if you're scoring 78 with re-teaching present or no spine statement, you're grading lenient. The dimensions that matter most for argument-led pages are #1 and #2. A page with beautiful typography (#5) still fails if the spine is missing.
 
-**Pre-ship text checks (Bash, before opening browser).** Run these from the shell. Visual inspection is unreliable across surfaces; text checks are not. If shell is available, every page goes through these before delivery.
-
-```bash
-# 1. Em-dash audit. Should return only structural uses (titles, citations, list labels).
-#    Any em-dash inside a paragraph or sentence is a fail.
-grep -n "—" ~/.agent/diagrams/<file>.html
-
-# 2. Forbidden body fonts.
-grep -niE "font-body:[^;]*\b(Inter|Roboto|Arial|Helvetica|Space Grotesk|Manrope|General Sans|Cabinet Grotesk)\b" ~/.agent/diagrams/<file>.html
-
-# 3. Forbidden accent colors (Tailwind defaults).
-grep -niE "#(8b5cf6|7c3aed|a78bfa|d946ef|06b6d4)" ~/.agent/diagrams/<file>.html
-
-# 4. Mermaid post-processing present (only for pages using Mermaid).
-grep -c "mermaid.run().then" ~/.agent/diagrams/<file>.html
-
-# 5. Atmosphere present (any of: gradient, dot grid, hairline, vignette).
-grep -ciE "radial-gradient|linear-gradient|repeating-linear-gradient|background-image" ~/.agent/diagrams/<file>.html
-```
-
-If any check returns a hit you didn't intend, fix it before opening. Inspecting em-dashes by reading is unreliable; grep is not.
+**Pre-ship text checks.** On shell-enabled surfaces, run the five Bash grep commands in `references/quality-rubric.md` ("Pre-ship Bash checks") before opening the browser: em-dash audit, forbidden body fonts, forbidden accent colors, Mermaid post-processor presence, atmosphere presence. If any check returns a hit you didn't intend, fix it before opening. Visual inspection is unreliable across surfaces; grep is not.
 
 Fast-pass tests:
 - **Squint:** hierarchy still readable when blurred? Sections distinct?
