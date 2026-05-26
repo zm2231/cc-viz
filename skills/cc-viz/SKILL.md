@@ -1,6 +1,13 @@
 ---
 name: cc-viz
-description: Generate self-contained HTML pages that visually explain systems, code, plans, and data. Produces documents, briefs, memos, diagrams, audits, recaps, comparison tables, slide decks, multi-doc sites. Triggers: "diagram", "visualize", "render as a page", "build a brief", "memo for the team", "deck about", "audit", "recap", "fact-check", "plan review", "diff review", "small site I'll edit". Also fires proactively when about to render an ASCII table with 4+ rows or 3+ columns (generate HTML instead). NOT for applications, interactive UIs, landing pages, brand sites, dashboards-as-products, or component libraries. NOT for one-line answers, tiny markdown tables, code-as-artifact responses, or discussion-not-document conversations.
+description: >-
+  Generate self-contained HTML pages that visually explain systems, code, plans, and data.
+  Produces documents, briefs, memos, diagrams, audits, recaps, comparison tables, slide decks, multi-doc sites.
+  Triggers - "diagram", "visualize", "render as a page", "build a brief", "memo for the team", "deck about",
+  "audit", "recap", "fact-check", "plan review", "diff review", "small site I'll edit".
+  Also fires proactively when about to render an ASCII table with 4+ rows or 3+ columns (generate HTML instead).
+  NOT for applications, interactive UIs, landing pages, brand sites, dashboards-as-products, or component libraries.
+  NOT for one-line answers, tiny markdown tables, code-as-artifact responses, or discussion-not-document conversations.
 license: MIT
 ---
 
